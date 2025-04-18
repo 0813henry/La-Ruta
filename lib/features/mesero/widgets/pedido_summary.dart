@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import '../../../core/model/pedido_model.dart';
 
 class PedidoSummary extends StatelessWidget {
@@ -49,7 +50,7 @@ class PedidoSummary extends StatelessWidget {
                         '\$${(item.precio * item.cantidad).toStringAsFixed(2)}',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.green,
+                          color: AppColors.success,
                         ),
                       ),
                     ],

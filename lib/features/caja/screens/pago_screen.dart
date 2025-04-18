@@ -35,13 +35,13 @@ class _PagoScreenState extends State<PagoScreen> {
           date: DateTime.now(),
         ),
       );
-      if (!mounted) return; // Verificar si el widget está montado
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Pago procesado exitosamente')),
       );
       Navigator.pop(context);
     } catch (e) {
-      if (!mounted) return; // Verificar si el widget está montado
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al procesar el pago: $e')),
       );
@@ -66,6 +66,38 @@ class _PagoScreenState extends State<PagoScreen> {
           ElevatedButton(
             onPressed: _procesarPago,
             child: Text('Confirmar Pago'),
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () async {
+              // Simulate payment
+              try {
+                await _pedidoService.actualizarEstadoPedido(
+                    widget.pedido.id!, 'Pagado', '');
+                await _cajaService.registrarTransaccion(
+                  transaccion_model.Transaction(
+                    id: '',
+                    pedidoId: widget.pedido.id,
+                    title: 'Pago Simulado de pedido ${widget.pedido.id}',
+                    amount: widget.pedido.total,
+                    paymentMethod: 'Efectivo',
+                    date: DateTime.now(),
+                  ),
+                );
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Pago simulado exitosamente')),
+                );
+                Navigator.pop(context);
+              } catch (e) {
+                if (!mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Error al simular el pago: $e')),
+                );
+              }
+            },
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
+            child: Text('Simular Pago en Efectivo'),
           ),
         ],
       ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
+import 'package:restaurante_app/core/services/notification_service.dart';
+import '../widgets/menu_lateral_caja.dart';
 import 'pago_screen.dart';
 
 class CajaHomeScreen extends StatelessWidget {
@@ -8,10 +10,17 @@ class CajaHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    NotificationService().escucharNotificacionesCocina((mesaId) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Mesa $mesaId lista para pagar')),
+      );
+    });
+
     return Scaffold(
       appBar: AppBar(title: Text('Caja - Pedidos Listos')),
+      drawer: MenuLateralCaja(),
       body: StreamBuilder<List<OrderModel>>(
-        stream: _pedidoService.obtenerPedidosPorEstado('Listo'),
+        stream: _pedidoService.obtenerPedidosPorEstado('Listo para pagar'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());

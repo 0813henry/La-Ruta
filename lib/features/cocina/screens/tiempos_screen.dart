@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
-import 'package:restaurante_app/features/cocina/widgets/timer_progress.dart';
+import 'package:restaurante_app/features/cocina/widgets/timer_progress_widget.dart';
 
 class TiemposScreen extends StatelessWidget {
   final PedidoService _pedidoService = PedidoService();
@@ -28,7 +28,10 @@ class TiemposScreen extends StatelessWidget {
               return ListTile(
                 title: Text('Pedido ${pedido.id}'),
                 subtitle: Text('Cliente: ${pedido.cliente}'),
-                trailing: TimerProgressWidget(startTime: pedido.startTime ?? DateTime.now()),
+                trailing: TimerProgressWidget(
+                  startTime: pedido.startTime ?? DateTime.now(),
+                  maxDuration: Duration(minutes: 30),
+                ),
               );
             },
           );

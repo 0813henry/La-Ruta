@@ -15,9 +15,21 @@ class MesasScreen extends StatelessWidget {
     if (mesas.isEmpty) {
       final mesasIniciales = [
         for (int i = 1; i <= 8; i++)
-          Mesa(id: 'P$i', estado: 'Libre', capacidad: 4, tipo: 'Principal'),
+          Mesa(
+            id: 'P$i-${DateTime.now().millisecondsSinceEpoch}', // Ensure a unique ID
+            nombre: 'Mesa Principal $i',
+            estado: 'Libre',
+            capacidad: 4,
+            tipo: 'Principal',
+          ),
         for (int i = 1; i <= 4; i++)
-          Mesa(id: 'V$i', estado: 'Libre', capacidad: 6, tipo: 'VIP'),
+          Mesa(
+            id: 'V$i-${DateTime.now().millisecondsSinceEpoch}', // Ensure a unique ID
+            nombre: 'Mesa VIP $i',
+            estado: 'Libre',
+            capacidad: 6,
+            tipo: 'VIP',
+          ),
       ];
       for (var mesa in mesasIniciales) {
         await _mesaService.agregarMesa(mesa);
@@ -45,10 +57,19 @@ class MesasScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: MesaGrid(
                   onMesaTap: (mesa) {
+                    if (mesa.id.isEmpty) {
+                      throw Exception(
+                          'El ID de la mesa no puede estar vacío.'); // Debugging check
+                    }
+
                     Navigator.pushNamed(
                       context,
                       AppRoutes.mesaDetail,
-                      arguments: {'mesaId': mesa.id, 'estado': mesa.estado},
+                      arguments: {
+                        'mesaId': mesa.id,
+                        'estado': mesa.estado,
+                        'nombre': mesa.nombre
+                      },
                     );
                   },
                   isWideScreen: constraints.maxWidth > 600,
@@ -62,7 +83,7 @@ class MesasScreen extends StatelessWidget {
         backgroundColor: AppColors.secondary,
         child: Icon(Icons.add, color: AppColors.textPrimary),
         onPressed: () async {
-          String? inputMesaId;
+          String? inputMesaName;
           int? inputCapacidad;
           String? inputTipo = 'Principal';
 
@@ -75,8 +96,9 @@ class MesasScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
-                      decoration: InputDecoration(labelText: 'ID de la Mesa'),
-                      onChanged: (value) => inputMesaId = value,
+                      decoration:
+                          InputDecoration(labelText: 'Nombre de la Mesa'),
+                      onChanged: (value) => inputMesaName = value,
                     ),
                     TextField(
                       decoration: InputDecoration(labelText: 'Capacidad'),
@@ -87,7 +109,7 @@ class MesasScreen extends StatelessWidget {
                     DropdownButtonFormField<String>(
                       value: inputTipo,
                       decoration: InputDecoration(labelText: 'Tipo de Mesa'),
-                      items: ['Principal', 'VIP']
+                      items: ['Principal', 'VIP', 'Domicilio']
                           .map((tipo) => DropdownMenuItem(
                                 value: tipo,
                                 child: Text(tipo),
@@ -112,12 +134,12 @@ class MesasScreen extends StatelessWidget {
           );
 
           if (result == true) {
-            inputMesaId = inputMesaId?.trim(); // Remove leading/trailing spaces
+            inputMesaName = inputMesaName?.trim();
 
-            if (inputMesaId?.isEmpty ?? true) {
+            if (inputMesaName?.isEmpty ?? true) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                    content: Text('El ID de la mesa no puede estar vacío')),
+                    content: Text('El nombre de la mesa no puede estar vacío')),
               );
               return;
             }
@@ -129,32 +151,24 @@ class MesasScreen extends StatelessWidget {
               return;
             }
 
-            if (inputTipo == null || (inputTipo?.isEmpty ?? true)) {
-              inputTipo = 'Principal'; // Default value
-            }
-
             try {
-              await _mesaService.agregarMesa(
-                Mesa(
-                  id: inputMesaId ?? '',
-                  estado: 'Libre',
-                  capacidad: inputCapacidad ?? 0,
-                  tipo: inputTipo ?? 'Principal',
-                ),
+              final nuevaMesa = Mesa(
+                id: '', // ID vacío, será generado por el servicio
+                nombre: inputMesaName ?? '',
+                estado: 'Libre',
+                capacidad: inputCapacidad ?? 0,
+                tipo: inputTipo ?? 'Principal',
               );
+              await _mesaService.agregarMesa(nuevaMesa);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                    content: Text('Mesa $inputMesaId agregada exitosamente')),
+                    content: Text('Mesa $inputMesaName agregada exitosamente')),
               );
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Error al agregar la mesa: $e')),
               );
             }
-          } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Todos los campos son obligatorios')),
-            );
           }
         },
       ),

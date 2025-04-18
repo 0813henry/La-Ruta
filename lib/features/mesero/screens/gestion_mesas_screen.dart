@@ -14,12 +14,22 @@ class _GestionMesasScreenState extends State<GestionMesasScreen> {
 
   void _agregarMesa() async {
     final nuevaMesa = Mesa(
-      id: '',
+      id: 'Mesa-${DateTime.now().millisecondsSinceEpoch}', // Ensure a unique ID
+      nombre: 'Mesa Nueva',
       estado: 'Libre',
       capacidad: 4,
       tipo: 'Principal',
     );
+
+    if (nuevaMesa.id.isEmpty) {
+      throw Exception(
+          'El ID de la mesa no puede estar vacío.'); // Debugging check
+    }
+
     await _mesaService.agregarMesa(nuevaMesa);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Mesa ${nuevaMesa.nombre} agregada exitosamente')),
+    );
   }
 
   @override

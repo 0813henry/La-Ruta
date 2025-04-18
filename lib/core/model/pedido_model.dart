@@ -35,7 +35,7 @@ class OrderModel {
       cliente: map['cliente'],
       items: List<OrderItem>.from(
           map['items'].map((item) => OrderItem.fromMap(item))),
-      total: map['total'],
+      total: (map['total'] as num).toDouble(), // Ensure total is a double
       estado: map['estado'],
       tipo: map['tipo'],
       startTime:
@@ -70,7 +70,7 @@ class OrderItem {
     return OrderItem(
       nombre: map['nombre'],
       cantidad: map['cantidad'],
-      precio: map['precio'],
+      precio: (map['precio'] as num).toDouble(), // Ensure precio is a double
       descripcion: map['descripcion'],
     );
   }

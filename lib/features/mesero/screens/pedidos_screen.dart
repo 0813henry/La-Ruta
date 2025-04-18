@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/services/notification_service.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import '../widgets/menu_lateral_mesero.dart';
@@ -12,6 +13,16 @@ class _OrdersScreenState extends State<OrdersScreen> {
   final PedidoService _pedidoService = PedidoService();
   String _selectedEstado = 'Todos'; // Filtro por estado
   String _selectedTipo = 'Todos'; // Filtro por tipo
+
+  @override
+  void initState() {
+    super.initState();
+    NotificationService().escucharNotificacionesCocina((pedidoId) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('El pedido $pedidoId está listo.')),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +82,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
           }
           final pedidos = snapshot.data ?? [];
           if (pedidos.isEmpty) {
-            return Center(child: Text('No hay pedidos disponibles.'));
+            return Center(child: Text('No hay pedidos activos.'));
           }
           return ListView.builder(
             itemCount: pedidos.length,

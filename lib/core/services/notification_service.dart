@@ -16,9 +16,25 @@ class NotificationService {
     });
   }
 
+  void notificarCocina(String mensaje) {
+    _firestore.collection('notificaciones').add({
+      'rol': 'cocina',
+      'mensaje': mensaje,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
+
   void notificarMesero(String meseroId, String mensaje) {
     _firestore.collection('notificaciones').add({
       'meseroId': meseroId,
+      'mensaje': mensaje,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
+
+  void notificarCajero(String cajeroId, String mensaje) {
+    _firestore.collection('notificaciones').add({
+      'cajeroId': cajeroId,
       'mensaje': mensaje,
       'timestamp': FieldValue.serverTimestamp(),
     });

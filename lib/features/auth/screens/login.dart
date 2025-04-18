@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.pushReplacementNamed(context, '/dashboard');
               break;
             case 'cajero':
-              Navigator.pushReplacementNamed(context, '/sales');
+              Navigator.pushReplacementNamed(context, '/cashier');
               break;
             case 'mesero':
               Navigator.pushReplacementNamed(context, '/mesas');

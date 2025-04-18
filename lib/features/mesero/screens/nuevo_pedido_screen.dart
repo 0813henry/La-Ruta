@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/widgets/modules/categoria_card.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
+import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
 import '../widgets/pedido_summary.dart';
@@ -10,8 +11,11 @@ import '../widgets/carrito_widget.dart';
 
 class NuevoPedidoScreen extends StatefulWidget {
   final String mesaId;
+  final String nombre;
 
-  const NuevoPedidoScreen({required this.mesaId, Key? key}) : super(key: key);
+  const NuevoPedidoScreen(
+      {required this.mesaId, required this.nombre, Key? key})
+      : super(key: key);
 
   @override
   _NuevoPedidoScreenState createState() => _NuevoPedidoScreenState();
@@ -19,11 +23,13 @@ class NuevoPedidoScreen extends StatefulWidget {
 
 class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
   final FirebaseService _firebaseService = FirebaseService();
+  final PedidoService _pedidoService = PedidoService();
   final List<OrderItem> _cart = [];
   Product? _selectedProduct;
   int _selectedQuantity = 1;
   String _selectedComment = '';
   String? _selectedCategory;
+  bool _isOrderSent = false;
 
   void _addToCart(Product product, int quantity, String comment) {
     setState(() {
@@ -286,10 +292,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
         onEditItem: _showCartDetails,
         onRemoveItem: _removeFromCart,
         total: total,
-        onConfirmOrder: () {
-          Navigator.pop(context);
-          _confirmOrder();
-        },
+        onConfirmOrder: _confirmOrder,
       ),
     );
   }
@@ -298,7 +301,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
     final total =
         _cart.fold(0.0, (sum, item) => sum + item.precio * item.cantidad);
     final order = OrderModel(
-      cliente: 'Mesa ${widget.mesaId}',
+      cliente: widget.nombre,
       items: _cart,
       total: total,
       estado: 'Pendiente',
@@ -307,11 +310,12 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
     );
 
     try {
-      await _firebaseService.saveOrderToFirebase(order);
+      await _pedidoService.crearPedido(order);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Pedido enviado exitosamente')),
       );
       setState(() {
+        _isOrderSent = true;
         _cart.clear();
       });
     } catch (e) {
@@ -327,7 +331,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nuevo Pedido - Mesa ${widget.mesaId}'),
+        title: Text('Nuevo Pedido - Mesa ${widget.nombre}'),
         actions: [
           IconButton(
             icon: Icon(Icons.shopping_cart),

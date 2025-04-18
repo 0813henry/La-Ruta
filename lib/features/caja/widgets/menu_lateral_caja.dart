@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../../routes/app_routes.dart';
+import 'package:restaurante_app/routes/app_routes.dart';
 
-class MenuLateralMesero extends StatelessWidget {
+class MenuLateralCaja extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Column(
         children: <Widget>[
           UserAccountsDrawerHeader(
-            accountName: Text('Mesero'),
-            accountEmail: Text('mesero@example.com'),
+            accountName: Text('Cajero'),
+            accountEmail: Text('cajero@example.com'),
             currentAccountPicture: CircleAvatar(
               backgroundColor: Colors.white,
               child: Text(
-                'M',
+                'C',
                 style: TextStyle(fontSize: 40.0),
               ),
             ),
@@ -23,24 +23,25 @@ class MenuLateralMesero extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 ListTile(
-                  leading: Icon(Icons.table_chart),
-                  title: Text('Mesas'),
+                  leading: Icon(Icons.attach_money),
+                  title: Text('Pedidos Listos'),
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.mesas);
+                    Navigator.pushReplacementNamed(context, AppRoutes.cashier);
                   },
                 ),
                 ListTile(
-                  leading: Icon(Icons.restaurant_menu),
-                  title: Text('Pedidos Activos'),
+                  leading: Icon(Icons.history),
+                  title: Text('Historial de Ventas'),
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.pedidos);
+                    Navigator.pushReplacementNamed(context, AppRoutes.sales);
                   },
                 ),
                 ListTile(
                   leading: Icon(Icons.receipt),
-                  title: Text('Resumen de Pedidos'),
+                  title: Text('Generar Facturas'),
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.resumen);
+                    Navigator.pushReplacementNamed(
+                        context, AppRoutes.kitchenOrders); // Placeholder route
                   },
                 ),
                 Divider(),

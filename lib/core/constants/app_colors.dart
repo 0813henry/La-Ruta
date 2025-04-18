@@ -14,4 +14,17 @@ class AppColors {
   // Colores para texto
   static const textPrimary = Color(0xFF212121);
   static const textSecondary = Color(0xFF757575);
+
+  // Colores para Tipos de Pedido
+  static const domicilio = Color(0xFF4FC3F7); // Azul cielo
+  static const vip = Color(0xFFFFD700); // Dorado
+  static const principal = Color(0xFF81C784); // Verde claro
+
+  // Colores para Estados del Pedido
+  static const pendiente = Color(0xFFB0BEC5); // Gris claro
+  static const enPreparacion = Color(0xFFFFA726); // Naranja
+  static const listoParaServir = Color(0xFFAED581); // Verde lima
+  static const enCamino = Color(0xFF1976D2); // Azul oscuro
+  static const entregado = Color(0xFF388E3C); // Verde oscuro
+  static const cancelado = Color(0xFFE57373); // Rojo
 }

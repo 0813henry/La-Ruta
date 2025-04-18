@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-class TimerProgress extends StatefulWidget {
+class TimerProgressWidget extends StatefulWidget {
   final DateTime startTime;
   final Duration maxDuration;
 
-  const TimerProgress({
+  const TimerProgressWidget({
     required this.startTime,
     required this.maxDuration,
     Key? key,
   }) : super(key: key);
 
   @override
-  _TimerProgressState createState() => _TimerProgressState();
+  _TimerProgressWidgetState createState() => _TimerProgressWidgetState();
 }
 
-class _TimerProgressState extends State<TimerProgress> {
+class _TimerProgressWidgetState extends State<TimerProgressWidget> {
   late Timer _timer;
   late double _progress;
 

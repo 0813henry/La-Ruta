@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
+import 'package:restaurante_app/core/services/notification_service.dart';
 import 'package:restaurante_app/features/cocina/widgets/kanban_column.dart';
 
 class CocinaHomeScreen extends StatelessWidget {
@@ -27,6 +28,8 @@ class CocinaHomeScreen extends StatelessWidget {
             onEstadoCambiado: (pedidoId) {
               _pedidoService.actualizarEstadoPedido(
                   pedidoId, 'Listo', 'meseroId_placeholder');
+              NotificationService().notificarMesero(
+                  'meseroId_placeholder', 'El pedido $pedidoId está listo.');
             },
           ),
           KanbanColumn(

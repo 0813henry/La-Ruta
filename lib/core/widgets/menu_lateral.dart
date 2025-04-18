@@ -5,6 +5,7 @@ import '../../features/admin/screens/dashboard.dart';
 import '../../features/admin/screens/usuarios/gestion_usarios.dart';
 import '../../features/admin/screens/reportes/reportes_ventas.dart';
 import '../../features/admin/screens/Inventario/gestion_inventario.dart';
+import '../../routes/app_routes.dart';
 
 class SidebarMenuInventory extends StatelessWidget {
   @override
@@ -68,6 +69,14 @@ class SidebarMenuInventory extends StatelessWidget {
                       context,
                       MaterialPageRoute(builder: (context) => ProductoScreen()),
                     );
+                  },
+                ),
+                Divider(),
+                ListTile(
+                  leading: Icon(Icons.logout),
+                  title: Text('Salir'),
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
                   },
                 ),
               ],

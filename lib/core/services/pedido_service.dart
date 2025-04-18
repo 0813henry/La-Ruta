@@ -9,6 +9,7 @@ class PedidoService {
 
   Future<void> crearPedido(OrderModel pedido) async {
     await _firestore.collection('pedidos').add(pedido.toMap());
+    NotificationService().notificarCocina('Nuevo pedido creado: ${pedido.id}');
   }
 
   Stream<List<OrderModel>> obtenerPedidosPorMesero(String meseroId) {
@@ -27,7 +28,8 @@ class PedidoService {
         .where('estado', isEqualTo: estado)
         .snapshots()
         .map((snapshot) => snapshot.docs
-            .map((doc) => OrderModel.fromMap(doc.data()))
+            .map(
+                (doc) => OrderModel.fromMap(doc.data() as Map<String, dynamic>))
             .toList());
   }
 
@@ -49,8 +51,9 @@ class PedidoService {
       query = query.where('tipo', isEqualTo: tipo);
     }
 
-    return query.snapshots().map((snapshot) =>
-        snapshot.docs.map((doc) => OrderModel.fromMap(doc.data() as Map<String, dynamic>)).toList());
+    return query.snapshots().map((snapshot) => snapshot.docs
+        .map((doc) => OrderModel.fromMap(doc.data() as Map<String, dynamic>))
+        .toList());
   }
 
   Future<void> actualizarEstadoPedido(
@@ -62,6 +65,30 @@ class PedidoService {
     if (nuevoEstado == 'Listo') {
       NotificationService()
           .notificarMesero(meseroId, 'El pedido $pedidoId está listo.');
+    }
+  }
+
+  Future<void> cerrarMesa(String mesaId, String cajeroId) async {
+    final pedidos = await _firestore
+        .collection('pedidos')
+        .where('cliente', isEqualTo: 'Mesa $mesaId')
+        .get();
+
+    for (var pedido in pedidos.docs) {
+      await pedido.reference.update({'estado': 'Listo para pagar'});
+    }
+
+    // Notify the cashier
+    NotificationService().notificarCajero(
+        cajeroId, 'Los pedidos de la mesa $mesaId están listos para pagar.');
+
+    // Ensure the updated orders are reflected in the "orders" collection
+    for (var pedido in pedidos.docs) {
+      final pedidoData = pedido.data();
+      await _firestore.collection('orders').doc(pedido.id).set({
+        ...pedidoData,
+        'estado': 'Listo para pagar',
+      });
     }
   }
 }

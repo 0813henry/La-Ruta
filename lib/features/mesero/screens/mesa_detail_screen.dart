@@ -1,30 +1,109 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/mesa_service.dart';
-import 'package:restaurante_app/core/services/servicio_firebase.dart';
+import 'package:restaurante_app/core/services/pedido_service.dart';
 import '../../../routes/app_routes.dart';
 
-// Este archivo contiene la pantalla de detalles de una mesa, con opciones para tomar pedidos o cerrar cuenta.
-
-class MesaDetailScreen extends StatelessWidget {
+class MesaDetailScreen extends StatefulWidget {
   final String mesaId;
   final String estado;
+  final String nombre;
 
-  const MesaDetailScreen({required this.mesaId, required this.estado, Key? key})
-      : super(key: key);
+  const MesaDetailScreen({
+    required this.mesaId,
+    required this.estado,
+    required this.nombre,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _MesaDetailScreenState createState() => _MesaDetailScreenState();
+}
+
+class _MesaDetailScreenState extends State<MesaDetailScreen> {
+  final MesaService _mesaService = MesaService();
+  String _estadoActual = '';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.mesaId.isEmpty) {
+      debugPrint('Error: El ID de la mesa está vacío en initState.');
+    }
+    _estadoActual = widget.estado;
+  }
+
+  Future<void> _cambiarEstadoMesa() async {
+    if (widget.mesaId.isEmpty) {
+      debugPrint(
+          'Error: El ID de la mesa está vacío al intentar cambiar el estado.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Error: El ID de la mesa no puede estar vacío.')),
+      );
+      return;
+    }
+
+    final nuevoEstado = await showDialog<String>(
+      context: context,
+      builder: (context) {
+        return SimpleDialog(
+          title: Text('Cambiar estado de la mesa'),
+          children: [
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, 'Disponible'),
+              child: Text('Disponible'),
+            ),
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, 'En Servicio'),
+              child: Text('En Servicio'),
+            ),
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, 'Reservada'),
+              child: Text('Reservada'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (nuevoEstado != null) {
+      try {
+        await _mesaService.actualizarEstado(widget.mesaId, nuevoEstado);
+        setState(() {
+          _estadoActual = nuevoEstado;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Estado actualizado a $nuevoEstado')),
+        );
+      } catch (e) {
+        debugPrint('Error al actualizar el estado de la mesa: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al actualizar el estado: $e')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles de Mesa $mesaId'),
+        title: Text('Detalles de Mesa ${widget.nombre}'),
       ),
       body: Column(
         children: [
           ListTile(
-            title: Text('Estado: $estado'),
+            title: Text('Estado: $_estadoActual'),
+            subtitle: Text('Nombre: ${widget.nombre}'),
             leading: Icon(
-              estado == 'Libre' ? Icons.check_circle : Icons.warning,
-              color: estado == 'Libre' ? Colors.green : Colors.red,
+              _estadoActual == 'Disponible'
+                  ? Icons.check_circle
+                  : Icons.warning,
+              color: _estadoActual == 'Disponible' ? Colors.green : Colors.red,
+            ),
+            trailing: ElevatedButton(
+              onPressed: _cambiarEstadoMesa,
+              child: Text('Cambiar Estado'),
             ),
           ),
           Divider(),
@@ -35,71 +114,8 @@ class MesaDetailScreen extends StatelessWidget {
               Navigator.pushNamed(
                 context,
                 AppRoutes.nuevoPedido,
-                arguments: {'mesaId': mesaId},
+                arguments: {'mesaId': widget.mesaId, 'nombre': widget.nombre},
               );
-            },
-          ),
-          ListTile(
-            title: Text('Seguir Estado'),
-            leading: Icon(Icons.track_changes),
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.pedidos,
-                arguments: {'mesaId': mesaId},
-              );
-            },
-          ),
-          ListTile(
-            title: Text('Cerrar Mesa'),
-            leading: Icon(Icons.payment),
-            onTap: () async {
-              final confirm = await showDialog<bool>(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text('Cerrar Mesa'),
-                  content: Text('¿Está seguro de cerrar la mesa $mesaId?'),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: Text('Cancelar'),
-                    ),
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(true),
-                      child: Text('Cerrar'),
-                    ),
-                  ],
-                ),
-              );
-
-              if (confirm == true) {
-                try {
-                  // Obtener los pedidos asociados a la mesa
-                  final pedidos =
-                      await FirebaseService().getOrdersByMesaId(mesaId);
-
-                  // Guardar las ventas en Firebase
-                  for (var pedido in pedidos) {
-                    await FirebaseService().saveMesaSales(pedido);
-                  }
-
-                  // Eliminar los pedidos de la mesa
-                  await FirebaseService().deleteOrdersByMesaId(mesaId);
-
-                  // Actualizar estado de la mesa a "Libre"
-                  await MesaService().actualizarEstado(mesaId, 'Libre');
-
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content: Text('Mesa $mesaId cerrada exitosamente')),
-                  );
-                  Navigator.pop(context);
-                } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error al cerrar la mesa: $e')),
-                  );
-                }
-              }
             },
           ),
         ],

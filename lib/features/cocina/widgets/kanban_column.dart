@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
+import 'pedido_kitchen_card.dart';
 
 class KanbanColumn extends StatelessWidget {
   final String title;
@@ -36,17 +37,14 @@ class KanbanColumn extends StatelessWidget {
                   itemCount: pedidos.length,
                   itemBuilder: (context, index) {
                     final pedido = pedidos[index];
-                    return Card(
-                      child: ListTile(
-                        title: Text('Pedido ${pedido.id}'),
-                        subtitle: Text('Cliente: ${pedido.cliente}'),
-                        trailing: onEstadoCambiado != null
-                            ? IconButton(
-                                icon: Icon(Icons.arrow_forward),
-                                onPressed: () => onEstadoCambiado!(pedido.id!),
-                              )
-                            : null,
-                      ),
+                    return PedidoKitchenCard(
+                      pedidoId: pedido.id!,
+                      cliente: pedido.cliente,
+                      estado: pedido.estado,
+                      startTime: pedido.startTime ?? DateTime.now(),
+                      onActionPressed: onEstadoCambiado != null
+                          ? () => onEstadoCambiado!(pedido.id!)
+                          : null,
                     );
                   },
                 );

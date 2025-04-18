@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/caja_service.dart';
-import 'package:restaurante_app/core/widgets/venta_item.dart';
+import 'package:restaurante_app/features/caja/widgets/venta_item.dart';
+import '../widgets/menu_lateral_caja.dart';
 import 'package:restaurante_app/core/model/transaccion_model.dart'
-    as transaccion_model; // Usar alias
+    as transaccion_model;
 
 class HistorialScreen extends StatelessWidget {
   final CajaService _cajaService = CajaService();
@@ -11,8 +12,8 @@ class HistorialScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Historial de Ventas')),
+      drawer: MenuLateralCaja(),
       body: StreamBuilder<List<transaccion_model.Transaction>>(
-        // Usar alias
         stream: _cajaService.obtenerTransacciones(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
