@@ -75,12 +75,6 @@ class MesaGrid extends StatelessWidget {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
         final mesas = snapshot.data ?? [];
-        for (var mesa in mesas) {
-          if (mesa.id.isEmpty) {
-            debugPrint(
-                'Advertencia: Se encontró una mesa con ID vacío: ${mesa.nombre}');
-          }
-        }
         if (mesas.isEmpty) {
           return Center(child: Text('No hay mesas disponibles.'));
         }
@@ -117,12 +111,13 @@ class MesaGrid extends StatelessWidget {
                   AppRoutes.mesaDetail,
                   arguments: {
                     'mesaId': mesa.id,
-                    'estado': mesa.estado,
                     'nombre': mesa.nombre,
+                    'cliente': 'Cliente Desconocido', // Placeholder
+                    'numero': index + 1, // Pasar el número de la mesa
                   },
                 );
               },
-              onChangeState: () => _cambiarEstadoMesa(context, mesa),
+              onLongPress: () => _cambiarEstadoMesa(context, mesa),
             );
           },
         );

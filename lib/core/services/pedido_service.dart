@@ -91,4 +91,18 @@ class PedidoService {
       });
     }
   }
+
+  Future<List<OrderItem>> obtenerProductosPorMesa(String mesaId) async {
+    final snapshot = await _firestore
+        .collection('pedidos')
+        .where('cliente', isEqualTo: 'Mesa $mesaId')
+        .get();
+
+    if (snapshot.docs.isEmpty) return [];
+
+    return snapshot.docs
+        .expand((doc) => (doc.data()['items'] as List)
+            .map((item) => OrderItem.fromMap(item as Map<String, dynamic>)))
+        .toList();
+  }
 }

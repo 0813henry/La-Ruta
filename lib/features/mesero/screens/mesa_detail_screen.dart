@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:restaurante_app/core/services/mesa_service.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import '../../../routes/app_routes.dart';
 
 class MesaDetailScreen extends StatefulWidget {
-  final String mesaId;
-  final String estado;
-  final String nombre;
+  final String mesaId; // ID generado por Firebase (no se mostrará)
+  final String nombre; // Nombre de la mesa o cliente
+  final String cliente; // Nombre completo del cliente
+  final int numero; // Número de la mesa (visible en el título)
 
   const MesaDetailScreen({
     required this.mesaId,
-    required this.estado,
     required this.nombre,
+    required this.cliente,
+    required this.numero, // Número de la mesa
     Key? key,
   }) : super(key: key);
 
@@ -20,90 +21,42 @@ class MesaDetailScreen extends StatefulWidget {
 }
 
 class _MesaDetailScreenState extends State<MesaDetailScreen> {
-  final MesaService _mesaService = MesaService();
-  String _estadoActual = '';
+  final PedidoService _pedidoService = PedidoService();
 
-  @override
-  void initState() {
-    super.initState();
-    if (widget.mesaId.isEmpty) {
-      debugPrint('Error: El ID de la mesa está vacío en initState.');
-    }
-    _estadoActual = widget.estado;
-  }
-
-  Future<void> _cambiarEstadoMesa() async {
-    if (widget.mesaId.isEmpty) {
-      debugPrint(
-          'Error: El ID de la mesa está vacío al intentar cambiar el estado.');
+  Future<void> _dividirCuenta() async {
+    final productos =
+        await _pedidoService.obtenerProductosPorMesa(widget.mesaId);
+    if (productos.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            content: Text('Error: El ID de la mesa no puede estar vacío.')),
+        SnackBar(content: Text('No hay productos para dividir.')),
       );
       return;
     }
 
-    final nuevoEstado = await showDialog<String>(
-      context: context,
-      builder: (context) {
-        return SimpleDialog(
-          title: Text('Cambiar estado de la mesa'),
-          children: [
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(context, 'Disponible'),
-              child: Text('Disponible'),
-            ),
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(context, 'En Servicio'),
-              child: Text('En Servicio'),
-            ),
-            SimpleDialogOption(
-              onPressed: () => Navigator.pop(context, 'Reservada'),
-              child: Text('Reservada'),
-            ),
-          ],
-        );
-      },
+    Navigator.pushNamed(
+      context,
+      AppRoutes.dividirCuenta,
+      arguments: {'mesaId': widget.mesaId, 'productos': productos},
     );
-
-    if (nuevoEstado != null) {
-      try {
-        await _mesaService.actualizarEstado(widget.mesaId, nuevoEstado);
-        setState(() {
-          _estadoActual = nuevoEstado;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Estado actualizado a $nuevoEstado')),
-        );
-      } catch (e) {
-        debugPrint('Error al actualizar el estado de la mesa: $e');
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al actualizar el estado: $e')),
-        );
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalles de Mesa ${widget.nombre}'),
+        title: Text(
+            'Detalles de la Mesa: #${widget.numero}'), // Actualizamos el título
       ),
       body: Column(
         children: [
           ListTile(
-            title: Text('Estado: $_estadoActual'),
-            subtitle: Text('Nombre: ${widget.nombre}'),
-            leading: Icon(
-              _estadoActual == 'Disponible'
-                  ? Icons.check_circle
-                  : Icons.warning,
-              color: _estadoActual == 'Disponible' ? Colors.green : Colors.red,
+            title: Text(
+              'Mesa: ${widget.nombre}', // Mostrar el nombre de la mesa (cliente)
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            trailing: ElevatedButton(
-              onPressed: _cambiarEstadoMesa,
-              child: Text('Cambiar Estado'),
+            leading: Icon(
+              Icons.person,
+              color: Colors.blue,
             ),
           ),
           Divider(),
@@ -114,9 +67,19 @@ class _MesaDetailScreenState extends State<MesaDetailScreen> {
               Navigator.pushNamed(
                 context,
                 AppRoutes.nuevoPedido,
-                arguments: {'mesaId': widget.mesaId, 'nombre': widget.nombre},
+                arguments: {
+                  'mesaId': widget.mesaId,
+                  'nombre': widget.nombre,
+                  'numero': widget.numero,
+                },
               );
             },
+          ),
+          Divider(),
+          ListTile(
+            title: Text('Dividir Cuenta'),
+            leading: Icon(Icons.call_split),
+            onTap: _dividirCuenta,
           ),
         ],
       ),

@@ -33,6 +33,7 @@ class AppRoutes {
   static const kanban = '/kanban';
   static const usuarios = '/usuarios';
   static const cashier = '/cashier';
+  static const dividirCuenta = '/dividir-cuenta';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -41,11 +42,27 @@ class AppRoutes {
       resetPassword: (context) => ResetPasswordScreen(),
       dashboard: (context) => DashboardScreen(),
       mesas: (context) => MesasScreen(),
-      mesaDetail: (context) => MesaDetailScreen(
-            mesaId: '', // Placeholder, se debe pasar dinámicamente
-            estado: '', // Placeholder, se debe pasar dinámicamente
-            nombre: '', // Placeholder, se debe pasar dinámicamente
-          ),
+      mesaDetail: (context) {
+        final args =
+            ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+        if (args == null ||
+            !args.containsKey('mesaId') ||
+            !args.containsKey('nombre') ||
+            !args.containsKey('cliente') ||
+            !args.containsKey('numero')) {
+          throw Exception(
+              'Faltan argumentos requeridos para MesaDetailScreen.');
+        }
+
+        return MesaDetailScreen(
+          mesaId: args['mesaId'] ?? '',
+          nombre: args['nombre'] ?? '',
+          cliente: args['cliente'] ?? '',
+          numero:
+              args['numero'] ?? 0, // Aseguramos que el número sea proporcionado
+        );
+      },
       nuevoPedido: (context) => NuevoPedidoScreen(
             mesaId: '', // Placeholder, se debe pasar dinámicamente
             nombre: '', // Placeholder, se debe pasar dinámicamente

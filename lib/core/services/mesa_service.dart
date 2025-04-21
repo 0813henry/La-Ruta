@@ -21,13 +21,10 @@ class MesaService {
 
   Future<void> agregarMesa(Mesa mesa) async {
     try {
-      if (mesa.id.isEmpty) {
-        debugPrint(
-            'Advertencia: El ID de la mesa está vacío. Generando un nuevo ID.');
-        mesa.id =
-            _firestore.collection('mesas').doc().id; // Generar un ID único
-      }
-      await _firestore.collection('mesas').doc(mesa.id).set(mesa.toMap());
+      final docRef =
+          _firestore.collection('mesas').doc(); // Generate ID automatically
+      mesa.id = docRef.id; // Assign the generated ID to the mesa
+      await docRef.set(mesa.toMap());
       debugPrint('Mesa agregada con ID: ${mesa.id}');
     } catch (e) {
       debugPrint('Error al agregar la mesa: $e');

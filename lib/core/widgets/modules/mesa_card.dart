@@ -7,7 +7,7 @@ class MesaCard extends StatelessWidget {
   final String tipo; // Principal, VIP, or Domicilio
   final String nombre; // Nombre de la mesa
   final VoidCallback onTap;
-  final VoidCallback onChangeState; // Callback to change the mesa's state
+  final VoidCallback onLongPress; // Callback to change the mesa's state
 
   const MesaCard({
     required this.numero,
@@ -15,76 +15,79 @@ class MesaCard extends StatelessWidget {
     required this.tipo,
     required this.nombre,
     required this.onTap,
-    required this.onChangeState,
+    required this.onLongPress, // Use onLongPress instead of a button
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final iconSize = screenWidth > 600 ? 80.0 : 50.0;
+
     final backgroundColor = estado == 'Libre'
-        ? AppColors.success
+        ? Colors.greenAccent
         : estado == 'Ocupada'
-            ? AppColors.danger
-            : AppColors.warning; // Reservada
+            ? Colors.redAccent
+            : Colors.orangeAccent; // Reservada
     final textColor = Colors.white;
 
     final icon = tipo == 'VIP'
-        ? Icon(Icons.star, color: Colors.yellow.withOpacity(0.15), size: 120)
+        ? Icon(Icons.star, color: Colors.yellow, size: iconSize)
         : tipo == 'Principal'
-            ? Icon(Icons.restaurant,
-                color: Colors.green.withOpacity(0.15), size: 120)
+            ? Icon(Icons.restaurant, color: Colors.blue, size: iconSize)
             : Icon(Icons.delivery_dining,
-                color: Colors.blue.withOpacity(0.15), size: 120); // Domicilio
+                color: Colors.purple, size: iconSize); // Domicilio
 
     return GestureDetector(
       onTap: onTap,
-      child: Stack(
-        children: [
-          Card(
-            color: backgroundColor.withOpacity(0.2),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  '$numero', // Mostrar solo el número
+      onLongPress: onLongPress, // Handle long press for state change
+      child: Card(
+        color: backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        elevation: 6,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: Text(
+                  '#$numero', // Mostrar el número de la mesa
                   style: TextStyle(
-                    fontSize: 36,
+                    fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: textColor,
                   ),
                 ),
-                SizedBox(height: 8),
-                Text(
-                  nombre, // Mostrar el nombre de la mesa
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                    color: textColor,
-                  ),
-                ),
-                SizedBox(height: 8),
-                ElevatedButton(
-                  onPressed: onChangeState,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    foregroundColor: Colors.white,
-                  ),
-                  child: Text('Cambiar Estado'),
-                ),
-              ],
-            ),
-          ),
-          if (icon != null)
-            Positioned.fill(
-              child: Align(
-                alignment: Alignment.center,
-                child: icon,
               ),
-            ),
-        ],
+              icon,
+              SizedBox(height: 8),
+              Text(
+                nombre,
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: textColor,
+                ),
+                textAlign: TextAlign.center,
+                maxLines: 1, // Limit the text to one line
+                overflow: TextOverflow.ellipsis, // Add ellipsis for long text
+              ),
+              SizedBox(height: 8),
+              Text(
+                'Estado: $estado',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: textColor,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

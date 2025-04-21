@@ -7,6 +7,7 @@ class CarritoWidget extends StatelessWidget {
   final Function(OrderItem) onRemoveItem;
   final double total;
   final VoidCallback onConfirmOrder;
+  final VoidCallback onCloseMesa; // Nueva opción para cerrar la mesa
 
   const CarritoWidget({
     required this.cartItems,
@@ -14,6 +15,7 @@ class CarritoWidget extends StatelessWidget {
     required this.onRemoveItem,
     required this.total,
     required this.onConfirmOrder,
+    required this.onCloseMesa, // Nueva opción
     Key? key,
   }) : super(key: key);
 
@@ -70,6 +72,19 @@ class CarritoWidget extends StatelessWidget {
             label: Text('Confirmar Pedido'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              textStyle: TextStyle(fontSize: 16),
+            ),
+          ),
+          SizedBox(height: 8),
+          ElevatedButton.icon(
+            onPressed: onCloseMesa,
+            icon: Icon(Icons.close),
+            label: Text('Cerrar Mesa'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
               foregroundColor: Colors.white,
               padding:
                   const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),

@@ -7,7 +7,7 @@ class Mesa {
 
   Mesa({
     required this.id,
-    required this.nombre,
+    this.nombre = 'Mesa sin nombre', // Default value if not provided
     required this.estado,
     required this.capacidad,
     required this.tipo,
@@ -19,7 +19,8 @@ class Mesa {
     }
     return Mesa(
       id: documentId,
-      nombre: data['nombre'] ?? 'Sin Nombre', // Default to 'Sin Nombre'
+      nombre:
+          data['nombre'] ?? 'Mesa sin nombre', // Default to 'Mesa sin nombre'
       estado: data['estado'] ?? 'Libre',
       capacidad: data['capacidad'] ?? 0,
       tipo: data['tipo'] ?? 'Principal',
@@ -29,7 +30,7 @@ class Mesa {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'nombre': nombre, // Include the nombre field
+      'nombre': nombre,
       'estado': estado,
       'capacidad': capacidad,
       'tipo': tipo,

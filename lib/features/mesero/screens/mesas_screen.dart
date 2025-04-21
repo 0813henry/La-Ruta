@@ -96,8 +96,8 @@ class MesasScreen extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextField(
-                      decoration:
-                          InputDecoration(labelText: 'Nombre de la Mesa'),
+                      decoration: InputDecoration(
+                          labelText: 'Nombre de la Mesa (opcional)'),
                       onChanged: (value) => inputMesaName = value,
                     ),
                     TextField(
@@ -134,17 +134,7 @@ class MesasScreen extends StatelessWidget {
           );
 
           if (result == true) {
-            inputMesaName = inputMesaName?.trim();
-
-            if (inputMesaName?.isEmpty ?? true) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('El nombre de la mesa no puede estar vacío')),
-              );
-              return;
-            }
-
-            if (inputCapacidad == null || inputCapacidad! <= 0) {
+            if (inputCapacidad == null || (inputCapacidad! <= 0)) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('La capacidad debe ser mayor a 0')),
               );
@@ -153,16 +143,17 @@ class MesasScreen extends StatelessWidget {
 
             try {
               final nuevaMesa = Mesa(
-                id: '', // ID vacío, será generado por el servicio
-                nombre: inputMesaName ?? '',
+                id: '', // ID será generado automáticamente
+                nombre: inputMesaName?.trim().isEmpty ?? true
+                    ? 'Mesa sin nombre'
+                    : inputMesaName!,
                 estado: 'Libre',
-                capacidad: inputCapacidad ?? 0,
+                capacidad: inputCapacidad ?? 0, // Provide a default value
                 tipo: inputTipo ?? 'Principal',
               );
               await _mesaService.agregarMesa(nuevaMesa);
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                    content: Text('Mesa $inputMesaName agregada exitosamente')),
+                SnackBar(content: Text('Mesa agregada exitosamente')),
               );
             } catch (e) {
               ScaffoldMessenger.of(context).showSnackBar(

@@ -10,7 +10,8 @@ class GestionMesasScreen extends StatefulWidget {
 
 class _GestionMesasScreenState extends State<GestionMesasScreen> {
   final MesaService _mesaService = MesaService();
-  String _filtro = 'Todas';
+  String _filtroTipo = 'Todas';
+  String _filtroEstado = 'Todos';
 
   void _agregarMesa() async {
     final nuevaMesa = Mesa(
@@ -36,33 +37,85 @@ class _GestionMesasScreenState extends State<GestionMesasScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Gestión de Mesas'),
+        title: Row(
+          children: [
+            Expanded(
+              child: Text('Gestión de Mesas'),
+            ),
+            DropdownButton<String>(
+              value: _filtroTipo,
+              dropdownColor: Colors.white,
+              style: TextStyle(color: Colors.black),
+              items: ['Todas', 'Principal', 'VIP', 'Domicilio']
+                  .map((tipo) => DropdownMenuItem(
+                        value: tipo,
+                        child: Text(tipo),
+                      ))
+                  .toList(),
+              onChanged: (value) {
+                setState(() {
+                  _filtroTipo = value!;
+                });
+              },
+            ),
+          ],
+        ),
         actions: [
-          DropdownButton<String>(
-            value: _filtro,
-            items: ['Todas', 'Principal', 'VIP']
-                .map((tipo) => DropdownMenuItem(
-                      value: tipo,
-                      child: Text(tipo),
-                    ))
-                .toList(),
-            onChanged: (value) {
+          PopupMenuButton<String>(
+            onSelected: (value) {
               setState(() {
-                _filtro = value!;
+                _filtroEstado = value;
               });
             },
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'Todos', child: Text('Todos')),
+              PopupMenuItem(value: 'Libre', child: Text('Libre')),
+              PopupMenuItem(value: 'Ocupada', child: Text('Ocupada')),
+              PopupMenuItem(value: 'Reservada', child: Text('Reservada')),
+            ],
+            child: Row(
+              children: [
+                Icon(Icons.filter_alt),
+                SizedBox(width: 4),
+                Text('Estado'),
+              ],
+            ),
           ),
         ],
       ),
-      body: MesaGrid(
-        isWideScreen: MediaQuery.of(context).size.width > 600,
-        onMesaTap: (mesa) {
-          if (mesa.estado == 'Libre') {
-            _mesaService.reservarMesa(mesa.id);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Mesa ${mesa.id} reservada')),
-            );
+      body: StreamBuilder<List<Mesa>>(
+        stream: _mesaService.obtenerMesas(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
           }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+          final mesas = snapshot.data ?? [];
+          final mesasFiltradas = mesas.where((mesa) {
+            final tipoCoincide =
+                _filtroTipo == 'Todas' || mesa.tipo == _filtroTipo;
+            final estadoCoincide =
+                _filtroEstado == 'Todos' || mesa.estado == _filtroEstado;
+            return tipoCoincide && estadoCoincide;
+          }).toList();
+
+          if (mesasFiltradas.isEmpty) {
+            return Center(child: Text('No hay mesas disponibles.'));
+          }
+
+          return MesaGrid(
+            isWideScreen: MediaQuery.of(context).size.width > 600,
+            onMesaTap: (mesa) {
+              if (mesa.estado == 'Libre') {
+                _mesaService.reservarMesa(mesa.id);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Mesa ${mesa.id} reservada')),
+                );
+              }
+            },
+          );
         },
       ),
       floatingActionButton: FloatingActionButton(
