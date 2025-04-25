@@ -38,7 +38,9 @@ class _TimerProgressState extends State<TimerProgress> {
 
   double _calculateProgress() {
     final elapsed = DateTime.now().difference(widget.startTime);
-    return (elapsed.inSeconds / widget.maxDuration.inSeconds).clamp(0.0, 1.0);
+    final totalSeconds = widget.maxDuration.inSeconds;
+    if (totalSeconds == 0) return 1.0; // Evitar división por cero
+    return (elapsed.inSeconds / totalSeconds).clamp(0.0, 1.0);
   }
 
   @override

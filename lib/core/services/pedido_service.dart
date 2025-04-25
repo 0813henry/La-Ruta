@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/notification_service.dart';
 import '../model/pedido_model.dart';
 
@@ -27,10 +28,20 @@ class PedidoService {
         .collection('pedidos')
         .where('estado', isEqualTo: estado)
         .snapshots()
-        .map((snapshot) => snapshot.docs
-            .map(
-                (doc) => OrderModel.fromMap(doc.data() as Map<String, dynamic>))
-            .toList());
+        .map((snapshot) {
+      return snapshot.docs
+          .map((doc) {
+            try {
+              return OrderModel.fromMap(doc.data(), doc.id); // Pasar el ID
+            } catch (e) {
+              debugPrint('Error al mapear pedido: $e');
+              return null; // Manejar errores de mapeo
+            }
+          })
+          .where((pedido) => pedido != null)
+          .cast<OrderModel>()
+          .toList();
+    });
   }
 
   Stream<List<OrderModel>> obtenerTodosLosPedidos() {
@@ -58,13 +69,29 @@ class PedidoService {
 
   Future<void> actualizarEstadoPedido(
       String pedidoId, String nuevoEstado, String meseroId) async {
-    await _firestore
-        .collection('pedidos')
-        .doc(pedidoId)
-        .update({'estado': nuevoEstado});
-    if (nuevoEstado == 'Listo') {
-      NotificationService()
-          .notificarMesero(meseroId, 'El pedido $pedidoId está listo.');
+    try {
+      // Verificar si el documento existe antes de actualizar
+      final pedidoDoc = _firestore.collection('pedidos').doc(pedidoId);
+      final pedidoSnapshot = await pedidoDoc.get();
+
+      if (!pedidoSnapshot.exists) {
+        throw Exception('El pedido con ID $pedidoId no existe.');
+      }
+
+      // Actualizar el estado del pedido
+      await pedidoDoc.update({'estado': nuevoEstado});
+      debugPrint('Estado del pedido $pedidoId actualizado a $nuevoEstado');
+
+      // Enviar notificación al mesero si el estado es "Listo"
+      if (nuevoEstado == 'Listo') {
+        NotificationService().notificarMesero(
+          meseroId,
+          'El pedido $pedidoId está listo.',
+        );
+      }
+    } catch (e) {
+      debugPrint('Error al actualizar el estado del pedido: $e');
+      throw Exception('No se pudo actualizar el estado del pedido.');
     }
   }
 

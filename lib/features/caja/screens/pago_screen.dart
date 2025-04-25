@@ -6,6 +6,7 @@ import 'package:restaurante_app/core/model/transaccion_model.dart'
     as transaccion_model;
 import 'package:restaurante_app/features/caja/widgets/metodo_pago_selector.dart';
 import 'package:restaurante_app/features/caja/widgets/resumen_pago.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PagoScreen extends StatefulWidget {
   final OrderModel pedido;
@@ -98,6 +99,21 @@ class _PagoScreenState extends State<PagoScreen> {
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
             child: Text('Simular Pago en Efectivo'),
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () async {
+              final whatsappUrl =
+                  'https://wa.me/?text=Cuenta%20de%20pedido%20${widget.pedido.id}%3A%20\$${widget.pedido.total.toStringAsFixed(2)}';
+              if (await canLaunch(whatsappUrl)) {
+                await launch(whatsappUrl);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('No se pudo abrir WhatsApp')),
+                );
+              }
+            },
+            child: Text('Enviar Cuenta por WhatsApp'),
           ),
         ],
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/notification_service.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
+import 'package:restaurante_app/core/widgets/modules/pedido_item.dart';
 import '../widgets/menu_lateral_mesero.dart';
 
 class OrdersScreen extends StatefulWidget {
@@ -88,19 +89,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
             itemCount: pedidos.length,
             itemBuilder: (context, index) {
               final pedido = pedidos[index];
-              return ListTile(
-                title: Text('Mesa: ${pedido.cliente}'),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Estado: ${pedido.estado}'),
-                    Text('Valor: \$${pedido.total.toStringAsFixed(2)}'),
-                    Text(
-                        'Hora: ${pedido.startTime?.toLocal().toString().split('.')[0] ?? 'N/A'}'),
-                    Text('Número: ${pedido.id ?? 'N/A'}'),
-                  ],
-                ),
-                trailing: Text('${pedido.tipo}'),
+              return PedidoItem(
+                pedido: pedido,
                 onTap: () {
                   // Acción al seleccionar un pedido
                 },

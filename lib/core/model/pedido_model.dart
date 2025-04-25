@@ -29,13 +29,14 @@ class OrderModel {
     };
   }
 
-  factory OrderModel.fromMap(Map<String, dynamic> map) {
+  factory OrderModel.fromMap(Map<String, dynamic> map, [String? documentId]) {
     return OrderModel(
-      id: map['id'],
+      id: documentId ??
+          map['id'], // Usar el ID del documento si está disponible
       cliente: map['cliente'],
       items: List<OrderItem>.from(
           map['items'].map((item) => OrderItem.fromMap(item))),
-      total: (map['total'] as num).toDouble(), // Ensure total is a double
+      total: (map['total'] as num).toDouble(),
       estado: map['estado'],
       tipo: map['tipo'],
       startTime:
@@ -70,7 +71,7 @@ class OrderItem {
     return OrderItem(
       nombre: map['nombre'],
       cantidad: map['cantidad'],
-      precio: (map['precio'] as num).toDouble(), // Ensure precio is a double
+      precio: (map['precio'] as num).toDouble(),
       descripcion: map['descripcion'],
     );
   }

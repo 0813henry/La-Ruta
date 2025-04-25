@@ -368,17 +368,18 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       cliente: widget.nombre,
       items: _cart,
       total: total,
-      estado: 'Pendiente', // Pedido marcado como pendiente
+      estado: 'Pendiente',
       tipo: 'Local',
       startTime: DateTime.now(),
     );
-
     try {
       await PedidoService().crearPedido(order);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Pedido enviado exitosamente')),
       );
-      // No vaciamos el carrito aquí
+      setState(() {
+        _cart.clear(); // Vaciar el carrito después de confirmar el pedido
+      });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al enviar el pedido: $e')),
@@ -388,8 +389,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
 
   Future<void> _closeMesa() async {
     try {
-      await PedidoService()
-          .cerrarMesa(widget.mesaId, 'cajeroId'); // Enviar a caja
+      await PedidoService().cerrarMesa(widget.mesaId, 'cajeroId_placeholder');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Mesa cerrada exitosamente')),
       );
@@ -414,7 +414,6 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
         body: Center(child: CircularProgressIndicator()),
       );
     }
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Nuevo Pedido - Mesa ${widget.nombre}'),
@@ -473,7 +472,6 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                       return Center(
                           child: Text('No hay productos disponibles.'));
                     }
-
                     final crossAxisCount = isPortrait ? 2 : 3;
 
                     return GridView.builder(

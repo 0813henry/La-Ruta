@@ -35,7 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.pushReplacementNamed(context, '/mesas');
               break;
             case 'cocina':
-              Navigator.pushReplacementNamed(context, '/kitchen-orders');
+              Navigator.pushReplacementNamed(context, '/kanban');
               break;
             default:
               ScaffoldMessenger.of(context).showSnackBar(
