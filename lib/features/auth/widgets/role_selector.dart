@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
+import 'package:restaurante_app/core/constants/app_styles.dart';
 
 class RoleSelector extends StatelessWidget {
   final String selectedRole;
@@ -19,20 +21,28 @@ class RoleSelector extends StatelessWidget {
       children: [
         Text(
           'Seleccionar Rol:',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          style: AppStyles.subheading,
         ),
         SizedBox(height: 8),
         Wrap(
           spacing: 10,
           children: roles.map((role) {
             return ChoiceChip(
-              label: Text(role),
-              selected: selectedRole == role,
+              label: Text(
+                role,
+                style: AppStyles.body.copyWith(
+                  color: selectedRole == role
+                      ? AppColors.white
+                      : AppColors.textPrimary,
+                ),
+              ),
+              selectedColor: AppColors.primary,
+              backgroundColor: AppColors.coolGray,
               onSelected: (selected) {
                 if (selected) {
                   onRoleSelected(role);
                 }
-              },
+              }, selected: selectedRole == role,
             );
           }).toList(),
         ),

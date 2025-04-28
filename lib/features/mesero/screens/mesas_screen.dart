@@ -42,7 +42,7 @@ class MesasScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Gestión de Mesas', style: AppStyles.heading),
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.secondary,
       ),
       drawer: MenuLateralMesero(),
       body: FutureBuilder(

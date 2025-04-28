@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
+import 'package:restaurante_app/core/constants/app_styles.dart';
 import '../../../core/services/auth_service.dart';
 import '../widgets/role_selector.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -57,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.greenAccent, Colors.teal],
+            colors: [AppColors.primary, AppColors.success],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -75,14 +78,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.person_add, size: 80, color: Colors.teal),
+                    Icon(Icons.person_add, size: 80, color: AppColors.primary),
                     SizedBox(height: 16),
                     Text(
                       'Registro',
-                      style: TextStyle(
+                      style: AppStyles.heading.copyWith(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: 16),
@@ -94,7 +96,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _emailController,
                             decoration: InputDecoration(
                               labelText: 'Email',
-                              prefixIcon: Icon(Icons.email),
+                              prefixIcon:
+                                  Icon(Icons.email, color: AppColors.primary),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -112,7 +115,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _passwordController,
                             decoration: InputDecoration(
                               labelText: 'Contraseña',
-                              prefixIcon: Icon(Icons.lock),
+                              prefixIcon:
+                                  Icon(Icons.lock, color: AppColors.primary),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -130,7 +134,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             controller: _confirmPasswordController,
                             decoration: InputDecoration(
                               labelText: 'Confirmar Contraseña',
-                              prefixIcon: Icon(Icons.lock),
+                              prefixIcon:
+                                  Icon(Icons.lock, color: AppColors.primary),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
@@ -161,7 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         : ElevatedButton(
                             onPressed: _register,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal,
+                              backgroundColor: AppColors.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),

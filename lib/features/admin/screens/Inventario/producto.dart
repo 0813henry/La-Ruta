@@ -17,6 +17,8 @@ class _ProductoScreenState extends State<ProductoScreen> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _preparationTimeController =
+      TextEditingController();
   dynamic _selectedImage;
   String? _selectedCategory;
   String? _filterCategory;
@@ -37,6 +39,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
     if (_nameController.text.isEmpty ||
         _descriptionController.text.isEmpty ||
         _priceController.text.isEmpty ||
+        _preparationTimeController.text.isEmpty || // Validación del nuevo campo
         (_selectedImage == null && _editingImageUrl == null) ||
         _selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,6 +57,8 @@ class _ProductoScreenState extends State<ProductoScreen> {
         category: _selectedCategory!,
         stock: 0,
         imageUrl: _editingImageUrl,
+        preparationTime:
+            int.parse(_preparationTimeController.text), // Nuevo campo
       );
 
       if (_editingProductId == null) {
@@ -84,6 +89,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
     _nameController.clear();
     _descriptionController.clear();
     _priceController.clear();
+    _preparationTimeController.clear(); // Limpieza del nuevo campo
     setState(() {
       _selectedImage = null;
       _selectedCategory = null;
@@ -204,6 +210,17 @@ class _ProductoScreenState extends State<ProductoScreen> {
                               keyboardType: TextInputType.number,
                               decoration: InputDecoration(
                                 labelText: 'Precio',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            TextField(
+                              controller: _preparationTimeController,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                labelText: 'Tiempo de Preparación (minutos)',
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
@@ -408,6 +425,19 @@ class _ProductoScreenState extends State<ProductoScreen> {
                                         keyboardType: TextInputType.number,
                                         decoration: InputDecoration(
                                           labelText: 'Precio',
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 16),
+                                      TextField(
+                                        controller: _preparationTimeController,
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          labelText:
+                                              'Tiempo de Preparación (minutos)',
                                           border: OutlineInputBorder(
                                             borderRadius:
                                                 BorderRadius.circular(10),

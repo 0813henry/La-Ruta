@@ -40,6 +40,7 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
       }
 
       if (_editingCategoryId == null) {
+        // Crear nueva categoría
         await _firebaseService.addCategoryWithImage(
           name: _categoryController.text,
           imageUrl: imageUrl,
@@ -48,8 +49,9 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
           SnackBar(content: Text('Categoría agregada exitosamente')),
         );
       } else {
+        // Actualizar categoría existente
         await _firebaseService.updateCategory(
-          id: _editingCategoryId!,
+          id: _editingCategoryId!, // Asegúrate de usar el ID existente
           name: _categoryController.text,
           imageUrl: imageUrl,
         );
@@ -175,9 +177,17 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
                               ),
                               ElevatedButton(
                                 onPressed: _addOrUpdateCategory,
-                                child: Text(_editingCategoryId == null
-                                    ? 'Agregar'
-                                    : 'Actualizar'),
+                                child: Text(
+                                  _editingCategoryId == null
+                                      ? 'Agregar'
+                                      : 'Editar', // Cambia dinámicamente el texto
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: _editingCategoryId == null
+                                      ? Colors.green
+                                      : Colors
+                                          .blue, // Cambia el color del botón
+                                ),
                               ),
                             ],
                           ),

@@ -1,33 +1,39 @@
 import 'package:flutter/material.dart';
+import 'app_colors.dart';
 
 class AppStyles {
   static const heading = TextStyle(
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: FontWeight.bold,
-    color: Colors.black,
+    fontFamily: 'DancingScript', // Font inspired by menuTipoLetra.png
+    color: AppColors.primary,
   );
 
   static const subheading = TextStyle(
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: FontWeight.w600,
-    color: Colors.black54,
+    fontFamily: 'Roboto',
+    color: AppColors.secondary,
   );
 
   static const body = TextStyle(
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: FontWeight.normal,
-    color: Colors.black87,
+    fontFamily: 'Roboto',
+    color: AppColors.textPrimary,
   );
 
   static const buttonText = TextStyle(
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: Colors.white,
+    fontFamily: 'DancingScript', // Font inspired by menuTipoLetra.png
+    color: AppColors.white,
   );
 
   static const labelText = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w500,
-    color: Colors.grey,
+    fontFamily: 'Roboto',
+    color: AppColors.metallicGray,
   );
 }

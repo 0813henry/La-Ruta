@@ -94,11 +94,26 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
             precio: product.price,
             descripcion: ''),
       );
-      if (existingItem.cantidad == 0) {
+
+      final currentQuantity = existingItem.cantidad;
+      final newQuantity = currentQuantity + quantity;
+
+      if (newQuantity > product.stock) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+                'No puedes agregar más de ${product.stock} unidades de ${product.name}.'),
+          ),
+        );
+        return;
+      }
+
+      if (currentQuantity == 0) {
         _cart.add(existingItem);
       }
-      existingItem.cantidad += quantity;
-      existingItem.descripcion = comment;
+
+      existingItem.cantidad = newQuantity;
+      existingItem.descripcion = comment; // Update comment in cart
     });
     _guardarCarrito();
   }
@@ -174,10 +189,21 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                       IconButton(
                         icon: Icon(Icons.add),
                         onPressed: () {
-                          setModalState(() {
-                            item.cantidad += 1;
-                            quantityController.text = item.cantidad.toString();
-                          });
+                          if (item.cantidad < item.precio) {
+                            // Validate stock
+                            setModalState(() {
+                              item.cantidad += 1;
+                              quantityController.text =
+                                  item.cantidad.toString();
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    'No puedes agregar más de ${item.precio} unidades.'),
+                              ),
+                            );
+                          }
                         },
                       ),
                     ],
@@ -197,6 +223,16 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                           int.tryParse(quantityController.text) ??
                               item.cantidad;
                       final updatedComment = commentController.text;
+
+                      if (updatedQuantity > item.precio) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'No puedes agregar más de ${item.precio} unidades.'),
+                          ),
+                        );
+                        return;
+                      }
 
                       setState(() {
                         _updateCartItem(item, updatedQuantity, updatedComment);
@@ -240,6 +276,9 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
         builder: (context, setModalState) {
           int selectedQuantity = 1;
           String selectedComment = '';
+          int availableStock = product.stock; // Fetch stock from product
+          final TextEditingController commentController =
+              TextEditingController();
 
           return LayoutBuilder(
             builder: (context, constraints) {
@@ -285,69 +324,68 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Stock disponible: $availableStock',
+                        style: TextStyle(
+                          fontSize: isWideScreen ? 16 : 14,
+                          color: Colors.grey[700],
+                        ),
+                      ),
                       SizedBox(height: 16),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           IconButton(
                             icon: Icon(Icons.remove),
-                            onPressed: () {
-                              if (selectedQuantity > 1) {
-                                setModalState(() {
-                                  selectedQuantity--;
-                                });
-                              }
-                            },
+                            onPressed: selectedQuantity > 1
+                                ? () {
+                                    setModalState(() {
+                                      selectedQuantity--;
+                                    });
+                                  }
+                                : null, // Disable if quantity is 1
                           ),
                           SizedBox(
                             width: 50,
-                            child: TextField(
+                            child: Text(
+                              selectedQuantity.toString(),
                               textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                              ),
-                              controller: TextEditingController(
-                                  text: selectedQuantity.toString()),
-                              onSubmitted: (value) {
-                                final quantity = int.tryParse(value) ?? 1;
-                                if (quantity > 0) {
-                                  setModalState(() {
-                                    selectedQuantity = quantity;
-                                  });
-                                }
-                              },
+                              style: TextStyle(fontSize: 16),
                             ),
                           ),
                           IconButton(
                             icon: Icon(Icons.add),
-                            onPressed: () {
-                              setModalState(() {
-                                selectedQuantity++;
-                              });
-                            },
+                            onPressed: selectedQuantity < availableStock
+                                ? () {
+                                    setModalState(() {
+                                      selectedQuantity++;
+                                    });
+                                  }
+                                : null, // Disable if quantity exceeds stock
                           ),
                         ],
                       ),
                       SizedBox(height: 16),
                       TextField(
+                        controller: commentController,
                         decoration: InputDecoration(
                           labelText: 'Comentario (opcional)',
                           border: OutlineInputBorder(),
                         ),
                         onChanged: (value) {
-                          setModalState(() {
-                            selectedComment = value;
-                          });
+                          selectedComment = value; // Update comment
                         },
                       ),
                       SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () {
-                          _addToCart(
-                              product, selectedQuantity, selectedComment);
-                          Navigator.pop(context);
-                        },
+                        onPressed: selectedQuantity <= availableStock
+                            ? () {
+                                _addToCart(
+                                    product, selectedQuantity, selectedComment);
+                                Navigator.pop(context);
+                              }
+                            : null, // Disable if quantity exceeds stock
                         child: Text('Agregar al Pedido'),
                       ),
                     ],
@@ -374,12 +412,17 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
     );
     try {
       await PedidoService().crearPedido(order);
+
+      // Send SMS notification
+      await PedidoService().enviarSMS('Pedido enviado exitosamente.');
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Pedido enviado exitosamente')),
       );
       setState(() {
         _cart.clear(); // Vaciar el carrito después de confirmar el pedido
       });
+      Navigator.pop(context); // Cerrar el carrito
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al enviar el pedido: $e')),

@@ -54,7 +54,8 @@ class _CrudScreenState extends State<CrudScreen> {
             price: double.parse(_priceController.text),
             category: 'General',
             stock: 0,
-            imageUrl: imageUrl,
+            imageUrl: imageUrl, 
+            preparationTime: 0,
           ),
           _selectedImage,
         );
@@ -70,7 +71,8 @@ class _CrudScreenState extends State<CrudScreen> {
             price: double.parse(_priceController.text),
             category: 'General',
             stock: 0,
-            imageUrl: imageUrl,
+            imageUrl: imageUrl, 
+            preparationTime: 0,
           ),
         );
         ScaffoldMessenger.of(context).showSnackBar(

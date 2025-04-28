@@ -32,7 +32,9 @@ class _TimerProgressState extends State<TimerProgress> {
 
   @override
   void dispose() {
-    _timer.cancel();
+    if (_timer.isActive) {
+      _timer.cancel(); // Asegurarse de cancelar el Timer
+    }
     super.dispose();
   }
 
@@ -45,12 +47,16 @@ class _TimerProgressState extends State<TimerProgress> {
 
   @override
   Widget build(BuildContext context) {
-    return LinearProgressIndicator(
-      value: _progress,
-      backgroundColor: Colors.grey[300],
-      color: _progress < 0.5
-          ? Colors.green
-          : (_progress < 0.8 ? Colors.orange : Colors.red),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return LinearProgressIndicator(
+          value: _progress,
+          backgroundColor: Colors.grey[300],
+          color: _progress < 0.5
+              ? Colors.green
+              : (_progress < 0.8 ? Colors.orange : Colors.red),
+        );
+      },
     );
   }
 }

@@ -24,24 +24,29 @@ class PedidoService {
   }
 
   Stream<List<OrderModel>> obtenerPedidosPorEstado(String estado) {
-    return _firestore
-        .collection('pedidos')
-        .where('estado', isEqualTo: estado)
-        .snapshots()
-        .map((snapshot) {
-      return snapshot.docs
-          .map((doc) {
-            try {
-              return OrderModel.fromMap(doc.data(), doc.id); // Pasar el ID
-            } catch (e) {
-              debugPrint('Error al mapear pedido: $e');
-              return null; // Manejar errores de mapeo
-            }
-          })
-          .where((pedido) => pedido != null)
-          .cast<OrderModel>()
-          .toList();
-    });
+    try {
+      return _firestore
+          .collection('pedidos')
+          .where('estado', isEqualTo: estado)
+          .snapshots()
+          .map((snapshot) {
+        return snapshot.docs
+            .map((doc) {
+              try {
+                return OrderModel.fromMap(doc.data(), doc.id);
+              } catch (e) {
+                debugPrint('Error al mapear pedido: $e');
+                return null; // Ignorar pedidos con errores
+              }
+            })
+            .where((pedido) => pedido != null)
+            .cast<OrderModel>()
+            .toList();
+      });
+    } catch (e) {
+      debugPrint('Error al obtener pedidos por estado: $e');
+      return Stream.error('Error al obtener pedidos por estado: $e');
+    }
   }
 
   Stream<List<OrderModel>> obtenerTodosLosPedidos() {
@@ -131,5 +136,91 @@ class PedidoService {
         .expand((doc) => (doc.data()['items'] as List)
             .map((item) => OrderItem.fromMap(item as Map<String, dynamic>)))
         .toList();
+  }
+
+  Future<void> enviarSMS(String mensaje) async {
+    try {
+      // Replace with actual SMS sending logic
+      debugPrint('Enviando SMS: $mensaje');
+    } catch (e) {
+      debugPrint('Error al enviar SMS: $e');
+    }
+  }
+
+  Future<Map<String, int>> obtenerProductosMasVendidos() async {
+    final snapshot = await _firestore.collection('pedidos').get();
+    final productos = <String, int>{};
+
+    for (var doc in snapshot.docs) {
+      final items = (doc.data()['items'] as List)
+          .map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
+          .toList();
+      for (var item in items) {
+        productos[item.nombre] = (productos[item.nombre] ?? 0) + item.cantidad;
+      }
+    }
+
+    return productos;
+  }
+
+  Future<Map<String, double>> obtenerVentasPorMesa() async {
+    final snapshot = await _firestore.collection('pedidos').get();
+    final ventasPorMesa = <String, double>{};
+
+    for (var doc in snapshot.docs) {
+      final cliente = doc.data()['cliente'] as String;
+      final total = (doc.data()['total'] as num).toDouble();
+      ventasPorMesa[cliente] = (ventasPorMesa[cliente] ?? 0) + total;
+    }
+
+    return ventasPorMesa;
+  }
+
+  Future<double> obtenerGananciasPorRango(DateTime inicio, DateTime fin) async {
+    try {
+      final snapshot = await _firestore
+          .collection('pedidos')
+          .where('startTime', isGreaterThanOrEqualTo: inicio.toIso8601String())
+          .where('startTime', isLessThanOrEqualTo: fin.toIso8601String())
+          .get();
+
+      return snapshot.docs.fold<double>(0.0, (total, doc) {
+        try {
+          return total + (doc.data()['total'] as num).toDouble();
+        } catch (e) {
+          debugPrint('Error al procesar el total de un pedido: $e');
+          return total; // Ignorar el pedido con error
+        }
+      });
+    } catch (e) {
+      debugPrint('Error al obtener ganancias por rango: $e');
+      throw Exception('Error al obtener ganancias por rango: $e');
+    }
+  }
+
+  Future<double> obtenerGananciasPorEstadoYPago(
+      DateTime inicio, DateTime fin) async {
+    try {
+      final snapshot = await _firestore
+          .collection('pedidos')
+          .where('estado', isEqualTo: 'Pagado') // Filtrar por estado "Pagado"
+          .where('startTime', isGreaterThanOrEqualTo: inicio.toIso8601String())
+          .where('startTime', isLessThanOrEqualTo: fin.toIso8601String())
+          .get();
+
+      return snapshot.docs.fold<double>(0.0, (total, doc) {
+        try {
+          return total +
+              (doc.data()['total'] as num).toDouble(); // Sumar el total
+        } catch (e) {
+          debugPrint('Error al procesar el total de un pedido: $e');
+          return total; // Ignorar el pedido con error
+        }
+      });
+    } catch (e) {
+      debugPrint('Error al obtener ganancias por estado y rango: $e');
+      debugPrint('Consulta fallida: estado="Pagado", rango=[$inicio, $fin]');
+      throw Exception('Error al obtener ganancias por estado y rango: $e');
+    }
   }
 }

@@ -57,6 +57,9 @@ class KanbanColumn extends StatelessWidget {
                       return Center(child: CircularProgressIndicator());
                     }
                     final pedidos = snapshot.data ?? [];
+                    if (pedidos.isEmpty) {
+                      return Center(child: Text('No hay pedidos.'));
+                    }
                     return ListView.builder(
                       itemCount: pedidos.length,
                       itemBuilder: (context, index) {

@@ -35,19 +35,21 @@ class TiemposScreen extends StatelessWidget {
             return Center(child: Text('No hay pedidos en proceso.'));
           }
           final pedidos = snapshot.data!;
-          return ListView.builder(
-            itemCount: pedidos.length,
-            itemBuilder: (context, index) {
-              final pedido = pedidos[index];
-              return ListTile(
-                title: Text('Pedido ${pedido.id ?? 'Sin ID'}'),
-                subtitle: Text('Cliente: ${pedido.cliente ?? 'Desconocido'}'),
-                trailing: TimerProgress(
-                  startTime: pedido.startTime ?? DateTime.now(),
-                  maxDuration: Duration(minutes: 30),
-                ),
-              );
-            },
+          return Expanded(
+            child: ListView.builder(
+              itemCount: pedidos.length,
+              itemBuilder: (context, index) {
+                final pedido = pedidos[index];
+                return ListTile(
+                  title: Text('Pedido ${pedido.id ?? 'Sin ID'}'),
+                  subtitle: Text('Cliente: ${pedido.cliente ?? 'Desconocido'}'),
+                  trailing: TimerProgress(
+                    startTime: pedido.startTime ?? DateTime.now(),
+                    maxDuration: Duration(minutes: 30),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),

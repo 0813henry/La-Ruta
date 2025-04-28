@@ -6,6 +6,7 @@ class Product {
   String category;
   int stock;
   String? imageUrl;
+  int preparationTime; // Nuevo campo
 
   Product({
     required this.id,
@@ -15,6 +16,7 @@ class Product {
     required this.category,
     required this.stock,
     this.imageUrl,
+    required this.preparationTime, // Nuevo campo
   });
 
   factory Product.fromMap(Map<String, dynamic> data, String documentId) {
@@ -26,6 +28,7 @@ class Product {
       category: data['category'] ?? '',
       stock: data['stock'] ?? 0,
       imageUrl: data['imageUrl'],
+      preparationTime: data['preparationTime'] ?? 0, // Nuevo campo
     );
   }
 
@@ -37,6 +40,7 @@ class Product {
       'category': category,
       'stock': stock,
       'imageUrl': imageUrl,
+      'preparationTime': preparationTime, // Nuevo campo
     };
   }
 
@@ -48,6 +52,7 @@ class Product {
     String? category,
     int? stock,
     String? imageUrl,
+    int? preparationTime, // Nuevo campo
   }) {
     return Product(
       id: id ?? this.id,
@@ -57,6 +62,7 @@ class Product {
       category: category ?? this.category,
       stock: stock ?? this.stock,
       imageUrl: imageUrl ?? this.imageUrl,
+      preparationTime: preparationTime ?? this.preparationTime, // Nuevo campo
     );
   }
 }

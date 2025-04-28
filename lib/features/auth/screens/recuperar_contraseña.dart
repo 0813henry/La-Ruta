@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
+import 'package:restaurante_app/core/constants/app_styles.dart';
 import 'package:restaurante_app/core/services/auth_service.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
@@ -28,7 +30,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.orangeAccent, Colors.redAccent],
+            colors: [AppColors.primary, AppColors.secondary],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -46,20 +48,22 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.email, size: 80, color: Colors.red),
+                    Icon(Icons.email, size: 80, color: AppColors.primary),
                     SizedBox(height: 16),
                     Text(
                       'Recuperar Contraseña',
-                      style: TextStyle(
+                      style: AppStyles.heading.copyWith(
                         fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
+                        color: AppColors.primary,
                       ),
                     ),
                     SizedBox(height: 16),
                     Text(
                       'Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña',
                       textAlign: TextAlign.center,
+                      style: AppStyles.body.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                     SizedBox(height: 16),
                     Form(
@@ -68,7 +72,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          prefixIcon: Icon(Icons.email),
+                          prefixIcon: Icon(Icons.email ,color: AppColors.primary,),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -86,12 +90,12 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     ElevatedButton(
                       onPressed: _resetPassword,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor: AppColors.primary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: Text('Enviar Correo'),
+                      child: Text('Enviar Correo' ,style: TextStyle(color: Colors.white),),
                     ),
                   ],
                 ),

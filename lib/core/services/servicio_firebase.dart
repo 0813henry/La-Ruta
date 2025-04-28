@@ -125,44 +125,31 @@ class FirebaseService {
 
   Future<void> addCategoryWithImage(
       {required String name, String? imageUrl}) async {
-    try {
-      await _firestore.collection('categories').add({
-        'name': name,
-        'imageUrl': imageUrl,
-      });
-    } catch (e) {
-      throw Exception('Error al agregar la categoría: $e');
-    }
+    await _firestore.collection('categories').add({
+      'name': name,
+      'imageUrl': imageUrl,
+    });
   }
 
   Future<void> updateCategory(
       {required String id, required String name, String? imageUrl}) async {
     try {
-      final data = {'name': name};
-      if (imageUrl != null) {
-        data['imageUrl'] = imageUrl;
-      } else {
-        data.remove('imageUrl'); // Eliminar el campo si es nulo
-      }
-      await _firestore.collection('categories').doc(id).update(data);
+      await _firestore.collection('categories').doc(id).update({
+        'name': name,
+        'imageUrl': imageUrl,
+      });
     } catch (e) {
       throw Exception('Error al actualizar la categoría: $e');
     }
-  }
-
-  Stream<List<String>> getCategoriesStream() {
-    return _firestore.collection('categories').snapshots().map((snapshot) {
-      return snapshot.docs.map((doc) => doc['name'] as String).toList();
-    });
   }
 
   Stream<List<Map<String, dynamic>>> getCategoriesWithDetailsStream() {
     return _firestore.collection('categories').snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return {
+          'id': doc.id,
           'name': doc['name'],
-          'imageUrl':
-              doc.data().containsKey('imageUrl') ? doc['imageUrl'] : null,
+          'imageUrl': doc['imageUrl'],
         };
       }).toList();
     });

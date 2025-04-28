@@ -50,7 +50,7 @@ class CarritoWidget extends StatelessWidget {
                     color: Colors.green,
                   ),
                 ),
-                onTap: () => onEditItem(item),
+                onTap: () => onEditItem(item), // Pass the item to edit
               ),
             );
           }).toList(),

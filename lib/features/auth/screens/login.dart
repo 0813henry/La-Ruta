@@ -3,6 +3,8 @@ import '../../../core/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/model/usuario_model.dart';
 import '../widgets/login_form.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_styles.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -62,55 +64,77 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.blueAccent, Colors.purpleAccent],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16.0),
-            child: Card(
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+      body: Stack(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [AppColors.primary, AppColors.secondary],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              child: Padding(
-                padding: EdgeInsets.all(24.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.lock, size: 80, color: Colors.purple),
-                    SizedBox(height: 16),
-                    Text(
-                      'Iniciar Sesión',
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.purple,
+            ),
+          ),
+          Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.all(16.0),
+              child: Card(
+                elevation: 12,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white
+                        .withOpacity(0.7), // Fondo negro con opacidad
+                    borderRadius:
+                        BorderRadius.circular(25), // Bordes redondeados
+                  ),
+                  padding: EdgeInsets.all(16.0), // Espaciado interno
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Image.asset(
+                        'assets/images/logo.png',
+                        height: 120,
                       ),
-                    ),
-                    SizedBox(height: 16),
-                    LoginForm(
-                      emailController: _emailController,
-                      passwordController: _passwordController,
-                      onLogin: _login,
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/reset-password');
-                      },
-                      child: Text('¿Olvidaste tu contraseña?'),
-                    ),
-                  ],
+                      SizedBox(height: 20),
+                      Text(
+                        'Bienvenido',
+                        style: AppStyles.heading,
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Inicia sesión para continuar',
+                        style: AppStyles.body.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                      SizedBox(height: 24),
+                      LoginForm(
+                        emailController: _emailController,
+                        passwordController: _passwordController,
+                        onLogin: _login,
+                      ),
+                      SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pushNamed(context, '/reset-password');
+                        },
+                        child: Text(
+                          '¿Olvidaste tu contraseña?',
+                          style: AppStyles.labelText.copyWith(
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+        ],
       ),
     );
   }

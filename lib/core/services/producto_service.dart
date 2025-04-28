@@ -15,10 +15,6 @@ class ProductoService {
         .update(producto.toMap());
   }
 
-  Future<void> eliminarProducto(String productoId) async {
-    await _firestore.collection('productos').doc(productoId).delete();
-  }
-
   Stream<List<Product>> obtenerProductos() {
     return _firestore.collection('productos').snapshots().map((snapshot) {
       return snapshot.docs
@@ -37,5 +33,13 @@ class ProductoService {
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
     });
+  }
+
+  Future<int> obtenerStockProducto(String productId) async {
+    final doc = await _firestore.collection('productos').doc(productId).get();
+    if (doc.exists) {
+      return doc.data()?['stock'] ?? 0;
+    }
+    return 0;
   }
 }

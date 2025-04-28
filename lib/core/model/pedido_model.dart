@@ -75,4 +75,6 @@ class OrderItem {
       descripcion: map['descripcion'],
     );
   }
+
+  get id => null;
 }
