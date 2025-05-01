@@ -24,13 +24,17 @@ class HistorialScreen extends StatelessWidget {
           }
           final transacciones = snapshot.data ?? [];
           if (transacciones.isEmpty) {
-            return Center(child: Text('No hay transacciones registradas.'));
+            return Center(
+                child: Text(
+                    'No hay transacciones registradas.')); // Ensure correct message
           }
           return ListView.builder(
             itemCount: transacciones.length,
             itemBuilder: (context, index) {
               final transaccion = transacciones[index];
-              return VentaItem(transaccion: transaccion);
+              return VentaItem(
+                  transaccion:
+                      transaccion); // Ensure VentaItem is used correctly
             },
           );
         },

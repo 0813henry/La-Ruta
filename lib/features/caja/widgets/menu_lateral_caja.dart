@@ -33,7 +33,7 @@ class MenuLateralCaja extends StatelessWidget {
                   leading: Icon(Icons.history),
                   title: Text('Historial de Ventas'),
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.sales);
+                    Navigator.pushReplacementNamed(context, AppRoutes.historial);
                   },
                 ),
                 ListTile(

@@ -5,7 +5,7 @@ import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
 import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
-import 'package:restaurante_app/core/widgets/menu_lateral.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
 
 class InventoryScreen extends StatefulWidget {
   @override

@@ -4,7 +4,7 @@ import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
-import 'package:restaurante_app/core/widgets/menu_lateral.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
 import 'package:restaurante_app/core/widgets/modules/producto_cart.dart';
 
 class ProductoScreen extends StatefulWidget {

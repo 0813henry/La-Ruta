@@ -6,6 +6,7 @@ import 'package:restaurante_app/features/auth/screens/login.dart';
 import 'package:restaurante_app/features/auth/screens/registro.dart';
 import 'package:restaurante_app/features/auth/screens/recuperar_contraseña.dart';
 import 'package:restaurante_app/features/caja/screens/caja_home_screen.dart';
+import 'package:restaurante_app/features/caja/screens/historial_screen.dart';
 import 'package:restaurante_app/features/cocina/screens/cocina_home_screen.dart';
 import 'package:restaurante_app/features/cocina/screens/pedido_detail_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/mesas_screen.dart';
@@ -34,6 +35,7 @@ class AppRoutes {
   static const usuarios = '/usuarios';
   static const cashier = '/cashier';
   static const dividirCuenta = '/dividir-cuenta';
+  static const historial = '/historial';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -76,6 +78,7 @@ class AppRoutes {
       kanban: (context) => CocinaHomeScreen(),
       usuarios: (context) => UsersScreen(),
       cashier: (context) => CajaHomeScreen(),
+      historial: (context) => HistorialScreen(),
     };
   }
 }

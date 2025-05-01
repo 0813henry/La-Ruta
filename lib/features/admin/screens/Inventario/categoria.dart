@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/widgets/categoria_widget.dart';
-import 'package:restaurante_app/core/widgets/menu_lateral.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
 
 class CategoriaScreen extends StatefulWidget {
   @override

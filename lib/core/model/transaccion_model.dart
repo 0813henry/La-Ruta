@@ -39,4 +39,8 @@ class Transaction {
           .toDate(), // Convertir de Timestamp a DateTime
     );
   }
+
+  get status => null;
+
+  get estado => null;
 }

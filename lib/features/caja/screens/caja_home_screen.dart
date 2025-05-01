@@ -20,7 +20,7 @@ class CajaHomeScreen extends StatelessWidget {
       appBar: AppBar(title: Text('Caja - Pedidos Listos')),
       drawer: MenuLateralCaja(),
       body: StreamBuilder<List<OrderModel>>(
-        stream: _pedidoService.obtenerPedidosPorEstado('Pagado'),
+        stream: _pedidoService.obtenerPedidosPorEstado('Listo'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -33,7 +33,9 @@ class CajaHomeScreen extends StatelessWidget {
           }
           final pedidos = snapshot.data ?? [];
           if (pedidos.isEmpty) {
-            return Center(child: Text('No hay pedidos con estado "Pagado".'));
+            return Center(
+                child: Text(
+                    'No hay pedidos con estado "Listo".')); // Fix incorrect message
           }
           return ListView.builder(
             itemCount: pedidos.length,
@@ -42,7 +44,17 @@ class CajaHomeScreen extends StatelessWidget {
               return ListTile(
                 title: Text('Mesa: ${pedido.cliente}'),
                 subtitle: Text('Total: \$${pedido.total.toStringAsFixed(2)}'),
-                trailing: Text('Estado: ${pedido.estado}'),
+                trailing: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PagoScreen(pedido: pedido),
+                      ),
+                    );
+                  },
+                  child: Text('Pagar'),
+                ),
               );
             },
           );

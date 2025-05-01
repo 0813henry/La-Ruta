@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:restaurante_app/core/services/gasto_service.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
+import 'package:restaurante_app/features/admin/screens/reportes/widgets/balance_widget.dart';
+import 'package:restaurante_app/features/admin/screens/reportes/widgets/perdidas_totales_widget.dart';
 import '../../widgets/ventas_chart.dart';
 
 class ReportsScreen extends StatefulWidget {
@@ -15,6 +18,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
   Map<String, int> _productosMasVendidos = {};
   Map<String, double> _ventasPorMesa = {};
   double _ganancias = 0.0;
+  double _perdidasTotales = 0.0;
+  double _balance = 0.0;
 
   @override
   void initState() {
@@ -57,6 +62,28 @@ class _ReportsScreenState extends State<ReportsScreen> {
     }
   }
 
+  Future<void> _calcularPerdidasTotalesYBalance() async {
+    if (_selectedDateRange != null) {
+      try {
+        final gastos = await GastoService().obtenerGastosPorRango(
+          _selectedDateRange!.start,
+          _selectedDateRange!.end,
+        );
+        final perdidasTotales =
+            gastos.fold(0.0, (sum, gasto) => sum + gasto.valor);
+        setState(() {
+          _perdidasTotales = perdidasTotales;
+          _balance = _ganancias - _perdidasTotales;
+        });
+      } catch (e) {
+        debugPrint('Error al calcular pérdidas y balance: $e');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al calcular pérdidas y balance: $e')),
+        );
+      }
+    }
+  }
+
   void _actualizarFiltro(String filtro) {
     setState(() {
       _selectedFilter = filtro;
@@ -82,6 +109,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
       }
     });
     _calcularGanancias();
+    _calcularPerdidasTotalesYBalance();
   }
 
   @override
@@ -136,6 +164,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                               _selectedDateRange = range;
                             });
                             await _calcularGanancias();
+                            await _calcularPerdidasTotalesYBalance();
                           }
                         },
                         icon: Icon(Icons.date_range),
@@ -195,6 +224,10 @@ class _ReportsScreenState extends State<ReportsScreen> {
                     ),
                   ),
                 ),
+              SizedBox(height: 16),
+              PerdidasTotalesWidget(perdidasTotales: _perdidasTotales),
+              SizedBox(height: 16),
+              BalanceWidget(balance: _balance),
               SizedBox(height: 16),
               // Gráficos
               GridView.count(
