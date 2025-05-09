@@ -116,6 +116,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       existingItem.descripcion = comment; // Update comment in cart
     });
     _guardarCarrito();
+    _updateTotal(); // Update total after adding to cart
   }
 
   void _removeFromCart(OrderItem item) {
@@ -123,6 +124,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       _cart.remove(item);
     });
     _guardarCarrito();
+    _updateTotal(); // Update total after removing from cart
   }
 
   void _updateCartItem(OrderItem item, int newQuantity, String newComment) {
@@ -130,7 +132,21 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       item.cantidad = newQuantity;
       item.descripcion = newComment;
     });
-    _guardarCarrito(); // Ensure the cart is saved after updating an item
+    _guardarCarrito();
+    _updateTotal(); // Update total after updating an item
+  }
+
+  void _updateTotal() {
+    final total = _cart.fold(0.0, (sum, item) {
+      final adicionalesTotal = item.adicionales.fold(
+        0.0,
+        (sum, adicional) => sum + (adicional['price'] as double),
+      );
+      return sum + (item.precio + adicionalesTotal) * item.cantidad;
+    });
+    setState(() {
+      // Update the total state if needed
+    });
   }
 
   void _showCartDetails(OrderItem item) {
@@ -529,21 +545,22 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                       itemBuilder: (context, index) {
                         final product = snapshot.data![index];
                         return GestureDetector(
-                          onTap: () => _showProductDetails(product),
+                          onTap: () => _addToCart(
+                              product, 1, ''), // Add directly to cart
                           child: Card(
-                            elevation: 4,
+                            elevation: 6,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(12),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(10)),
+                                      top: Radius.circular(12)),
                                   child: Image.network(
                                     product.imageUrl ?? '',
-                                    height: isPortrait ? 100 : 80,
+                                    height: isPortrait ? 120 : 100,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -555,7 +572,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                                         product.name,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 14,
+                                          fontSize: 16,
                                         ),
                                         textAlign: TextAlign.center,
                                         maxLines: 1,
@@ -567,6 +584,15 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                                         style: TextStyle(
                                           color: Colors.green,
                                           fontWeight: FontWeight.bold,
+                                          fontSize: 14,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'Stock: ${product.stock}',
+                                        style: TextStyle(
+                                          color: Colors.grey[600],
                                           fontSize: 12,
                                         ),
                                         textAlign: TextAlign.center,

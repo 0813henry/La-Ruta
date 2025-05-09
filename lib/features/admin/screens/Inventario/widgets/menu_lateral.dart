@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
 import '../../dashboard.dart';
@@ -68,6 +69,17 @@ class SidebarMenuInventory extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => ProductoScreen()),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.add_circle),
+                  title: Text('Adicionales'),
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AdicionalesScreen()),
                     );
                   },
                 ),

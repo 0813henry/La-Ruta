@@ -31,26 +31,65 @@ class CarritoWidget extends StatelessWidget {
           ),
           SizedBox(height: 16),
           ...cartItems.map((item) {
+            final adicionalesTotal = item.adicionales.fold(
+              0.0,
+              (sum, adicional) => sum + (adicional['price'] as double),
+            );
+            final itemTotal = (item.precio + adicionalesTotal) * item.cantidad;
+
             return Card(
               margin: const EdgeInsets.symmetric(vertical: 8.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
               child: ListTile(
-                title: Text('${item.nombre} x${item.cantidad}'),
+                contentPadding: const EdgeInsets.all(12.0),
+                title: Text(
+                  '${item.nombre} x${item.cantidad}',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
                 subtitle: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if (item.descripcion.isNotEmpty)
+                      Text(
+                        'Comentario: ${item.descripcion}',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
                     Text(
-                        'Comentario: ${item.descripcion.isNotEmpty ? item.descripcion : "Ninguno"}'),
-                    Text('Precio: \$${item.precio.toStringAsFixed(2)}'),
+                      'Precio base: \$${item.precio.toStringAsFixed(2)}',
+                      style: TextStyle(color: Colors.grey[700]),
+                    ),
+                    if (item.adicionales.isNotEmpty)
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Adicionales:',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[800]),
+                          ),
+                          ...item.adicionales.map((ad) => Text(
+                                '${ad['name']} - \$${(ad['price'] as double).toStringAsFixed(2)}',
+                                style: TextStyle(color: Colors.grey[600]),
+                              )),
+                        ],
+                      ),
+                    SizedBox(height: 4),
+                    Text(
+                      'Subtotal: \$${itemTotal.toStringAsFixed(2)}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green,
+                      ),
+                    ),
                   ],
                 ),
-                trailing: Text(
-                  '\$${(item.precio * item.cantidad).toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.green,
-                  ),
+                trailing: IconButton(
+                  icon: Icon(Icons.edit, color: Colors.blue),
+                  onPressed: () => onEditItem(item),
                 ),
-                onTap: () => onEditItem(item), // Pass the item to edit
               ),
             );
           }).toList(),
@@ -58,7 +97,13 @@ class CarritoWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              'Total: \$${total.toStringAsFixed(2)}',
+              'Total: \$${cartItems.fold(0.0, (sum, item) {
+                final adicionalesTotal = item.adicionales.fold(
+                  0.0,
+                  (sum, adicional) => sum + (adicional['price'] as double),
+                );
+                return sum + (item.precio + adicionalesTotal) * item.cantidad;
+              }).toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

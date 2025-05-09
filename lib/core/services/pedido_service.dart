@@ -9,8 +9,14 @@ class PedidoService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> crearPedido(OrderModel pedido) async {
-    await _firestore.collection('pedidos').add(pedido.toMap());
-    NotificationService().notificarCocina('Nuevo pedido creado: ${pedido.id}');
+    try {
+      final pedidoData = pedido.toMap();
+      await _firestore.collection('pedidos').add(pedidoData);
+      NotificationService()
+          .notificarCocina('Nuevo pedido creado: ${pedido.id}');
+    } catch (e) {
+      throw Exception('Error al crear el pedido: $e');
+    }
   }
 
   Stream<List<OrderModel>> obtenerPedidosPorMesero(String meseroId) {

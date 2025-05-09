@@ -50,12 +50,14 @@ class OrderItem {
   int cantidad;
   double precio;
   String descripcion;
+  List<Map<String, dynamic>> adicionales; // List of adicionales
 
   OrderItem({
     required this.nombre,
     required this.cantidad,
     required this.precio,
     required this.descripcion,
+    this.adicionales = const [], // Default to an empty list
   });
 
   Map<String, dynamic> toMap() {
@@ -64,6 +66,7 @@ class OrderItem {
       'cantidad': cantidad,
       'precio': precio,
       'descripcion': descripcion,
+      'adicionales': adicionales, // Save adicionales as a list of maps
     };
   }
 
@@ -73,6 +76,7 @@ class OrderItem {
       cantidad: map['cantidad'],
       precio: (map['precio'] as num).toDouble(),
       descripcion: map['descripcion'],
+      adicionales: List<Map<String, dynamic>>.from(map['adicionales'] ?? []),
     );
   }
 

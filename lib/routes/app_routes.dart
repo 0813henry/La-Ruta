@@ -15,6 +15,7 @@ import 'package:restaurante_app/features/mesero/screens/nuevo_pedido_screen.dart
 import 'package:restaurante_app/features/mesero/screens/pedidos_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/resumen_screen.dart';
 import 'package:restaurante_app/features/admin/screens/usuarios/gestion_usarios.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.dart';
 
 class AppRoutes {
   static const login = '/login';
@@ -36,6 +37,7 @@ class AppRoutes {
   static const cashier = '/cashier';
   static const dividirCuenta = '/dividir-cuenta';
   static const historial = '/historial';
+  static const adicionales = '/adicionales';
 
   static Map<String, WidgetBuilder> getRoutes() {
     return {
@@ -79,6 +81,7 @@ class AppRoutes {
       usuarios: (context) => UsersScreen(),
       cashier: (context) => CajaHomeScreen(),
       historial: (context) => HistorialScreen(),
+      adicionales: (context) => AdicionalesScreen(),
     };
   }
 }

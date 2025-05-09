@@ -1,40 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:restaurante_app/core/services/caja_service.dart';
-import 'package:restaurante_app/features/caja/widgets/venta_item.dart';
+import 'package:restaurante_app/core/model/pedido_model.dart';
+import 'package:restaurante_app/core/services/pedido_service.dart';
+import 'package:restaurante_app/core/services/notification_service.dart';
+import 'package:restaurante_app/features/caja/widgets/resumen_pago.dart';
 import '../widgets/menu_lateral_caja.dart';
-import 'package:restaurante_app/core/model/transaccion_model.dart'
-    as transaccion_model;
+import 'pago_screen.dart';
 
 class HistorialScreen extends StatelessWidget {
-  final CajaService _cajaService = CajaService();
+  final PedidoService _pedidoService = PedidoService();
 
   @override
   Widget build(BuildContext context) {
+    NotificationService().escucharNotificacionesCocina((mesaId) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Mesa $mesaId lista para pagado')),
+      );
+    });
+
     return Scaffold(
-      appBar: AppBar(title: Text('Historial de Ventas')),
+      appBar: AppBar(title: Text('Historial de vetas')),
       drawer: MenuLateralCaja(),
-      body: StreamBuilder<List<transaccion_model.Transaction>>(
-        stream: _cajaService.obtenerTransacciones(),
+      body: StreamBuilder<List<OrderModel>>(
+        stream: _pedidoService.obtenerPedidosPorEstado('Pagado'),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            debugPrint('Error en el StreamBuilder: ${snapshot.error}');
+            return Center(
+              child: Text('Error al cargar los pedidos: ${snapshot.error}'),
+            );
           }
-          final transacciones = snapshot.data ?? [];
-          if (transacciones.isEmpty) {
+          final pedidos = snapshot.data ?? [];
+          if (pedidos.isEmpty) {
             return Center(
                 child: Text(
-                    'No hay transacciones registradas.')); // Ensure correct message
+                    'No hay pedidos con estado "Pagado".')); // Fix incorrect message
           }
           return ListView.builder(
-            itemCount: transacciones.length,
+            itemCount: pedidos.length,
             itemBuilder: (context, index) {
-              final transaccion = transacciones[index];
-              return VentaItem(
-                  transaccion:
-                      transaccion); // Ensure VentaItem is used correctly
+              final pedido = pedidos[index];
+              return ListTile(
+                title: Text('Mesa: ${pedido.cliente}'),
+                subtitle: Text('Total: \$${pedido.total.toStringAsFixed(2)}'),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: ResumenPago(pedido: pedido),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: Text('Cerrar'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              );
             },
           );
         },

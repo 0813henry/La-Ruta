@@ -12,7 +12,7 @@ class CajaHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     NotificationService().escucharNotificacionesCocina((mesaId) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Mesa $mesaId lista para pagar')),
+        SnackBar(content: Text('Mesa $mesaId lista para listo')),
       );
     });
 

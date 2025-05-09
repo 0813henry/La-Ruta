@@ -49,6 +49,38 @@ class _PagoScreenState extends State<PagoScreen> {
     }
   }
 
+  String _generarResumenTexto(OrderModel pedido) {
+    final detalles = pedido.items
+        .map((item) =>
+            '- ${item.nombre} x${item.cantidad} (\$${item.precio.toStringAsFixed(2)})\n  ${item.descripcion}')
+        .join('\n');
+    return '''
+Resumen del Pedido:
+ID del Pedido: ${pedido.id}
+Cliente: ${pedido.cliente}
+Estado: ${pedido.estado}
+Tipo: ${pedido.tipo}
+Total: \$${pedido.total.toStringAsFixed(2)}
+
+Detalles:
+$detalles
+    ''';
+  }
+
+  Future<void> _enviarPorWhatsApp(OrderModel pedido) async {
+    final resumenTexto = _generarResumenTexto(pedido);
+    final whatsappUrl =
+        'https://wa.me/?text=${Uri.encodeComponent(resumenTexto)}';
+
+    if (await canLaunch(whatsappUrl)) {
+      await launch(whatsappUrl);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo abrir WhatsApp')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,17 +134,7 @@ class _PagoScreenState extends State<PagoScreen> {
           ),
           SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () async {
-              final whatsappUrl =
-                  'https://wa.me/?text=Cuenta%20de%20pedido%20${widget.pedido.id}%3A%20\$${widget.pedido.total.toStringAsFixed(2)}';
-              if (await canLaunch(whatsappUrl)) {
-                await launch(whatsappUrl);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('No se pudo abrir WhatsApp')),
-                );
-              }
-            },
+            onPressed: () => _enviarPorWhatsApp(widget.pedido),
             child: Text('Enviar Cuenta por WhatsApp'),
           ),
         ],
