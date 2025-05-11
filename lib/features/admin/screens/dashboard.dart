@@ -18,7 +18,7 @@ class DashboardScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/logo.png', // Asegúrate de que el logo esté en esta ruta
+              'assets/images/logo_3.png', // Asegúrate de que el logo esté en esta ruta
               width: screenWidth * 0.5,
             ),
             SizedBox(height: 20),
