@@ -6,11 +6,11 @@ class CategoriaWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   const CategoriaWidget({
-    Key? key,
+    super.key,
     required this.name,
     this.imageUrl,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

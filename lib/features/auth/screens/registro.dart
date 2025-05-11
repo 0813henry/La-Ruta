@@ -4,8 +4,9 @@ import 'package:restaurante_app/core/constants/app_styles.dart';
 import '../../../core/services/auth_service.dart';
 import '../widgets/role_selector.dart';
 
-
 class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
   @override
   _RegisterScreenState createState() => _RegisterScreenState();
 }

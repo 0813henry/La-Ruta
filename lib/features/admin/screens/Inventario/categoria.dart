@@ -7,6 +7,8 @@ import 'package:restaurante_app/core/widgets/categoria_widget.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
 
 class CategoriaScreen extends StatefulWidget {
+  const CategoriaScreen({super.key});
+
   @override
   _CategoriaScreenState createState() => _CategoriaScreenState();
 }
@@ -170,23 +172,23 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
                                     _clearFields();
                                   });
                                 },
-                                child: Text('Cancelar'),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.red,
                                 ),
+                                child: Text('Cancelar'),
                               ),
                               ElevatedButton(
                                 onPressed: _addOrUpdateCategory,
-                                child: Text(
-                                  _editingCategoryId == null
-                                      ? 'Agregar'
-                                      : 'Editar', // Cambia dinámicamente el texto
-                                ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: _editingCategoryId == null
                                       ? Colors.green
                                       : Colors
                                           .blue, // Cambia el color del botón
+                                ),
+                                child: Text(
+                                  _editingCategoryId == null
+                                      ? 'Agregar'
+                                      : 'Editar', // Cambia dinámicamente el texto
                                 ),
                               ),
                             ],

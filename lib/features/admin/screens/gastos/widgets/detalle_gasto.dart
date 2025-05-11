@@ -4,7 +4,7 @@ import 'package:restaurante_app/core/model/gasto_model.dart';
 class DetalleGastoWidget extends StatelessWidget {
   final Gasto gasto;
 
-  const DetalleGastoWidget({required this.gasto, Key? key}) : super(key: key);
+  const DetalleGastoWidget({required this.gasto, super.key});
 
   @override
   Widget build(BuildContext context) {

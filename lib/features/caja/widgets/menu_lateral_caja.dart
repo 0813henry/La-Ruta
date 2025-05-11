@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:restaurante_app/routes/app_routes.dart';
 
 class MenuLateralCaja extends StatelessWidget {
+  const MenuLateralCaja({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -33,7 +35,8 @@ class MenuLateralCaja extends StatelessWidget {
                   leading: Icon(Icons.history),
                   title: Text('Historial de Ventas'),
                   onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.historial);
+                    Navigator.pushReplacementNamed(
+                        context, AppRoutes.historial);
                   },
                 ),
                 ListTile(

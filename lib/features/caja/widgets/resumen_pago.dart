@@ -4,7 +4,7 @@ import 'package:restaurante_app/core/model/pedido_model.dart';
 class ResumenPago extends StatelessWidget {
   final OrderModel pedido;
 
-  const ResumenPago({required this.pedido, Key? key}) : super(key: key);
+  const ResumenPago({required this.pedido, super.key});
 
   @override
   Widget build(BuildContext context) {

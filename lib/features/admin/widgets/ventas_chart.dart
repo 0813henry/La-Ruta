@@ -7,11 +7,11 @@ class VentasChart extends StatelessWidget {
   final String chartType; // "bar" o "pie"
 
   const VentasChart({
-    Key? key,
+    super.key,
     required this.data,
     required this.labels,
     required this.chartType,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

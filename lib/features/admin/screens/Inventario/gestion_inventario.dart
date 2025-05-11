@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restaurante_app/features/admin/screens/dashboard.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
@@ -8,6 +7,8 @@ import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
 
 class InventoryScreen extends StatefulWidget {
+  const InventoryScreen({super.key});
+
   @override
   _InventoryScreenState createState() => _InventoryScreenState();
 }
@@ -119,6 +120,8 @@ class _InventoryScreenState extends State<InventoryScreen> {
 }
 
 class InventorySelectionScreen extends StatelessWidget {
+  const InventorySelectionScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

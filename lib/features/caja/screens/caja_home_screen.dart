@@ -8,6 +8,8 @@ import 'pago_screen.dart';
 class CajaHomeScreen extends StatelessWidget {
   final PedidoService _pedidoService = PedidoService();
 
+  CajaHomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     NotificationService().escucharNotificacionesCocina((mesaId) {

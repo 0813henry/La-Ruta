@@ -4,6 +4,8 @@ import 'package:restaurante_app/core/constants/app_styles.dart';
 import 'package:restaurante_app/core/services/auth_service.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
+
   @override
   _ResetPasswordScreenState createState() => _ResetPasswordScreenState();
 }
@@ -72,7 +74,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           labelText: 'Email',
-                          prefixIcon: Icon(Icons.email ,color: AppColors.primary,),
+                          prefixIcon: Icon(
+                            Icons.email,
+                            color: AppColors.primary,
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -95,7 +100,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      child: Text('Enviar Correo' ,style: TextStyle(color: Colors.white),),
+                      child: Text(
+                        'Enviar Correo',
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ],
                 ),

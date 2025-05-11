@@ -6,7 +6,7 @@ import 'dart:async';
 class TiempoWidget extends StatefulWidget {
   final DateTime fechaEnvio;
 
-  const TiempoWidget({required this.fechaEnvio, Key? key}) : super(key: key);
+  const TiempoWidget({required this.fechaEnvio, super.key});
 
   @override
   _TiempoWidgetState createState() => _TiempoWidgetState();

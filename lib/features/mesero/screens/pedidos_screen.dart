@@ -6,6 +6,8 @@ import 'package:restaurante_app/core/widgets/modules/pedido_item.dart';
 import '../widgets/menu_lateral_mesero.dart';
 
 class OrdersScreen extends StatefulWidget {
+  const OrdersScreen({super.key});
+
   @override
   _OrdersScreenState createState() => _OrdersScreenState();
 }

@@ -8,7 +8,8 @@ class PedidoKitchenCard extends StatelessWidget {
   final DateTime startTime;
   final Function()? onActionPressed;
 
-  PedidoKitchenCard({
+  const PedidoKitchenCard({
+    super.key,
     required this.pedidoId,
     required this.cliente,
     required this.estado,

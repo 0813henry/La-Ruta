@@ -4,6 +4,8 @@ import 'package:restaurante_app/features/cocina/screens/tiempos_screen.dart';
 import 'package:restaurante_app/routes/app_routes.dart';
 
 class MenuLateralCocina extends StatelessWidget {
+  const MenuLateralCocina({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

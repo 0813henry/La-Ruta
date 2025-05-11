@@ -3,6 +3,8 @@ import 'package:restaurante_app/core/services/adicional_service.dart';
 import 'package:restaurante_app/core/model/adicional_model.dart';
 
 class AdicionalesScreen extends StatefulWidget {
+  const AdicionalesScreen({super.key});
+
   @override
   _AdicionalesScreenState createState() => _AdicionalesScreenState();
 }
@@ -115,9 +117,6 @@ class _AdicionalesScreenState extends State<AdicionalesScreen> {
                         SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: _addOrUpdateAdicional,
-                          child: Text(_editingAdicionalId == null
-                              ? 'Agregar Adicional'
-                              : 'Actualizar Adicional'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
@@ -125,6 +124,9 @@ class _AdicionalesScreenState extends State<AdicionalesScreen> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                           ),
+                          child: Text(_editingAdicionalId == null
+                              ? 'Agregar Adicional'
+                              : 'Actualizar Adicional'),
                         ),
                       ],
                     ),

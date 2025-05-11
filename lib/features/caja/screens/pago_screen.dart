@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 class PagoScreen extends StatefulWidget {
   final OrderModel pedido;
 
-  const PagoScreen({required this.pedido, Key? key}) : super(key: key);
+  const PagoScreen({required this.pedido, super.key});
 
   @override
   _PagoScreenState createState() => _PagoScreenState();

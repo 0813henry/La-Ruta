@@ -7,8 +7,8 @@ class MetodoPagoSelector extends StatelessWidget {
   const MetodoPagoSelector({
     required this.metodoSeleccionado,
     required this.onMetodoSeleccionado,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,8 +5,7 @@ import '../../../core/services/adicional_service.dart';
 class AdicionalSelector extends StatefulWidget {
   final Function(List<Adicional>) onAdicionalesSelected;
 
-  const AdicionalSelector({required this.onAdicionalesSelected, Key? key})
-      : super(key: key);
+  const AdicionalSelector({required this.onAdicionalesSelected, super.key});
 
   @override
   _AdicionalSelectorState createState() => _AdicionalSelectorState();

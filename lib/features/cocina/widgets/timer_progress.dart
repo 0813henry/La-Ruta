@@ -8,8 +8,8 @@ class TimerProgress extends StatefulWidget {
   const TimerProgress({
     required this.startTime,
     required this.maxDuration,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _TimerProgressState createState() => _TimerProgressState();

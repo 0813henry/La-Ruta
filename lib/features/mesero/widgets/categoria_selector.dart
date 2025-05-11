@@ -6,8 +6,8 @@ class CategoriaSelector extends StatelessWidget {
 
   const CategoriaSelector({
     required this.onCategorySelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

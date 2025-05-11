@@ -7,8 +7,8 @@ class StatusBadge extends StatelessWidget {
   const StatusBadge({
     required this.status,
     required this.color,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

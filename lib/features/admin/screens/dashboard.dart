@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../widgets/menu_lateral_admin.dart';
 
 class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;

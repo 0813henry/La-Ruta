@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
-import 'package:restaurante_app/core/services/notification_service.dart';
 import 'package:restaurante_app/features/cocina/widgets/pedido_detail_dialog.dart';
 import 'package:restaurante_app/features/cocina/widgets/pedido_kitchen_card.dart';
 
@@ -11,6 +10,7 @@ class KanbanColumn extends StatelessWidget {
   final Function(String, String)? onEstadoCambiado;
 
   KanbanColumn({
+    super.key,
     required this.title,
     required this.estado,
     this.onEstadoCambiado,

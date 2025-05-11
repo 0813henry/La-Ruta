@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:restaurante_app/core/constants/app_colors.dart';
+import 'package:restaurante_app/core/widgets/wbutton.dart';
+import 'package:restaurante_app/core/widgets/wtext_field.dart';
 
 class LoginForm extends StatelessWidget {
   final TextEditingController emailController;
@@ -10,48 +11,29 @@ class LoginForm extends StatelessWidget {
     required this.emailController,
     required this.passwordController,
     required this.onLogin,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TextField(
+        WTextField(
           controller: emailController,
-          decoration: InputDecoration(
-        labelText: 'Email',
-        prefixIcon: Icon(Icons.email, color: AppColors.primary),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-          ),
+          label: 'Correo Electronico',
+          icon: Icons.email,
         ),
         SizedBox(height: 16),
-        TextField(
+        WTextField(
           controller: passwordController,
-          decoration: InputDecoration(
-        labelText: 'Contraseña',
-        prefixIcon: Icon(Icons.lock, color: AppColors.primary),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-          ),
+          label: 'Contraseña',
+          icon: Icons.lock,
           obscureText: true,
         ),
         SizedBox(height: 16),
-        ElevatedButton(
+        WButton(
+          label: 'Iniciar Sesión',
           onPressed: onLogin,
-          style: ElevatedButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-          ),
-          child: Text(
-        'Iniciar Sesión',
-        style: TextStyle(color: Colors.white),
-          ),
         ),
       ],
     );

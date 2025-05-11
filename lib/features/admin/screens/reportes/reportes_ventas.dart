@@ -7,6 +7,8 @@ import 'package:restaurante_app/features/admin/screens/reportes/widgets/perdidas
 import '../../widgets/ventas_chart.dart';
 
 class ReportsScreen extends StatefulWidget {
+  const ReportsScreen({super.key});
+
   @override
   _ReportsScreenState createState() => _ReportsScreenState();
 }

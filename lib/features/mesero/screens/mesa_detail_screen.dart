@@ -13,8 +13,8 @@ class MesaDetailScreen extends StatefulWidget {
     required this.nombre,
     required this.cliente,
     required this.numero, // Número de la mesa
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _MesaDetailScreenState createState() => _MesaDetailScreenState();

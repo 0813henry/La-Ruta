@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restaurante_app/core/constants/app_colors.dart';
 
 class MesaCard extends StatelessWidget {
   final int numero; // Número de la mesa
@@ -16,8 +15,8 @@ class MesaCard extends StatelessWidget {
     required this.nombre,
     required this.onTap,
     required this.onLongPress, // Use onLongPress instead of a button
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,8 @@ class UserTile extends StatelessWidget {
   final String email;
   final String avatarUrl;
 
-  UserTile({
+  const UserTile({
+    super.key,
     required this.name,
     required this.email,
     required this.avatarUrl,

@@ -7,6 +7,8 @@ import 'package:restaurante_app/features/cocina/widgets/timer_progress.dart';
 class TiemposScreen extends StatelessWidget {
   final PedidoService _pedidoService = PedidoService();
 
+  TiemposScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

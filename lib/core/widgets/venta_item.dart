@@ -4,7 +4,7 @@ import 'package:restaurante_app/core/model/transaccion_model.dart';
 class VentaItem extends StatelessWidget {
   final Transaction transaccion;
 
-  const VentaItem({required this.transaccion, Key? key}) : super(key: key);
+  const VentaItem({required this.transaccion, super.key});
 
   @override
   Widget build(BuildContext context) {

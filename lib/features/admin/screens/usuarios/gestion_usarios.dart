@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../../../core/model/usuario_model.dart';
@@ -12,6 +11,8 @@ import '../../../../core/services/servicio_cloudinary.dart';
 class UsersScreen extends StatelessWidget {
   final UsuarioService _usuarioService = UsuarioService();
   final CloudinaryService _cloudinaryService = CloudinaryService();
+
+  UsersScreen({super.key});
 
   Future<void> _addUser(BuildContext context) async {
     String email = '';
@@ -133,10 +134,10 @@ class UsersScreen extends StatelessWidget {
                   print('Error al agregar usuario: $e');
                 }
               },
-              child: Text('Agregar'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
               ),
+              child: Text('Agregar'),
             ),
           ],
         );
@@ -236,10 +237,10 @@ class UsersScreen extends StatelessWidget {
                   print('Error al editar usuario: $e');
                 }
               },
-              child: Text('Guardar'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
               ),
+              child: Text('Guardar'),
             ),
           ],
         );

@@ -11,8 +11,8 @@ class PedidoSummary extends StatelessWidget {
     required this.items,
     required this.total,
     required this.onConfirm,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

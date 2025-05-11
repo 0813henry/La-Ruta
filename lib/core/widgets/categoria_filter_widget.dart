@@ -5,9 +5,9 @@ class CategoriaFilterWidget extends StatelessWidget {
   final Function(String?) onFilterSelected;
 
   const CategoriaFilterWidget({
-    Key? key,
+    super.key,
     required this.onFilterSelected,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

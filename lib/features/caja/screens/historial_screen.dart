@@ -4,10 +4,11 @@ import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/services/notification_service.dart';
 import 'package:restaurante_app/features/caja/widgets/resumen_pago.dart';
 import '../widgets/menu_lateral_caja.dart';
-import 'pago_screen.dart';
 
 class HistorialScreen extends StatelessWidget {
   final PedidoService _pedidoService = PedidoService();
+
+  HistorialScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

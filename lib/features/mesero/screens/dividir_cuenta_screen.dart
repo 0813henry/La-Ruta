@@ -7,8 +7,7 @@ class DividirCuentaScreen extends StatefulWidget {
   final List<OrderItem> productos;
 
   const DividirCuentaScreen(
-      {required this.mesaId, required this.productos, Key? key})
-      : super(key: key);
+      {required this.mesaId, required this.productos, super.key});
 
   @override
   _DividirCuentaScreenState createState() => _DividirCuentaScreenState();

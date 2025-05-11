@@ -16,8 +16,8 @@ class CarritoWidget extends StatelessWidget {
     required this.total,
     required this.onConfirmOrder,
     required this.onCloseMesa, // Nueva opción
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +92,7 @@ class CarritoWidget extends StatelessWidget {
                 ),
               ),
             );
-          }).toList(),
+          }),
           Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),

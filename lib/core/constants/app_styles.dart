@@ -3,7 +3,7 @@ import 'app_colors.dart';
 
 class AppStyles {
   static const heading = TextStyle(
-    fontSize: 32,
+    fontSize: 38,
     fontWeight: FontWeight.bold,
     fontFamily: 'DancingScript', // Font inspired by menuTipoLetra.png
     color: AppColors.primary,
@@ -32,7 +32,7 @@ class AppStyles {
 
   static const labelText = TextStyle(
     fontSize: 14,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w600,
     fontFamily: 'Roboto',
     color: AppColors.metallicGray,
   );

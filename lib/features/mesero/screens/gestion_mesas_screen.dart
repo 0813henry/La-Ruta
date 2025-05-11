@@ -4,6 +4,8 @@ import '../widgets/mesa_grid.dart';
 import '../../../core/model/mesa_model.dart';
 
 class GestionMesasScreen extends StatefulWidget {
+  const GestionMesasScreen({super.key});
+
   @override
   _GestionMesasScreenState createState() => _GestionMesasScreenState();
 }

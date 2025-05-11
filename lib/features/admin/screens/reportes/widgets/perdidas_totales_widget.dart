@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PerdidasTotalesWidget extends StatelessWidget {
   final double perdidasTotales;
 
-  const PerdidasTotalesWidget({required this.perdidasTotales});
+  const PerdidasTotalesWidget({super.key, required this.perdidasTotales});
 
   @override
   Widget build(BuildContext context) {

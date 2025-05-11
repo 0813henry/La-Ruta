@@ -6,10 +6,10 @@ class ProductoCart extends StatelessWidget {
   final VoidCallback onEdit;
 
   const ProductoCart({
-    Key? key,
+    super.key,
     required this.product,
     required this.onEdit,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

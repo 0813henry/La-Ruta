@@ -12,8 +12,8 @@ class ConfirmDialog extends StatelessWidget {
     required this.content,
     required this.onConfirm,
     required this.onCancel,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

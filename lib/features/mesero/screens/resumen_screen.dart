@@ -5,6 +5,8 @@ import '../../../core/model/pedido_model.dart';
 import '../widgets/menu_lateral_mesero.dart';
 
 class ResumenScreen extends StatelessWidget {
+  const ResumenScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class InventoryProvider with ChangeNotifier {
-  Map<String, int> _inventory = {};
+  final Map<String, int> _inventory = {};
 
   Map<String, int> get inventory => _inventory;
 

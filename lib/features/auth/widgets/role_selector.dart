@@ -9,8 +9,8 @@ class RoleSelector extends StatelessWidget {
   const RoleSelector({
     required this.selectedRole,
     required this.onRoleSelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,8 @@ class RoleSelector extends StatelessWidget {
                 if (selected) {
                   onRoleSelected(role);
                 }
-              }, selected: selectedRole == role,
+              },
+              selected: selectedRole == role,
             );
           }).toList(),
         ),

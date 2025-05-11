@@ -3,12 +3,12 @@ import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.da
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
 import '../../dashboard.dart';
-import '../../usuarios/gestion_usarios.dart';
-import '../../reportes/reportes_ventas.dart';
 import '../gestion_inventario.dart';
 import '../../../../../routes/app_routes.dart';
 
 class SidebarMenuInventory extends StatelessWidget {
+  const SidebarMenuInventory({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/widgets/wtextbutton.dart';
 import '../../../core/services/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/model/usuario_model.dart';
@@ -7,6 +8,8 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_styles.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -85,20 +88,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white
-                        .withOpacity(0.7), // Fondo negro con opacidad
+                    color: Colors.white, // Fondo negro con opacidad
                     borderRadius:
-                        BorderRadius.circular(25), // Bordes redondeados
+                        BorderRadius.circular(10), // Bordes redondeados
                   ),
-                  padding: EdgeInsets.all(16.0), // Espaciado interno
+                  padding: EdgeInsets.all(20.0), // Espaciado interno
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Image.asset(
-                        'assets/images/logo.png',
-                        height: 120,
+                        'assets/images/logo_2.png',
+                        height: 180,
                       ),
-                      SizedBox(height: 20),
                       Text(
                         'Bienvenido',
                         style: AppStyles.heading,
@@ -116,18 +117,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         passwordController: _passwordController,
                         onLogin: _login,
                       ),
-                      SizedBox(height: 16),
-                      TextButton(
+                      SizedBox(height: 10),
+                      WTextButton(
+                        label: '¿Olvidaste tu contraseña?',
                         onPressed: () {
                           Navigator.pushNamed(context, '/reset-password');
                         },
-                        child: Text(
-                          '¿Olvidaste tu contraseña?',
-                          style: AppStyles.labelText.copyWith(
-                            color: AppColors.primary,
-                          ),
-                        ),
                       ),
+                      SizedBox(height: 10),
                     ],
                   ),
                 ),

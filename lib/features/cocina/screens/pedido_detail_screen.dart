@@ -7,6 +7,8 @@ import 'package:restaurante_app/core/utils/constantes.dart';
 class KitchenOrdersScreen extends StatelessWidget {
   final FirebaseService _firebaseService = FirebaseService();
 
+  KitchenOrdersScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,7 +57,7 @@ class KitchenOrdersScreen extends StatelessWidget {
 class PedidoDetailScreen extends StatelessWidget {
   final OrderModel pedido;
 
-  const PedidoDetailScreen({required this.pedido, Key? key}) : super(key: key);
+  const PedidoDetailScreen({required this.pedido, super.key});
 
   @override
   Widget build(BuildContext context) {

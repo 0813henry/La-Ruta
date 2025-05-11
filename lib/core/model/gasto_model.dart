@@ -37,11 +37,11 @@ class Gasto {
 
   Gasto copyWith({String? imagenUrl}) {
     return Gasto(
-      id: this.id,
+      id: id,
       imagenUrl: imagenUrl ?? this.imagenUrl,
-      descripcion: this.descripcion,
-      valor: this.valor,
-      fecha: this.fecha,
+      descripcion: descripcion,
+      valor: valor,
+      fecha: fecha,
     );
   }
 }

@@ -7,6 +7,8 @@ import 'widgets/detalle_gasto.dart';
 class HistorialGastoScreen extends StatelessWidget {
   final GastoService _gastoService = GastoService();
 
+  HistorialGastoScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

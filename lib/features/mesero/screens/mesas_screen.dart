@@ -10,6 +10,8 @@ import '../../../routes/app_routes.dart';
 class MesasScreen extends StatelessWidget {
   final MesaService _mesaService = MesaService();
 
+  MesasScreen({super.key});
+
   Future<void> _inicializarMesas() async {
     final mesas = await _mesaService.obtenerMesasUnaVez();
     if (mesas.isEmpty) {

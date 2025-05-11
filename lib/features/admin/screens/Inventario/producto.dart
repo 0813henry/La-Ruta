@@ -8,6 +8,8 @@ import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_l
 import 'package:restaurante_app/core/widgets/modules/producto_cart.dart';
 
 class ProductoScreen extends StatefulWidget {
+  const ProductoScreen({super.key});
+
   @override
   _ProductoScreenState createState() => _ProductoScreenState();
 }
@@ -260,9 +262,6 @@ class _ProductoScreenState extends State<ProductoScreen> {
                                 Navigator.pop(context);
                                 _addOrUpdateProduct();
                               },
-                              child: Text(_editingProductId == null
-                                  ? 'Agregar Producto'
-                                  : 'Actualizar Producto'),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
                                 foregroundColor: Colors.white,
@@ -270,6 +269,9 @@ class _ProductoScreenState extends State<ProductoScreen> {
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                               ),
+                              child: Text(_editingProductId == null
+                                  ? 'Agregar Producto'
+                                  : 'Actualizar Producto'),
                             ),
                           ],
                         ),
@@ -479,7 +481,6 @@ class _ProductoScreenState extends State<ProductoScreen> {
                                           Navigator.pop(context);
                                           _addOrUpdateProduct();
                                         },
-                                        child: Text('Actualizar Producto'),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: Colors.green,
                                           foregroundColor: Colors.white,
@@ -488,6 +489,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
                                                 BorderRadius.circular(10),
                                           ),
                                         ),
+                                        child: Text('Actualizar Producto'),
                                       ),
                                     ],
                                   ),

@@ -1,0 +1,2 @@
+E:/Proyectos/Movil/La-Ruta/android/app/.cxx/Debug/1942d3l5/x86_64/CMakeFiles/edit_cache.dir
+E:/Proyectos/Movil/La-Ruta/android/app/.cxx/Debug/1942d3l5/x86_64/CMakeFiles/rebuild_cache.dir

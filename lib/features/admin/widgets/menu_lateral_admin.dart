@@ -6,6 +6,8 @@ import '../screens/Inventario/gestion_inventario.dart';
 import '../screens/gastos/agregar_gasto.dart';
 
 class SidebarMenu extends StatelessWidget {
+  const SidebarMenu({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -13,10 +15,10 @@ class SidebarMenu extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Menú'),
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
+            child: Text('Menú'),
           ),
           ListTile(
             leading: Icon(Icons.dashboard),

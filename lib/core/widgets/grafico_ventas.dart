@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class SalesChart extends StatelessWidget {
+  const SalesChart({super.key});
+
   @override
   Widget build(BuildContext context) {
     return AspectRatio(

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../dashboard.dart';
-import '../../usuarios/gestion_usarios.dart';
-import '../../reportes/reportes_ventas.dart';
-import '../../Inventario/gestion_inventario.dart';
 import '../agregar_gasto.dart';
 import '../historial_gasto.dart';
 
 class SidebarMenuGastos extends StatelessWidget {
+  const SidebarMenuGastos({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(

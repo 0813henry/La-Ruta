@@ -8,8 +8,8 @@ class PedidoDetailDialog extends StatelessWidget {
   const PedidoDetailDialog({
     required this.pedido,
     this.onEstadoCambiado,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   void _cambiarEstado(BuildContext context, String nuevoEstado) {
     if (pedido.id == null || pedido.id!.isEmpty) {

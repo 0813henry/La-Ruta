@@ -21,8 +21,8 @@ class ProductCard extends StatelessWidget {
     required this.category,
     required this.onAddToCart,
     required this.onRemoveFromCart,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

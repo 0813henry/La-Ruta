@@ -8,8 +8,8 @@ class EmptyState extends StatelessWidget {
   const EmptyState({
     required this.message,
     this.icon = Icons.info_outline,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

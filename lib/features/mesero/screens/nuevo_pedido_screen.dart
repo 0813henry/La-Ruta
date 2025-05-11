@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
-import 'package:restaurante_app/core/widgets/modules/categoria_card.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
-import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
-import '../widgets/pedido_summary.dart';
 import '../widgets/menu_lateral_mesero.dart';
 import '../widgets/carrito_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,8 +15,8 @@ class NuevoPedidoScreen extends StatefulWidget {
   const NuevoPedidoScreen({
     required this.mesaId,
     required this.nombre,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _NuevoPedidoScreenState createState() => _NuevoPedidoScreenState();

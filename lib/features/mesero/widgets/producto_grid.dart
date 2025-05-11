@@ -12,8 +12,8 @@ class ProductoGrid extends StatefulWidget {
   const ProductoGrid({
     required this.onAddToCart,
     required this.onRemoveFromCart,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _ProductoGridState createState() => _ProductoGridState();

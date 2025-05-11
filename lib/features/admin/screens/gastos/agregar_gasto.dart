@@ -4,15 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:restaurante_app/core/model/gasto_model.dart';
 import 'package:restaurante_app/core/services/gasto_service.dart';
-import 'package:restaurante_app/core/services/servicio_cloudinary.dart';
 import 'package:uuid/uuid.dart';
 import 'widgets/menu_lateral_gastos.dart';
 
 class AgregarGastoWidget extends StatefulWidget {
   final Function(String? imagen, String descripcion, double valor) onAgregar;
 
-  const AgregarGastoWidget({required this.onAgregar, Key? key})
-      : super(key: key);
+  const AgregarGastoWidget({required this.onAgregar, super.key});
 
   @override
   _AgregarGastoWidgetState createState() => _AgregarGastoWidgetState();
@@ -170,10 +168,6 @@ class _AgregarGastoWidgetState extends State<AgregarGastoWidget> {
                   Center(
                     child: ElevatedButton(
                       onPressed: _agregarGasto,
-                      child: Text(
-                        'Agregar',
-                        style: TextStyle(fontSize: 18),
-                      ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal,
                         padding: EdgeInsets.symmetric(
@@ -183,6 +177,10 @@ class _AgregarGastoWidgetState extends State<AgregarGastoWidget> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                      ),
+                      child: Text(
+                        'Agregar',
+                        style: TextStyle(fontSize: 18),
                       ),
                     ),
                   ),

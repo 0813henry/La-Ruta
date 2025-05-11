@@ -3,15 +3,13 @@ import 'package:restaurante_app/routes/app_routes.dart';
 import '../../../core/widgets/modules/mesa_card.dart';
 import '../../../core/services/mesa_service.dart';
 import '../../../core/model/mesa_model.dart';
-import 'package:restaurante_app/core/constants/app_colors.dart';
 
 class MesaGrid extends StatelessWidget {
   final MesaService _mesaService = MesaService();
   final Function(Mesa) onMesaTap;
   final bool isWideScreen;
 
-  MesaGrid({required this.onMesaTap, required this.isWideScreen, Key? key})
-      : super(key: key);
+  MesaGrid({required this.onMesaTap, required this.isWideScreen, super.key});
 
   Future<void> _cambiarEstadoMesa(BuildContext context, Mesa mesa) async {
     if (mesa.id.isEmpty) {
