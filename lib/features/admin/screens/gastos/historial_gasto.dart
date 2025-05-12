@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/gasto_service.dart';
 import 'package:restaurante_app/core/model/gasto_model.dart';
+import 'package:restaurante_app/features/admin/screens/gastos/agregar_gasto.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 import 'widgets/menu_lateral_gastos.dart';
 import 'widgets/detalle_gasto.dart';
 
@@ -11,12 +13,39 @@ class HistorialGastoScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Historial de Gastos'),
-        backgroundColor: Colors.teal,
+    return AdminScaffoldLayout(
+      title: Row(
+        children: [
+          const Expanded(child: Text('Historial de Gastos')),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return Dialog(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: AgregarGastoWidget(
+                        onAgregar: (imagen, descripcion, valor) {
+                          Navigator.pop(
+                              context); // Cierra el diálogo después de guardar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Gasto agregado exitosamente')),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ],
       ),
-      drawer: SidebarMenuGastos(),
       body: StreamBuilder<List<Gasto>>(
         stream: _gastoService.obtenerGastos(),
         builder: (context, snapshot) {

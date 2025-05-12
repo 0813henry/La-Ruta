@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
 import 'package:restaurante_app/core/widgets/modules/producto_cart.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 
 class ProductoScreen extends StatefulWidget {
   const ProductoScreen({super.key});
@@ -104,10 +105,10 @@ class _ProductoScreenState extends State<ProductoScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Gestión de Productos'),
-        actions: [
+    return AdminScaffoldLayout(
+      title: Row(
+        children: [
+          const Expanded(child: Text('Gestión de Productos')),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
@@ -284,7 +285,6 @@ class _ProductoScreenState extends State<ProductoScreen> {
           ),
         ],
       ),
-      drawer: SidebarMenuInventory(),
       body: Column(
         children: [
           CategoriaFilterWidget(

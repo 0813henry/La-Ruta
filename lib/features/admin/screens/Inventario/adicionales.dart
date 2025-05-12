@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/adicional_service.dart';
 import 'package:restaurante_app/core/model/adicional_model.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 
 class AdicionalesScreen extends StatefulWidget {
   const AdicionalesScreen({super.key});
@@ -69,10 +70,10 @@ class _AdicionalesScreenState extends State<AdicionalesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Gestión de Adicionales'),
-        actions: [
+    return AdminScaffoldLayout(
+      title: Row(
+        children: [
+          const Expanded(child: Text('Gestión de Adicionales')),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: _clearFields,

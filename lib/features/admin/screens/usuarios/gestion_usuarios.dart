@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 import '../../../../core/model/usuario_model.dart';
 import '../../../auth/widgets/role_selector.dart';
 import '../../../../core/services/usuario_service.dart';
@@ -29,7 +30,7 @@ class UsersScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: Text('Agregar Usuario'),
+          title: const Text('Agregar Usuario'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -38,47 +39,47 @@ class UsersScreen extends StatelessWidget {
                   onChanged: (value) => email = value,
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    prefixIcon: Icon(Icons.email),
+                    prefixIcon: const Icon(Icons.email),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   onChanged: (value) => password = value,
                   decoration: InputDecoration(
                     labelText: 'Contraseña',
-                    prefixIcon: Icon(Icons.lock),
+                    prefixIcon: const Icon(Icons.lock),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   obscureText: true,
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   onChanged: (value) => name = value,
                   decoration: InputDecoration(
                     labelText: 'Nombre',
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: const Icon(Icons.person),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   onChanged: (value) => phone = value,
                   decoration: InputDecoration(
                     labelText: 'Teléfono',
-                    prefixIcon: Icon(Icons.phone),
+                    prefixIcon: const Icon(Icons.phone),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () async {
                     final picker = ImagePicker();
@@ -88,14 +89,15 @@ class UsersScreen extends StatelessWidget {
                       imageUrl = await _cloudinaryService
                           .uploadImage(File(pickedFile.path));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Imagen subida exitosamente')),
+                        const SnackBar(
+                            content: Text('Imagen subida exitosamente')),
                       );
                     }
                   },
-                  icon: Icon(Icons.upload),
-                  label: Text('Subir Foto'),
+                  icon: const Icon(Icons.upload),
+                  label: const Text('Subir Foto'),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 RoleSelector(
                   selectedRole: role,
                   onRoleSelected: (selectedRole) {
@@ -108,7 +110,7 @@ class UsersScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -124,7 +126,7 @@ class UsersScreen extends StatelessWidget {
                       name: name,
                       role: role,
                       phone: phone,
-                      color: imageUrl ?? '', // Usa la imagen si está disponible
+                      color: imageUrl ?? '',
                       isActive: true,
                     );
                     await _usuarioService.crearUsuario(newUser);
@@ -137,7 +139,7 @@ class UsersScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
               ),
-              child: Text('Agregar'),
+              child: const Text('Agregar'),
             ),
           ],
         );
@@ -158,7 +160,7 @@ class UsersScreen extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
           ),
-          title: Text('Editar Usuario'),
+          title: const Text('Editar Usuario'),
           content: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -167,26 +169,26 @@ class UsersScreen extends StatelessWidget {
                   onChanged: (value) => name = value,
                   decoration: InputDecoration(
                     labelText: 'Nombre',
-                    prefixIcon: Icon(Icons.person),
+                    prefixIcon: const Icon(Icons.person),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   controller: TextEditingController(text: user.name),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 TextField(
                   onChanged: (value) => phone = value,
                   decoration: InputDecoration(
                     labelText: 'Teléfono',
-                    prefixIcon: Icon(Icons.phone),
+                    prefixIcon: const Icon(Icons.phone),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
                   controller: TextEditingController(text: user.phone),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 ElevatedButton.icon(
                   onPressed: () async {
                     final picker = ImagePicker();
@@ -196,14 +198,15 @@ class UsersScreen extends StatelessWidget {
                       imageUrl = await _cloudinaryService
                           .uploadImage(File(pickedFile.path));
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Imagen subida exitosamente')),
+                        const SnackBar(
+                            content: Text('Imagen subida exitosamente')),
                       );
                     }
                   },
-                  icon: Icon(Icons.upload),
-                  label: Text('Subir Foto'),
+                  icon: const Icon(Icons.upload),
+                  label: const Text('Subir Foto'),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 RoleSelector(
                   selectedRole: role,
                   onRoleSelected: (selectedRole) {
@@ -216,7 +219,7 @@ class UsersScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancelar'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -227,8 +230,7 @@ class UsersScreen extends StatelessWidget {
                     name: name,
                     role: role,
                     phone: phone,
-                    color: imageUrl ??
-                        user.color, // Usa la imagen si está disponible
+                    color: imageUrl ?? user.color,
                     isActive: user.isActive,
                   );
                   await _usuarioService.actualizarUsuario(updatedUser);
@@ -240,7 +242,7 @@ class UsersScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
               ),
-              child: Text('Guardar'),
+              child: const Text('Guardar'),
             ),
           ],
         );
@@ -250,24 +252,21 @@ class UsersScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Expanded(child: Text('Gestión de Usuarios')),
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () => _addUser(context),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.teal,
+    return AdminScaffoldLayout(
+      title: Row(
+        children: [
+          const Expanded(child: Text('Gestión de Usuarios')),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _addUser(context),
+          ),
+        ],
       ),
       body: StreamBuilder<List<UserModel>>(
         stream: _usuarioService.obtenerUsuarios(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
           final users = snapshot.data!;
           return ListView.builder(
@@ -275,7 +274,7 @@ class UsersScreen extends StatelessWidget {
             itemBuilder: (context, index) {
               final user = users[index];
               return Card(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
@@ -287,7 +286,7 @@ class UsersScreen extends StatelessWidget {
                         : null,
                     child: user.color.startsWith('http')
                         ? null
-                        : Icon(Icons.person, color: Colors.white),
+                        : const Icon(Icons.person, color: Colors.white),
                   ),
                   title: Text(user.name),
                   subtitle: Text('Rol: ${user.role}\nTeléfono: ${user.phone}'),
@@ -305,7 +304,7 @@ class UsersScreen extends StatelessWidget {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.edit, color: Colors.blue),
+                        icon: const Icon(Icons.edit, color: Colors.blue),
                         onPressed: () => _editUser(context, user),
                       ),
                     ],

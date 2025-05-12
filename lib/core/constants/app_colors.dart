@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class AppColors {
   // Colores principales basados en el logo
   static const primary = Color(0xFFB71C1C); // Rojo oscuro (principal del logo)
-  static const secondary = Color(0xFFFFC107); // Amarillo dorado (detalles del logo)
+  static const secondary =
+      Color(0xFFFFC107); // Amarillo dorado (detalles del logo)
   static const accent = Color(0xFF4CAF50); // Verde (para contrastes y botones)
 
   // Colores para estados
@@ -11,6 +12,9 @@ class AppColors {
   static const warning = Color(0xFFFFC107); // Amarillo advertencia
   static const danger = Color(0xFFD32F2F); // Rojo peligro
 
+  //Color de Container
+  static const containerColor =
+      Color.fromRGBO(126, 7, 7, 1); // Azul claro para contenedores
   // Colores para texto
   static const textPrimary = Color(0xFF212121); // Negro para texto principal
   static const textSecondary = Color(0xFF757575); // Gris para texto secundario

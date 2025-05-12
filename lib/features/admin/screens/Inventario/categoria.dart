@@ -5,6 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/widgets/categoria_widget.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 
 class CategoriaScreen extends StatefulWidget {
   const CategoriaScreen({super.key});
@@ -99,17 +100,16 @@ class _CategoriaScreenState extends State<CategoriaScreen> {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Gestión de Categorías'),
-        actions: [
+    return AdminScaffoldLayout(
+      title: Row(
+        children: [
+          const Expanded(child: Text('Gestión de Categorías')),
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () => _showForm(),
           ),
         ],
       ),
-      drawer: SidebarMenuInventory(),
       body: Stack(
         children: [
           Column(

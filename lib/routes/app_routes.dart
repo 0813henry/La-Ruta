@@ -14,7 +14,7 @@ import 'package:restaurante_app/features/mesero/screens/mesa_detail_screen.dart'
 import 'package:restaurante_app/features/mesero/screens/nuevo_pedido_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/pedidos_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/resumen_screen.dart';
-import 'package:restaurante_app/features/admin/screens/usuarios/gestion_usarios.dart';
+import 'package:restaurante_app/features/admin/screens/usuarios/gestion_usuarios.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.dart';
 
 class AppRoutes {

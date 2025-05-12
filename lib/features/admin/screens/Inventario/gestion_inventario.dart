@@ -4,7 +4,7 @@ import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
 import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
-import 'package:restaurante_app/features/admin/screens/Inventario/widgets/menu_lateral.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 
 class InventoryScreen extends StatefulWidget {
   const InventoryScreen({super.key});
@@ -21,11 +21,12 @@ class _InventoryScreenState extends State<InventoryScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Gestión de Inventario'),
+    return AdminScaffoldLayout(
+      title: Row(
+        children: [
+          const Expanded(child: Text('Gestión de Inventario')),
+        ],
       ),
-      drawer: SidebarMenuInventory(),
       body: Column(
         children: [
           CategoriaFilterWidget(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../widgets/menu_lateral_admin.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_dashboard/sidebar_menu.dart';
+import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -8,21 +9,17 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Dashboard'),
-      ),
-      drawer: SidebarMenu(),
+    return AdminScaffoldLayout(
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'assets/images/logo_3.png', // Asegúrate de que el logo esté en esta ruta
+              'assets/images/logo_3.png',
               width: screenWidth * 0.5,
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               '¡Bienvenidos!',
               style: TextStyle(
                 fontSize: 24,
