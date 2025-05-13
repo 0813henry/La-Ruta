@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restaurante_app/features/admin/widgets/admin_dashboard/sidebar_menu.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -8,7 +7,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    // final screenHeight = MediaQuery.of(context).size.height;
 
     return AdminScaffoldLayout(
       body: SingleChildScrollView(

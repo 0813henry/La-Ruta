@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/widgets/wbutton.dart';
 import 'package:restaurante_app/features/admin/screens/gastos/historial_gasto.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_expandable_section.dart';
@@ -9,7 +8,6 @@ import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.da
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
 import 'package:restaurante_app/features/admin/screens/dashboard.dart';
-import 'package:restaurante_app/features/admin/screens/gastos/agregar_gasto.dart';
 import 'package:restaurante_app/features/admin/screens/reportes/reportes_ventas.dart';
 import 'package:restaurante_app/features/admin/screens/usuarios/gestion_usuarios.dart';
 
@@ -45,7 +43,7 @@ class _SidebarMenuState extends State<SidebarMenu>
     super.dispose();
   }
 
-  void _navigateTo(BuildContext context, Widget screen, {bool replace = true}) {
+  void _navigateTo(BuildContext context, Widget screen) {
     Navigator.pushReplacement(
       context,
       PageRouteBuilder(

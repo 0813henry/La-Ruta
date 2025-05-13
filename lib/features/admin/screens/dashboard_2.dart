@@ -6,7 +6,7 @@ class DashboardScreen2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    // final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(title: const Text('RevTrack Mobile')),
