@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
-import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/categoria/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
 import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';

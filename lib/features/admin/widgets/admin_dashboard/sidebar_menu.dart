@@ -5,7 +5,7 @@ import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/si
 import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_header.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_menu_item.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.dart';
-import 'package:restaurante_app/features/admin/screens/Inventario/categoria.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/categoria/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
 import 'package:restaurante_app/features/admin/screens/dashboard.dart';
 import 'package:restaurante_app/features/admin/screens/reportes/reportes_ventas.dart';

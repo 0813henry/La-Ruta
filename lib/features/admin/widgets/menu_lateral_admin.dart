@@ -5,7 +5,7 @@ import '../screens/usuarios/gestion_usuarios.dart';
 import '../screens/reportes/reportes_ventas.dart';
 import '../screens/Inventario/gestion_inventario.dart';
 import '../screens/gastos/agregar_gasto.dart';
-import '../screens/Inventario/categoria.dart';
+import '../screens/Inventario/categoria/categoria.dart';
 import '../screens/Inventario/producto.dart';
 import '../screens/Inventario/adicionales.dart';
 
