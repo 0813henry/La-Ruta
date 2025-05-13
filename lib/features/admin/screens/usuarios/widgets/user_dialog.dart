@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/usuario_model.dart';
 import 'package:restaurante_app/core/services/servicio_cloudinary.dart';
 import 'package:restaurante_app/core/services/usuario_service.dart';
@@ -46,6 +47,7 @@ Future<void> showUserDialog({
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     if (!isEditing) ...[
+                      const SizedBox(height: 16),
                       UserTextField(
                         label: 'Email',
                         icon: Icons.email,
@@ -97,15 +99,32 @@ Future<void> showUserDialog({
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(ctx2),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppColors.primary,
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
                 child: const Text('Cancelar'),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
                 onPressed: () async {
                   try {
                     if (isEditing) {
                       final updated = UserModel(
-                        uid: user!.uid,
+                        uid: user.uid,
                         email: user.email,
                         name: name,
                         role: role,

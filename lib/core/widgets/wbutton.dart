@@ -6,6 +6,7 @@ class WButton extends StatelessWidget {
   final Widget? icon;
   final ButtonStyle? style;
   final VoidCallback? onPressed;
+  final TextStyle? labelStyle;
 
   const WButton({
     super.key,
@@ -13,10 +14,23 @@ class WButton extends StatelessWidget {
     this.icon,
     this.style,
     this.onPressed,
+    this.labelStyle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final ButtonStyle baseStyle = ElevatedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(vertical: 18),
+      backgroundColor: AppColors.primary,
+      foregroundColor: AppColors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      elevation: 2,
+    );
+
+    final ButtonStyle finalStyle = baseStyle.merge(style);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: SizedBox(
@@ -26,22 +40,13 @@ class WButton extends StatelessWidget {
           icon: icon ?? const SizedBox.shrink(),
           label: Text(
             label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 15,
-              color: AppColors.white,
-            ),
-          ),
-          style: style ??
-              ElevatedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                backgroundColor: AppColors.primary,
-                foregroundColor: AppColors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+            style: labelStyle ??
+                const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
                 ),
-                elevation: 2,
-              ),
+          ),
+          style: finalStyle,
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 
 class UserRoleSelector extends StatelessWidget {
   final String selectedRole;
@@ -12,34 +13,69 @@ class UserRoleSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.centerLeft,
-      child: PopupMenuButton<String>(
-        initialValue: selectedRole,
-        onSelected: onRoleSelected,
-        itemBuilder: (_) => const [
-          PopupMenuItem(value: 'admin', child: Text('Admin')),
-          PopupMenuItem(value: 'cajero', child: Text('Cajero')),
-          PopupMenuItem(value: 'mesero', child: Text('Mesero')),
-          PopupMenuItem(value: 'cocina', child: Text('Cocina')),
-        ],
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade400),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                selectedRole == 'Seleccione un rol'
-                    ? selectedRole
-                    : selectedRole[0].toUpperCase() + selectedRole.substring(1),
-                style: const TextStyle(fontSize: 16),
+    final screenWidth = MediaQuery.of(context).size.width;
+    final double containerWidth = (screenWidth * 0.8).clamp(250.0, 500.0);
+
+    return Center(
+      child: Container(
+        width: containerWidth,
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.primary),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: PopupMenuButton<String>(
+          padding: EdgeInsets.zero,
+          offset: const Offset(0, 60),
+          initialValue: selectedRole,
+          onSelected: onRoleSelected,
+          itemBuilder: (_) => [
+            PopupMenuItem(
+              value: 'admin',
+              child: SizedBox(
+                width: containerWidth,
+                child: const Text('Administrador'),
               ),
-              const Icon(Icons.arrow_drop_down),
-            ],
+            ),
+            PopupMenuItem(
+              value: 'cajero',
+              child: SizedBox(
+                width: containerWidth,
+                child: const Text('Cajero'),
+              ),
+            ),
+            PopupMenuItem(
+              value: 'mesero',
+              child: SizedBox(
+                width: containerWidth,
+                child: const Text('Mesero'),
+              ),
+            ),
+            PopupMenuItem(
+              value: 'cocina',
+              child: SizedBox(
+                width: containerWidth,
+                child: const Text('Cocina'),
+              ),
+            ),
+          ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    selectedRole == 'Seleccione un rol'
+                        ? selectedRole
+                        : selectedRole[0].toUpperCase() +
+                            selectedRole.substring(1),
+                    style: const TextStyle(fontSize: 16),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const Icon(Icons.arrow_drop_down),
+              ],
+            ),
           ),
         ),
       ),
