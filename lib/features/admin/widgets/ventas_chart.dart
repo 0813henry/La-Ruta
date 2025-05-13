@@ -15,7 +15,10 @@ class VentasChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Container(
+      width: size.width,
       height: 300,
       padding: const EdgeInsets.all(16.0),
       child: chartType == "bar" ? _buildBarChart() : _buildPieChart(),
@@ -23,29 +26,59 @@ class VentasChart extends StatelessWidget {
   }
 
   Widget _buildBarChart() {
-    return BarChart(
-      BarChartData(
-        barGroups: data
-            .asMap()
-            .entries
-            .map(
-              (entry) => BarChartGroupData(
-                x: entry.key,
-                barRods: [
-                  BarChartRodData(
-                    y: entry.value,
-                    colors: [Colors.blue],
-                    width: 16,
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SizedBox(
+        width: data.length * 50, // Espacio proporcional al número de barras
+        child: BarChart(
+          BarChartData(
+            barGroups: data
+                .asMap()
+                .entries
+                .map(
+                  (entry) => BarChartGroupData(
+                    x: entry.key,
+                    barRods: [
+                      BarChartRodData(
+                        toY: entry.value,
+                        color: Colors.blue,
+                        width: 20,
+                      ),
+                    ],
                   ),
-                ],
+                )
+                .toList(),
+            titlesData: FlTitlesData(
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(showTitles: true),
               ),
-            )
-            .toList(),
-        titlesData: FlTitlesData(
-          leftTitles: SideTitles(showTitles: true),
-          bottomTitles: SideTitles(
-            showTitles: true,
-            getTitles: (value) => labels[value.toInt()],
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (double value, TitleMeta meta) {
+                    final index = value.toInt();
+                    if (index < 0 || index >= labels.length) {
+                      return const SizedBox.shrink();
+                    }
+                    return SideTitleWidget(
+                      meta: meta, // Cambio clave
+                      child: Transform.rotate(
+                        angle: -0.8,
+                        child: Text(
+                          labels[index],
+                          style: const TextStyle(fontSize: 10),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+              rightTitles:
+                  AxisTitles(sideTitles: SideTitles(showTitles: false)),
+            ),
+            gridData: FlGridData(show: true),
+            borderData: FlBorderData(show: true),
           ),
         ),
       ),
@@ -63,6 +96,7 @@ class VentasChart extends StatelessWidget {
                 value: entry.value,
                 title: labels[entry.key],
                 color: Colors.primaries[entry.key % Colors.primaries.length],
+                titleStyle: const TextStyle(fontSize: 12, color: Colors.white),
               ),
             )
             .toList(),

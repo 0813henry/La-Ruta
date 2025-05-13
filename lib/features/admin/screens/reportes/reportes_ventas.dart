@@ -5,7 +5,7 @@ import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/features/admin/screens/reportes/widgets/balance_widget.dart';
 import 'package:restaurante_app/features/admin/screens/reportes/widgets/perdidas_totales_widget.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
-import '../../widgets/ventas_chart.dart';
+import 'package:restaurante_app/features/admin/widgets/ventas_chart.dart';
 
 class ReportsScreen extends StatefulWidget {
   const ReportsScreen({super.key});
