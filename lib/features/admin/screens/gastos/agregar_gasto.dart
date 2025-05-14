@@ -197,8 +197,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/gasto_model.dart';
 import 'package:restaurante_app/core/services/gasto_service.dart';
+import 'package:restaurante_app/core/widgets/wtext_field.dart';
 import 'package:uuid/uuid.dart';
 
 class AgregarGastoBottomSheet extends StatefulWidget {
@@ -309,20 +311,21 @@ class _AgregarGastoBottomSheetState extends State<AgregarGastoBottomSheet> {
                   height: isSmallScreen ? 200 : 250,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.teal[50],
+                    color: AppColors.primary.withOpacity(0.8),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.teal, width: 2),
+                    border: Border.all(color: AppColors.primary, width: 2),
                   ),
                   child: _imagenPath == null
                       ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const [
-                            Icon(Icons.upload, size: 48, color: Colors.teal),
+                            Icon(Icons.upload,
+                                size: 48, color: AppColors.white),
                             SizedBox(height: 8),
                             Text(
                               'Subir Imagen',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.teal),
+                              style: TextStyle(
+                                  fontSize: 16, color: AppColors.white),
                             ),
                           ],
                         )
@@ -336,45 +339,27 @@ class _AgregarGastoBottomSheetState extends State<AgregarGastoBottomSheet> {
                 ),
               ),
               const SizedBox(height: 16),
-              TextField(
-                controller: _descripcionController,
-                decoration: InputDecoration(
-                  labelText: 'Descripción',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  filled: true,
-                  fillColor: Colors.teal[50],
-                ),
-              ),
+              WTextField(
+                  controller: _descripcionController, label: 'Descripción'),
               const SizedBox(height: 16),
-              TextField(
-                controller: _valorController,
-                decoration: InputDecoration(
-                  labelText: 'Valor Total',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  filled: true,
-                  fillColor: Colors.teal[50],
-                ),
-                keyboardType: TextInputType.number,
-              ),
-              const SizedBox(height: 24),
+              WTextField(controller: _valorController, label: 'Valor Total'),
+              const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: _loading ? null : _agregarGasto,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.teal,
+                    backgroundColor: AppColors.primary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                   ),
                   child: _loading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Agregar', style: TextStyle(fontSize: 18)),
+                      ? const CircularProgressIndicator(color: AppColors.white)
+                      : const Text('Agregar',
+                          style:
+                              TextStyle(fontSize: 18, color: AppColors.white)),
                 ),
               ),
             ],

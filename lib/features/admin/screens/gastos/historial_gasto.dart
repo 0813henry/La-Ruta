@@ -94,6 +94,7 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/gasto_model.dart';
 import 'package:restaurante_app/core/services/gasto_service.dart';
 import 'package:restaurante_app/features/admin/screens/gastos/agregar_gasto.dart';
@@ -177,7 +178,7 @@ class _HistorialGastoScreenState extends State<HistorialGastoScreen> {
                         ),
                       )
                     : const CircleAvatar(
-                        backgroundColor: Colors.teal,
+                        backgroundColor: AppColors.primary,
                         child: Icon(Icons.attach_money, color: Colors.white),
                       ),
                 title: Text(
