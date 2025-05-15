@@ -3,10 +3,10 @@ import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
-import '../widgets/menu_lateral_mesero.dart';
-import '../widgets/carrito_widget.dart';
+import '../../widgets/menu_lateral_mesero.dart';
+import '../../widgets/carrito_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../widgets/categoria_selector.dart'; // Importamos el widget CategoriaSelector
+import '../../widgets/categoria_selector.dart'; // Importamos el widget CategoriaSelector
 
 class NuevoPedidoScreen extends StatefulWidget {
   final String mesaId;
@@ -413,14 +413,81 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
   }
 
   Future<void> _confirmOrder() async {
+    String cliente = widget.nombre;
+    String tipo = 'Local';
+    final TextEditingController clienteController =
+        TextEditingController(text: cliente);
+    String selectedTipo = tipo;
+    final tipos = ['Local', 'Domicilio', 'VIP'];
+
+    final result = await showDialog<Map<String, String>>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Datos del Cliente'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: clienteController,
+                decoration: InputDecoration(
+                  labelText: 'Nombre del Cliente',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16),
+              DropdownButtonFormField<String>(
+                value: selectedTipo,
+                items: tipos
+                    .map((t) => DropdownMenuItem(
+                          value: t,
+                          child: Text(t),
+                        ))
+                    .toList(),
+                onChanged: (value) {
+                  if (value != null) selectedTipo = value;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Tipo de Pedido',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context, {
+                  'cliente': clienteController.text.trim(),
+                  'tipo': selectedTipo,
+                });
+              },
+              child: Text('Confirmar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result == null || result['cliente']!.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Debes ingresar el nombre del cliente y tipo.')),
+      );
+      return;
+    }
+
     final total =
         _cart.fold(0.0, (sum, item) => sum + item.precio * item.cantidad);
     final order = OrderModel(
-      cliente: widget.nombre,
+      cliente: result['cliente']!,
       items: _cart,
       total: total,
       estado: 'Pendiente',
-      tipo: 'Local',
+      tipo: result['tipo']!,
       startTime: DateTime.now(),
     );
     try {
@@ -435,7 +502,14 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       setState(() {
         _cart.clear(); // Vaciar el carrito después de confirmar el pedido
       });
-      Navigator.pop(context); // Cerrar el carrito
+      await _guardarCarrito(); // Limpiar carrito en Firestore también
+
+      // Cerrar todos los modals abiertos (carrito, summary, etc.)
+      Navigator.of(context, rootNavigator: true)
+          .popUntil((route) => route.isFirst);
+
+      // Redirigir a la pantalla de pedidos
+      Navigator.pushReplacementNamed(context, '/pedidos');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al enviar el pedido: $e')),
@@ -491,7 +565,6 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                     onRemoveItem: _removeFromCart, // Eliminar un ítem
                     total: total, // Total del carrito
                     onConfirmOrder: _confirmOrder, // Confirmar pedido
-                    onCloseMesa: _closeMesa, // Cerrar mesa
                   ),
                 ),
               );

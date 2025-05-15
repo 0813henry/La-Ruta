@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../core/model/pedido_model.dart';
-import '../../../core/services/pedido_service.dart';
+import '../../../../core/model/pedido_model.dart';
+import '../../../../core/services/pedido_service.dart';
 
 class DividirCuentaScreen extends StatefulWidget {
   final String mesaId;

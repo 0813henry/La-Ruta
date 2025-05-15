@@ -25,13 +25,6 @@ class MenuLateralMesero extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: <Widget>[
                 ListTile(
-                  leading: Icon(Icons.table_chart),
-                  title: Text('Mesas'),
-                  onTap: () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.mesas);
-                  },
-                ),
-                ListTile(
                   leading: Icon(Icons.restaurant_menu),
                   title: Text('Pedidos Activos'),
                   onTap: () {

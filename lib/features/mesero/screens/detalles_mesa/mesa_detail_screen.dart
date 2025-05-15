@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
-import '../../../routes/app_routes.dart';
+import '../../../../routes/app_routes.dart';
 
 class MesaDetailScreen extends StatefulWidget {
   final String mesaId; // ID generado por Firebase (no se mostrará)

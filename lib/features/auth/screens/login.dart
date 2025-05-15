@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
               Navigator.pushReplacementNamed(context, '/cashier');
               break;
             case 'mesero':
-              Navigator.pushReplacementNamed(context, '/mesas');
+              Navigator.pushReplacementNamed(context, '/pedidos');
               break;
             case 'cocina':
               Navigator.pushReplacementNamed(context, '/kanban');

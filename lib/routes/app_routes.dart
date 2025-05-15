@@ -9,9 +9,8 @@ import 'package:restaurante_app/features/caja/screens/caja_home_screen.dart';
 import 'package:restaurante_app/features/caja/screens/historial_screen.dart';
 import 'package:restaurante_app/features/cocina/screens/cocina_home_screen.dart';
 import 'package:restaurante_app/features/cocina/screens/pedido_detail_screen.dart';
-import 'package:restaurante_app/features/mesero/screens/mesas_screen.dart';
-import 'package:restaurante_app/features/mesero/screens/mesa_detail_screen.dart';
-import 'package:restaurante_app/features/mesero/screens/nuevo_pedido_screen.dart';
+import 'package:restaurante_app/features/mesero/screens/detalles_mesa/mesa_detail_screen.dart';
+import 'package:restaurante_app/features/mesero/screens/nuevo_pedido/nuevo_pedido_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/pedidos_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/resumen_screen.dart';
 import 'package:restaurante_app/features/admin/screens/usuarios/gestion_usuarios.dart';
@@ -22,7 +21,6 @@ class AppRoutes {
   static const register = '/register';
   static const resetPassword = '/reset-password';
   static const dashboard = '/dashboard';
-  static const mesas = '/mesas';
   static const mesaDetail = '/mesa-detail';
   static const nuevoPedido = '/nuevo-pedido';
   static const orders = '/orders';
@@ -45,7 +43,7 @@ class AppRoutes {
       register: (context) => RegisterScreen(),
       resetPassword: (context) => ResetPasswordScreen(),
       dashboard: (context) => DashboardScreen(),
-      mesas: (context) => MesasScreen(),
+      pedidos: (context) => OrdersScreen(),
       mesaDetail: (context) {
         final args =
             ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
