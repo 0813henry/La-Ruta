@@ -4,6 +4,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
 import 'package:restaurante_app/core/model/gasto_model.dart';
+import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:http/http.dart' as http;
 
 Future<void> generarPDFConfirmacion(Gasto gasto) async {
@@ -104,4 +105,182 @@ Future<void> generarPDFConfirmacion(Gasto gasto) async {
   );
 
   await Printing.layoutPdf(onLayout: (format) => pdf.save());
+}
+
+Future<pw.Document> generarPDFPedido(OrderModel pedido,
+    {String? metodoPago, bool returnPdf = false}) async {
+  final pdf = pw.Document();
+
+  final ByteData logoData = await rootBundle.load('assets/images/logo_2.png');
+  final Uint8List logoBytes = logoData.buffer.asUint8List();
+
+  double divisionSubtotal(List<OrderItem> items) {
+    double subtotal = 0.0;
+    for (var item in items) {
+      final adicionalesTotal = item.adicionales.fold(
+        0.0,
+        (sum, adicional) => sum + (adicional['price'] as double),
+      );
+      subtotal += (item.precio + adicionalesTotal) * item.cantidad;
+    }
+    return subtotal;
+  }
+
+  double totalGeneral(OrderModel pedido) {
+    double total = divisionSubtotal(pedido.items);
+    if (pedido.divisiones != null && pedido.divisiones!.isNotEmpty) {
+      pedido.divisiones!.forEach((_, items) {
+        total += divisionSubtotal(items);
+      });
+    }
+    return total;
+  }
+
+  pdf.addPage(
+    pw.Page(
+      pageFormat: PdfPageFormat.a4,
+      margin: const pw.EdgeInsets.all(32),
+      build: (context) {
+        return pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text('Factura de Pedido',
+                    style: pw.TextStyle(
+                      fontSize: 24,
+                      fontWeight: pw.FontWeight.bold,
+                    )),
+                pw.Image(pw.MemoryImage(logoBytes), height: 50),
+              ],
+            ),
+            pw.SizedBox(height: 10),
+            pw.Divider(),
+            pw.SizedBox(height: 10),
+            pw.Text('ID Pedido: ${pedido.id}',
+                style: pw.TextStyle(fontSize: 12, color: PdfColors.grey600)),
+            pw.Text('Cliente: ${pedido.cliente}'),
+            pw.Text('Estado: ${pedido.estado}'),
+            pw.Text('Tipo: ${pedido.tipo}'),
+            if (metodoPago != null) pw.Text('Método de Pago: $metodoPago'),
+            pw.SizedBox(height: 20),
+            pw.Text('Productos principales:',
+                style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+            ...pedido.items.map((item) {
+              final adicionalesTotal = item.adicionales.fold(
+                0.0,
+                (sum, adicional) => sum + (adicional['price'] as double),
+              );
+              final itemTotal =
+                  (item.precio + adicionalesTotal) * item.cantidad;
+              return pw.Row(
+                children: [
+                  pw.Expanded(
+                      child: pw.Text('${item.nombre} x${item.cantidad}')),
+                  pw.Text('\$${itemTotal.toStringAsFixed(2)}'),
+                ],
+              );
+            }),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.end,
+              children: [
+                pw.Text(
+                  'Subtotal: \$${divisionSubtotal(pedido.items).toStringAsFixed(2)}',
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                ),
+              ],
+            ),
+            if (pedido.divisiones != null && pedido.divisiones!.isNotEmpty) ...[
+              pw.SizedBox(height: 16),
+              pw.Text('Divisiones:',
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              ...pedido.divisiones!.entries.map((entry) {
+                final division = entry.key;
+                final productos = entry.value;
+                final subtotal = divisionSubtotal(productos);
+                return pw.Container(
+                  margin: const pw.EdgeInsets.only(bottom: 8),
+                  decoration: pw.BoxDecoration(
+                    color: PdfColors.grey200,
+                    borderRadius: pw.BorderRadius.circular(8),
+                  ),
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.all(8.0),
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text('División: $division',
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        ...productos.map((item) {
+                          final adicionalesTotal = item.adicionales.fold(
+                            0.0,
+                            (sum, adicional) =>
+                                sum + (adicional['price'] as double),
+                          );
+                          final itemTotal =
+                              (item.precio + adicionalesTotal) * item.cantidad;
+                          return pw.Row(
+                            children: [
+                              pw.Expanded(
+                                  child: pw.Text(
+                                      '${item.nombre} x${item.cantidad}')),
+                              pw.Text('\$${itemTotal.toStringAsFixed(2)}'),
+                            ],
+                          );
+                        }),
+                        pw.Row(
+                          mainAxisAlignment: pw.MainAxisAlignment.end,
+                          children: [
+                            pw.Text(
+                              'Subtotal: \$${subtotal.toStringAsFixed(2)}',
+                              style:
+                                  pw.TextStyle(fontWeight: pw.FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
+            pw.Divider(),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.end,
+              children: [
+                pw.Text(
+                  'TOTAL GENERAL: \$${totalGeneral(pedido).toStringAsFixed(2)}',
+                  style: pw.TextStyle(
+                    fontWeight: pw.FontWeight.bold,
+                    fontSize: 18,
+                    color: PdfColors.green800,
+                  ),
+                ),
+              ],
+            ),
+            pw.Spacer(),
+            pw.Align(
+              alignment: pw.Alignment.centerRight,
+              child: pw.Text(
+                'La Ruta © ${DateTime.now().year}',
+                style: pw.TextStyle(
+                  fontSize: 10,
+                  color: PdfColors.grey500,
+                ),
+              ),
+            )
+          ],
+        );
+      },
+    ),
+  );
+
+  if (returnPdf) {
+    return pdf;
+  } else {
+    await Printing.layoutPdf(onLayout: (format) => pdf.save());
+    return pdf;
+  }
 }
