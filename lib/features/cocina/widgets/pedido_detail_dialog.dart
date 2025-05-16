@@ -11,17 +11,23 @@ class PedidoDetailDialog extends StatelessWidget {
     super.key,
   });
 
-  void _cambiarEstado(BuildContext context, String nuevoEstado) {
+  void _cambiarEstado(BuildContext context, String nuevoEstado) async {
     if (pedido.id == null || pedido.id!.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: El ID del pedido no está disponible.')),
       );
       return;
     }
-    if (onEstadoCambiado != null) {
-      onEstadoCambiado!(pedido.id!, nuevoEstado);
+    try {
+      if (onEstadoCambiado != null) {
+        await Future.sync(() => onEstadoCambiado!(pedido.id!, nuevoEstado));
+      }
+      Navigator.pop(context);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al actualizar el estado: $e')),
+      );
     }
-    Navigator.pop(context);
   }
 
   double _divisionSubtotal(List<OrderItem> items) {

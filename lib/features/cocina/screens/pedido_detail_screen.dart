@@ -86,7 +86,7 @@ class PedidoDetailScreen extends StatelessWidget {
     final divisiones = pedido.divisiones ?? {};
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalle del Pedido ${pedido.id}'),
+        title: Text('Detalle del Pedido'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -99,14 +99,34 @@ class PedidoDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Factura',
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
+                  Row(
+                    children: [
+                      Icon(Icons.person, color: Colors.blueAccent),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          pedido.cliente,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 22),
+                        ),
+                      ),
+                      Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          pedido.estado,
+                          style: TextStyle(
+                              color: Colors.blue[900],
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
+                  ),
                   SizedBox(height: 8),
-                  Text('Cliente: ${pedido.cliente}',
-                      style: TextStyle(fontSize: 16)),
-                  Text('Estado: ${pedido.estado}',
-                      style: TextStyle(fontSize: 16)),
                   Text('Tipo: ${pedido.tipo}', style: TextStyle(fontSize: 16)),
                   Divider(height: 24),
                   Text('Productos principales:',
@@ -161,9 +181,17 @@ class PedidoDetailScreen extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('División: $division',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold)),
+                                Row(
+                                  children: [
+                                    Icon(Icons.group,
+                                        color: const Color.fromARGB(
+                                            255, 242, 243, 243)),
+                                    SizedBox(width: 8),
+                                    Text('División: $division',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
                                 ...productos.map((item) {
                                   final adicionalesTotal =
                                       item.adicionales.fold(

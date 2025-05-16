@@ -26,6 +26,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   void initState() {
     super.initState();
     NotificationService().escucharNotificacionesCocina((pedidoId) {
+      if (!mounted) return; // <-- Solución: solo usar context si está montado
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('El pedido $pedidoId está listo.')),
       );

@@ -12,7 +12,7 @@ class CocinaHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pedidos - Kanban'),
+        title: Text('Pedidos - La Ruta'),
       ),
       drawer: MenuLateralCocina(),
       body: Row(
