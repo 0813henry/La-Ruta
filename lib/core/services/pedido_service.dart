@@ -11,7 +11,7 @@ class PedidoService {
   Future<void> crearPedido(OrderModel pedido) async {
     try {
       final pedidoData = pedido.toMap();
-      await _firestore.collection('pedidos').add(pedidoData);
+      await _firestore.collection('pedidos').doc(pedido.id).set(pedidoData);
       NotificationService()
           .notificarCocina('Nuevo pedido creado: ${pedido.id}');
     } catch (e) {

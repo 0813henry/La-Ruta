@@ -24,8 +24,31 @@ class PedidoDetailDialog extends StatelessWidget {
     Navigator.pop(context);
   }
 
+  double _divisionSubtotal(List<OrderItem> items) {
+    double subtotal = 0.0;
+    for (var item in items) {
+      final adicionalesTotal = item.adicionales.fold(
+        0.0,
+        (sum, adicional) => sum + (adicional['price'] as double),
+      );
+      subtotal += (item.precio + adicionalesTotal) * item.cantidad;
+    }
+    return subtotal;
+  }
+
+  double _totalGeneral(OrderModel pedido) {
+    double total = _divisionSubtotal(pedido.items);
+    if (pedido.divisiones != null && pedido.divisiones!.isNotEmpty) {
+      pedido.divisiones!.forEach((_, items) {
+        total += _divisionSubtotal(items);
+      });
+    }
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final divisiones = pedido.divisiones ?? {};
     return AlertDialog(
       title: Text('Detalles del Pedido ${pedido.id}'),
       content: SingleChildScrollView(
@@ -36,18 +59,108 @@ class PedidoDetailDialog extends StatelessWidget {
             SizedBox(height: 8),
             Text('Estado: ${pedido.estado}', style: TextStyle(fontSize: 16)),
             SizedBox(height: 8),
-            Text('Items:', style: TextStyle(fontWeight: FontWeight.bold)),
-            ...pedido.items.map((item) => ListTile(
-                  title: Text('${item.nombre} x${item.cantidad}'),
-                  subtitle: Text('Notas: ${item.descripcion}'),
-                  trailing: Text(
-                    '\$${(item.precio * item.cantidad).toStringAsFixed(2)}',
-                  ),
-                )),
             Divider(),
-            Text(
-              'Total: \$${pedido.total.toStringAsFixed(2)}',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            Text('Productos principales:',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ...pedido.items.map((item) {
+              final adicionalesTotal = item.adicionales.fold(
+                0.0,
+                (sum, adicional) => sum + (adicional['price'] as double),
+              );
+              final itemTotal =
+                  (item.precio + adicionalesTotal) * item.cantidad;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2.0),
+                child: Row(
+                  children: [
+                    Expanded(child: Text('${item.nombre} x${item.cantidad}')),
+                    Text('\$${itemTotal.toStringAsFixed(2)}'),
+                  ],
+                ),
+              );
+            }),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Subtotal: \$${_divisionSubtotal(pedido.items).toStringAsFixed(2)}',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            if (divisiones.isNotEmpty) ...[
+              Divider(height: 24),
+              Text('Divisiones:',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+              ...divisiones.entries.map((entry) {
+                final division = entry.key;
+                final productos = entry.value;
+                final subtotal = _divisionSubtotal(productos);
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: Card(
+                    color: Colors.grey[100],
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('División: $division',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          ...productos.map((item) {
+                            final adicionalesTotal = item.adicionales.fold(
+                              0.0,
+                              (sum, adicional) =>
+                                  sum + (adicional['price'] as double),
+                            );
+                            final itemTotal = (item.precio + adicionalesTotal) *
+                                item.cantidad;
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 2.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                          '${item.nombre} x${item.cantidad}')),
+                                  Text('\$${itemTotal.toStringAsFixed(2)}'),
+                                ],
+                              ),
+                            );
+                          }),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                'Subtotal: \$${subtotal.toStringAsFixed(2)}',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ],
+            Divider(height: 32),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'TOTAL GENERAL: \$${_totalGeneral(pedido).toStringAsFixed(2)}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.green[700],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

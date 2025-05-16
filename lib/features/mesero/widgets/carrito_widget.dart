@@ -7,7 +7,9 @@ class CarritoWidget extends StatelessWidget {
   final Function(OrderItem) onRemoveItem;
   final double total;
   final VoidCallback onConfirmOrder;
-  final String confirmButtonText; // <-- Nuevo parámetro
+  final String confirmButtonText;
+  final Map<String, List<OrderItem>>?
+      divisiones; // <-- Añadir este parámetro opcional
 
   const CarritoWidget({
     required this.cartItems,
@@ -15,12 +17,38 @@ class CarritoWidget extends StatelessWidget {
     required this.onRemoveItem,
     required this.total,
     required this.onConfirmOrder,
-    this.confirmButtonText = 'Confirmar Pedido', // <-- Valor por defecto
+    this.confirmButtonText = 'Confirmar Pedido',
+    this.divisiones, // <-- Añadir aquí
     super.key,
   });
 
+  double _divisionesTotal() {
+    if (divisiones == null || divisiones!.isEmpty) return 0.0;
+    double totalDiv = 0.0;
+    divisiones!.forEach((_, items) {
+      for (var item in items) {
+        final adicionalesTotal = item.adicionales.fold(
+          0.0,
+          (sum, adicional) => sum + (adicional['price'] as double),
+        );
+        totalDiv += (item.precio + adicionalesTotal) * item.cantidad;
+      }
+    });
+    return totalDiv;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final totalDivisiones = _divisionesTotal();
+    final totalGeneral = cartItems.fold(0.0, (sum, item) {
+          final adicionalesTotal = item.adicionales.fold(
+            0.0,
+            (sum, adicional) => sum + (adicional['price'] as double),
+          );
+          return sum + (item.precio + adicionalesTotal) * item.cantidad;
+        }) +
+        totalDivisiones;
+
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -97,13 +125,7 @@ class CarritoWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              'Total: \$${cartItems.fold(0.0, (sum, item) {
-                final adicionalesTotal = item.adicionales.fold(
-                  0.0,
-                  (sum, adicional) => sum + (adicional['price'] as double),
-                );
-                return sum + (item.precio + adicionalesTotal) * item.cantidad;
-              }).toStringAsFixed(2)}',
+              'Total: \$${totalGeneral.toStringAsFixed(2)}',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

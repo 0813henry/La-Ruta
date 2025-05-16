@@ -55,6 +55,7 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
       context,
       MaterialPageRoute(
         builder: (context) => DividirCuentaScreen(
+          pedido: widget.pedido,
           mesaId:
               widget.pedido.id ?? '', // Pasa el id de la mesa/pedido si existe
           productos: List<OrderItem>.from(_items),
@@ -63,8 +64,32 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
     );
   }
 
+  double _divisionSubtotal(List<OrderItem> items) {
+    double subtotal = 0.0;
+    for (var item in items) {
+      final adicionalesTotal = item.adicionales.fold(
+        0.0,
+        (sum, adicional) => sum + (adicional['price'] as double),
+      );
+      subtotal += (item.precio + adicionalesTotal) * item.cantidad;
+    }
+    return subtotal;
+  }
+
+  double _totalGeneral() {
+    double total = _divisionSubtotal(_items);
+    if (widget.pedido.divisiones != null &&
+        widget.pedido.divisiones!.isNotEmpty) {
+      widget.pedido.divisiones!.forEach((_, items) {
+        total += _divisionSubtotal(items);
+      });
+    }
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final divisiones = widget.pedido.divisiones ?? {};
     return Scaffold(
       appBar: AppBar(
         title: Text('Detalle del Pedido'),
@@ -79,53 +104,143 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: _items.length,
-              itemBuilder: (context, index) {
-                final item = _items[index];
-                return ListTile(
-                  title: Text(item.nombre),
-                  subtitle: Text('\$${item.precio.toStringAsFixed(2)}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
+            child: SingleChildScrollView(
+              child: Card(
+                margin: const EdgeInsets.all(16),
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      IconButton(
-                        icon: Icon(Icons.remove),
-                        onPressed: item.cantidad > 1
-                            ? () => _actualizarCantidad(item, item.cantidad - 1)
-                            : null,
+                      Text('Factura',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 22)),
+                      SizedBox(height: 8),
+                      Text('Cliente: ${widget.pedido.cliente}',
+                          style: TextStyle(fontSize: 16)),
+                      Text('Estado: ${widget.pedido.estado}',
+                          style: TextStyle(fontSize: 16)),
+                      Text('Tipo: ${widget.pedido.tipo}',
+                          style: TextStyle(fontSize: 16)),
+                      Divider(height: 24),
+                      Text('Productos principales:',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16)),
+                      ..._items.map((item) {
+                        final adicionalesTotal = item.adicionales.fold(
+                          0.0,
+                          (sum, adicional) =>
+                              sum + (adicional['price'] as double),
+                        );
+                        final itemTotal =
+                            (item.precio + adicionalesTotal) * item.cantidad;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 2.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                  child:
+                                      Text('${item.nombre} x${item.cantidad}')),
+                              Text('\$${itemTotal.toStringAsFixed(2)}'),
+                            ],
+                          ),
+                        );
+                      }),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 4.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              'Subtotal: \$${_divisionSubtotal(_items).toStringAsFixed(2)}',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
-                      Text('${item.cantidad}'),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: () =>
-                            _actualizarCantidad(item, item.cantidad + 1),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _eliminarProducto(item),
+                      if (divisiones.isNotEmpty) ...[
+                        Divider(height: 24),
+                        Text('Divisiones:',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16)),
+                        ...divisiones.entries.map((entry) {
+                          final division = entry.key;
+                          final productos = entry.value;
+                          final subtotal = _divisionSubtotal(productos);
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 12.0),
+                            child: Card(
+                              color: Colors.grey[100],
+                              elevation: 2,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text('División: $division',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    ...productos.map((item) {
+                                      final adicionalesTotal =
+                                          item.adicionales.fold(
+                                        0.0,
+                                        (sum, adicional) =>
+                                            sum +
+                                            (adicional['price'] as double),
+                                      );
+                                      final itemTotal =
+                                          (item.precio + adicionalesTotal) *
+                                              item.cantidad;
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 2.0),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                                child: Text(
+                                                    '${item.nombre} x${item.cantidad}')),
+                                            Text(
+                                                '\$${itemTotal.toStringAsFixed(2)}'),
+                                          ],
+                                        ),
+                                      );
+                                    }),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          'Subtotal: \$${subtotal.toStringAsFixed(2)}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                      ],
+                      Divider(height: 32),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(
+                            'TOTAL GENERAL: \$${_totalGeneral().toStringAsFixed(2)}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.green[700],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-          ),
-          Divider(),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Total:',
-                    style:
-                        TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                Text('\$${_total.toStringAsFixed(2)}',
-                    style: TextStyle(
-                        color: Colors.green,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18)),
-              ],
+                ),
+              ),
             ),
           ),
           Padding(

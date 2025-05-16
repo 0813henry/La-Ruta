@@ -242,7 +242,29 @@ class _OrdersScreenState extends State<OrdersScreen> {
                             ),
                             SizedBox(height: 4),
                             Text(
-                              'Total: \$${pedido.total.toStringAsFixed(2)}',
+                              'Total: \$${(() {
+                                double total = pedido.total;
+                                if (pedido.divisiones != null &&
+                                    pedido.divisiones!.isNotEmpty) {
+                                  double totalDiv = 0.0;
+                                  pedido.divisiones!.forEach((_, items) {
+                                    for (var item in items) {
+                                      final adicionalesTotal =
+                                          item.adicionales.fold(
+                                        0.0,
+                                        (sum, adicional) =>
+                                            sum +
+                                            (adicional['price'] as double),
+                                      );
+                                      totalDiv +=
+                                          (item.precio + adicionalesTotal) *
+                                              item.cantidad;
+                                    }
+                                  });
+                                  total += totalDiv;
+                                }
+                                return total.toStringAsFixed(2);
+                              })()}',
                               style: TextStyle(
                                 color: AppColors.success,
                                 fontWeight: FontWeight.bold,
@@ -280,6 +302,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                                       mesaId: pedido.id ?? '',
                                       productos:
                                           List<OrderItem>.from(pedido.items),
+                                      pedido: pedido,
                                     ),
                                   ),
                                 );

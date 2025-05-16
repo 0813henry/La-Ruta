@@ -51,7 +51,6 @@ class AppRoutes {
       kitchenOrders: (context) => KitchenOrdersScreen(),
       inventory: (context) => InventoryScreen(),
       products: (context) => ProductoScreen(),
-      pedidos: (context) => OrdersScreen(),
       resumen: (context) => ResumenScreen(),
       kanban: (context) => CocinaHomeScreen(),
       usuarios: (context) => UsersScreen(),

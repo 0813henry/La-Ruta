@@ -1,21 +1,27 @@
+import 'package:uuid/uuid.dart';
+
 class OrderModel {
-  String? id;
+  String id;
   String cliente;
   List<OrderItem> items;
   double total;
   String estado;
   String tipo; // Local, Domicilio, VIP
   DateTime? startTime;
+  Map<String, List<OrderItem>>? divisiones; // <-- nuevo campo
+  String? idDivisiones; // <-- nuevo campo
 
   OrderModel({
-    this.id,
+    String? id,
     required this.cliente,
     required this.items,
     required this.total,
     required this.estado,
     required this.tipo,
     this.startTime,
-  });
+    this.divisiones, // <-- nuevo campo
+    this.idDivisiones, // <-- nuevo campo
+  }) : id = id ?? const Uuid().v4();
 
   Map<String, dynamic> toMap() {
     return {
@@ -26,13 +32,15 @@ class OrderModel {
       'estado': estado,
       'tipo': tipo,
       'startTime': startTime?.toIso8601String(),
+      'divisiones': divisiones
+          ?.map((k, v) => MapEntry(k, v.map((item) => item.toMap()).toList())),
+      'idDivisiones': idDivisiones, // <-- nuevo campo
     };
   }
 
   factory OrderModel.fromMap(Map<String, dynamic> map, [String? documentId]) {
     return OrderModel(
-      id: documentId ??
-          map['id'], // Usar el ID del documento si está disponible
+      id: map['id'] ?? documentId, // Usa el id del mapa o el documentId
       cliente: map['cliente'],
       items: List<OrderItem>.from(
           map['items'].map((item) => OrderItem.fromMap(item))),
@@ -41,6 +49,13 @@ class OrderModel {
       tipo: map['tipo'],
       startTime:
           map['startTime'] != null ? DateTime.parse(map['startTime']) : null,
+      divisiones: map['divisiones'] != null
+          ? (map['divisiones'] as Map<String, dynamic>).map((k, v) => MapEntry(
+              k,
+              List<OrderItem>.from(
+                  (v as List).map((item) => OrderItem.fromMap(item)))))
+          : null,
+      idDivisiones: map['idDivisiones'], // <-- nuevo campo
     );
   }
 
@@ -53,6 +68,8 @@ class OrderModel {
     String? tipo,
     String? mesaId,
     DateTime? startTime,
+    Map<String, List<OrderItem>>? divisiones,
+    String? idDivisiones, // <-- nuevo campo
     // agrega otros campos si es necesario
   }) {
     return OrderModel(
@@ -63,6 +80,8 @@ class OrderModel {
       estado: estado ?? this.estado,
       tipo: tipo ?? this.tipo,
       startTime: startTime ?? this.startTime,
+      divisiones: divisiones ?? this.divisiones,
+      idDivisiones: idDivisiones ?? this.idDivisiones, // <-- nuevo campo
       // agrega otros campos si es necesario
     );
   }
