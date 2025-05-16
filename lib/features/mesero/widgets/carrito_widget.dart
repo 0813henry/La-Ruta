@@ -7,6 +7,7 @@ class CarritoWidget extends StatelessWidget {
   final Function(OrderItem) onRemoveItem;
   final double total;
   final VoidCallback onConfirmOrder;
+  final String confirmButtonText; // <-- Nuevo parámetro
 
   const CarritoWidget({
     required this.cartItems,
@@ -14,6 +15,7 @@ class CarritoWidget extends StatelessWidget {
     required this.onRemoveItem,
     required this.total,
     required this.onConfirmOrder,
+    this.confirmButtonText = 'Confirmar Pedido', // <-- Valor por defecto
     super.key,
   });
 
@@ -112,7 +114,7 @@ class CarritoWidget extends StatelessWidget {
           ElevatedButton.icon(
             onPressed: onConfirmOrder,
             icon: Icon(Icons.check),
-            label: Text('Confirmar Pedido'),
+            label: Text(confirmButtonText),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               foregroundColor: Colors.white,

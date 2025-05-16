@@ -229,4 +229,18 @@ class PedidoService {
       throw Exception('Error al obtener ganancias por estado y rango: $e');
     }
   }
+
+  Future<void> actualizarPedido(OrderModel pedido) async {
+    if (pedido.id == null || pedido.id!.isEmpty) {
+      throw Exception('El pedido no tiene un ID válido.');
+    }
+    try {
+      await _firestore
+          .collection('pedidos')
+          .doc(pedido.id)
+          .update(pedido.toMap());
+    } catch (e) {
+      throw Exception('Error al actualizar el pedido: $e');
+    }
+  }
 }

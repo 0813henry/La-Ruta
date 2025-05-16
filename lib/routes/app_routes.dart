@@ -9,7 +9,6 @@ import 'package:restaurante_app/features/caja/screens/caja_home_screen.dart';
 import 'package:restaurante_app/features/caja/screens/historial_screen.dart';
 import 'package:restaurante_app/features/cocina/screens/cocina_home_screen.dart';
 import 'package:restaurante_app/features/cocina/screens/pedido_detail_screen.dart';
-import 'package:restaurante_app/features/mesero/screens/detalles_mesa/mesa_detail_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/nuevo_pedido/nuevo_pedido_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/pedidos_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/resumen_screen.dart';
@@ -44,27 +43,6 @@ class AppRoutes {
       resetPassword: (context) => ResetPasswordScreen(),
       dashboard: (context) => DashboardScreen(),
       pedidos: (context) => OrdersScreen(),
-      mesaDetail: (context) {
-        final args =
-            ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-        if (args == null ||
-            !args.containsKey('mesaId') ||
-            !args.containsKey('nombre') ||
-            !args.containsKey('cliente') ||
-            !args.containsKey('numero')) {
-          throw Exception(
-              'Faltan argumentos requeridos para MesaDetailScreen.');
-        }
-
-        return MesaDetailScreen(
-          mesaId: args['mesaId'] ?? '',
-          nombre: args['nombre'] ?? '',
-          cliente: args['cliente'] ?? '',
-          numero:
-              args['numero'] ?? 0, // Aseguramos que el número sea proporcionado
-        );
-      },
       nuevoPedido: (context) => NuevoPedidoScreen(
             mesaId: '', // Placeholder, se debe pasar dinámicamente
             nombre: '', // Placeholder, se debe pasar dinámicamente

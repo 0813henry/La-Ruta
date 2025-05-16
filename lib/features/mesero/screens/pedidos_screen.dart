@@ -3,8 +3,12 @@ import 'package:restaurante_app/core/services/notification_service.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/widgets/modules/pedido_item.dart';
+import 'package:restaurante_app/features/cocina/screens/pedido_detail_screen.dart';
+import 'package:restaurante_app/features/mesero/screens/detalles_mesa/dividir_cuenta_screen.dart';
 import 'package:restaurante_app/features/mesero/screens/nuevo_pedido/nuevo_pedido_screen.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart'; // <-- Importa AppColors
 import '../widgets/menu_lateral_mesero.dart';
+
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
 
@@ -52,15 +56,67 @@ class _OrdersScreenState extends State<OrdersScreen> {
     );
   }
 
+  // Mapeo de colores para tipos de pedido
+  Color _colorTipoPedido(String tipo) {
+    switch (tipo.toLowerCase()) {
+      case 'domicilio':
+        return AppColors.domicilio;
+      case 'vip':
+        return AppColors.vip;
+      case 'local':
+        return AppColors.principal;
+      default:
+        return AppColors.coolGray;
+    }
+  }
+
+  // Mapeo de colores para estados de pedido
+  Color _colorEstadoPedido(String estado) {
+    switch (estado.toLowerCase()) {
+      case 'pendiente':
+        return AppColors.pendiente;
+      case 'en proceso':
+        return AppColors.enProceso;
+      case 'listo':
+        return AppColors.listoParaServir;
+      case 'en camino':
+        return AppColors.enCamino;
+      case 'entregado':
+        return AppColors.entregado;
+      case 'cancelado':
+        return AppColors.cancelado;
+      default:
+        return AppColors.coolGray;
+    }
+  }
+
   Widget buildTipoDropdown() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: DropdownButton<String>(
         value: _selectedTipo,
-        items: ['Todos', 'Local', 'Domicilio', 'VIP']
+        items: [
+          {'label': 'Todos', 'color': AppColors.coolGray},
+          {'label': 'Local', 'color': AppColors.principal},
+          {'label': 'Domicilio', 'color': AppColors.domicilio},
+          {'label': 'VIP', 'color': AppColors.vip},
+        ]
             .map((tipo) => DropdownMenuItem(
-                  value: tipo,
-                  child: Text(tipo),
+                  value: tipo['label'] as String,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: tipo['color'] as Color,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      Text(tipo['label'] as String),
+                    ],
+                  ),
                 ))
             .toList(),
         onChanged: (value) {
@@ -79,18 +135,27 @@ class _OrdersScreenState extends State<OrdersScreen> {
       child: DropdownButton<String>(
         value: _selectedEstado,
         items: [
-          'Todos',
-          'Pendientes',
-          'Confirmado',
-          'Producción',
-          'Listo',
-          'Listo Reparto',
-          'Recoger',
-          'Salida Entrega'
+          {'label': 'Todos', 'color': AppColors.coolGray},
+          {'label': 'Pendiente', 'color': AppColors.pendiente},
+          {'label': 'En Proceso', 'color': AppColors.enProceso},
+          {'label': 'Listo', 'color': AppColors.listoParaServir},
         ]
             .map((estado) => DropdownMenuItem(
-                  value: estado,
-                  child: Text(estado),
+                  value: estado['label'] as String,
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 12,
+                        height: 12,
+                        margin: EdgeInsets.only(right: 8),
+                        decoration: BoxDecoration(
+                          color: estado['color'] as Color,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      Text(estado['label'] as String),
+                    ],
+                  ),
                 ))
             .toList(),
         onChanged: (value) {
@@ -142,11 +207,96 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   itemCount: filteredPedidos.length,
                   itemBuilder: (context, index) {
                     final pedido = filteredPedidos[index];
-                    return PedidoItem(
-                      pedido: pedido,
-                      onTap: () {
-                        // Acción al seleccionar un pedido
-                      },
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: _colorTipoPedido(pedido.tipo),
+                          child: Icon(Icons.fastfood, color: Colors.white),
+                        ),
+                        title: Text(pedido.cliente),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: _colorEstadoPedido(pedido.estado),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    pedido.estado,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(pedido.tipo),
+                              ],
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'Total: \$${pedido.total.toStringAsFixed(2)}',
+                              style: TextStyle(
+                                color: AppColors.success,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit, color: Colors.blue),
+                              tooltip: 'Editar',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => NuevoPedidoScreen(
+                                      mesaId: pedido.id ?? 'mesa_demo',
+                                      nombre: pedido.cliente,
+                                      pedido: pedido,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.call_split, color: Colors.green),
+                              tooltip: 'Dividir Cuenta',
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DividirCuentaScreen(
+                                      mesaId: pedido.id ?? '',
+                                      productos:
+                                          List<OrderItem>.from(pedido.items),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  PedidoDetailScreen(pedido: pedido),
+                            ),
+                          );
+                        },
+                      ),
                     );
                   },
                 );

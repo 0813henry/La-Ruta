@@ -43,6 +43,29 @@ class OrderModel {
           map['startTime'] != null ? DateTime.parse(map['startTime']) : null,
     );
   }
+
+  OrderModel copyWith({
+    String? id,
+    String? cliente,
+    List<OrderItem>? items,
+    double? total,
+    String? estado,
+    String? tipo,
+    String? mesaId,
+    DateTime? startTime,
+    // agrega otros campos si es necesario
+  }) {
+    return OrderModel(
+      id: id ?? this.id,
+      cliente: cliente ?? this.cliente,
+      items: items ?? this.items,
+      total: total ?? this.total,
+      estado: estado ?? this.estado,
+      tipo: tipo ?? this.tipo,
+      startTime: startTime ?? this.startTime,
+      // agrega otros campos si es necesario
+    );
+  }
 }
 
 class OrderItem {

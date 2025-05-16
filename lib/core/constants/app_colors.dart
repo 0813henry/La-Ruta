@@ -37,7 +37,7 @@ class AppColors {
 
   // Colores para Estados del Pedido
   static const pendiente = Color(0xFFB0BEC5); // Gris claro
-  static const enPreparacion = Color(0xFFFFA726); // Naranja
+  static const enProceso = Color(0xFFFFA726); // Naranja
   static const listoParaServir = Color(0xFFAED581); // Verde lima
   static const enCamino = Color(0xFF1976D2); // Azul oscuro
   static const entregado = Color(0xFF388E3C); // Verde oscuro

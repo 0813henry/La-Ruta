@@ -11,10 +11,12 @@ import '../../widgets/categoria_selector.dart'; // Importamos el widget Categori
 class NuevoPedidoScreen extends StatefulWidget {
   final String mesaId;
   final String nombre;
+  final OrderModel? pedido; // <-- Nuevo parámetro opcional
 
   const NuevoPedidoScreen({
     required this.mesaId,
     required this.nombre,
+    this.pedido, // <-- Nuevo
     super.key,
   });
 
@@ -27,10 +29,23 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
   bool _isLoading = true;
   String? _selectedCategory;
 
+  // Para edición
+  String? _cliente;
+  String? _tipo;
+
   @override
   void initState() {
     super.initState();
-    _cargarCarrito();
+    if (widget.pedido != null) {
+      // Si es edición, carga los datos del pedido
+      _cart.clear();
+      _cart.addAll(List<OrderItem>.from(widget.pedido!.items));
+      _cliente = widget.pedido!.cliente;
+      _tipo = widget.pedido!.tipo;
+      _isLoading = false;
+    } else {
+      _cargarCarrito();
+    }
   }
 
   Future<void> _cargarCarrito() async {
@@ -413,8 +428,8 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
   }
 
   Future<void> _confirmOrder() async {
-    String cliente = widget.nombre;
-    String tipo = 'Local';
+    String cliente = _cliente ?? widget.nombre;
+    String tipo = _tipo ?? 'Local';
     final TextEditingController clienteController =
         TextEditingController(text: cliente);
     String selectedTipo = tipo;
@@ -466,7 +481,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                   'tipo': selectedTipo,
                 });
               },
-              child: Text('Confirmar'),
+              child: Text(widget.pedido != null ? 'Modificar' : 'Confirmar'),
             ),
           ],
         );
@@ -482,38 +497,68 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
 
     final total =
         _cart.fold(0.0, (sum, item) => sum + item.precio * item.cantidad);
-    final order = OrderModel(
-      cliente: result['cliente']!,
-      items: _cart,
-      total: total,
-      estado: 'Pendiente',
-      tipo: result['tipo']!,
-      startTime: DateTime.now(),
-    );
-    try {
-      await PedidoService().crearPedido(order);
 
-      // Send SMS notification
-      await PedidoService().enviarSMS('Pedido enviado exitosamente.');
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Pedido enviado exitosamente')),
+    if (widget.pedido != null) {
+      // Modificar pedido existente
+      final pedidoModificado = widget.pedido!.copyWith(
+        cliente: result['cliente']!,
+        tipo: result['tipo']!,
+        items: List<OrderItem>.from(_cart),
+        total: total,
       );
-      setState(() {
-        _cart.clear(); // Vaciar el carrito después de confirmar el pedido
-      });
-      await _guardarCarrito(); // Limpiar carrito en Firestore también
+      try {
+        await PedidoService().actualizarPedido(pedidoModificado);
 
-      // Cerrar todos los modals abiertos (carrito, summary, etc.)
-      Navigator.of(context, rootNavigator: true)
-          .popUntil((route) => route.isFirst);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Pedido modificado exitosamente')),
+        );
+        setState(() {
+          _cart.clear();
+        });
+        await _guardarCarrito();
 
-      // Redirigir a la pantalla de pedidos
-      Navigator.pushReplacementNamed(context, '/pedidos');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al enviar el pedido: $e')),
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
+
+        Navigator.pushReplacementNamed(context, '/pedidos');
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al modificar el pedido: $e')),
+        );
+      }
+    } else {
+      // Crear nuevo pedido
+      final order = OrderModel(
+        cliente: result['cliente']!,
+        items: _cart,
+        total: total,
+        estado: 'Pendiente',
+        tipo: result['tipo']!,
+        startTime: DateTime.now(),
       );
+      try {
+        await PedidoService().crearPedido(order);
+
+        // Send SMS notification
+        await PedidoService().enviarSMS('Pedido enviado exitosamente.');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Pedido enviado exitosamente')),
+        );
+        setState(() {
+          _cart.clear();
+        });
+        await _guardarCarrito();
+
+        Navigator.of(context, rootNavigator: true)
+            .popUntil((route) => route.isFirst);
+
+        Navigator.pushReplacementNamed(context, '/pedidos');
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al enviar el pedido: $e')),
+        );
+      }
     }
   }
 
@@ -546,7 +591,9 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Nuevo Pedido - Mesa ${widget.nombre}'),
+        title: Text(widget.pedido != null
+            ? 'Modificar Pedido - Mesa ${widget.nombre}'
+            : 'Nuevo Pedido - Mesa ${widget.nombre}'),
         actions: [
           IconButton(
             icon: Icon(Icons.shopping_cart),
@@ -559,12 +606,14 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
                 builder: (context) => FractionallySizedBox(
                   heightFactor: 0.9,
                   child: CarritoWidget(
-                    cartItems: _cart, // Lista de elementos en el carrito
-                    onEditItem: (item) =>
-                        _showCartDetails(item), // Editar un ítem
-                    onRemoveItem: _removeFromCart, // Eliminar un ítem
-                    total: total, // Total del carrito
-                    onConfirmOrder: _confirmOrder, // Confirmar pedido
+                    cartItems: _cart,
+                    onEditItem: (item) => _showCartDetails(item),
+                    onRemoveItem: _removeFromCart,
+                    total: total,
+                    onConfirmOrder: _confirmOrder,
+                    confirmButtonText: widget.pedido != null
+                        ? 'Modificar Pedido'
+                        : 'Confirmar Pedido',
                   ),
                 ),
               );
