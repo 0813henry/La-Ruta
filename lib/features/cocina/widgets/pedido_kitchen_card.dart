@@ -68,8 +68,11 @@ class PedidoKitchenCard extends StatelessWidget {
                       style: TextStyle(
                         color: _colorTipoPedido(tipo),
                         fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        fontSize: 7, // <-- Cambia de 14 a 12
+                        letterSpacing: 0.5,
                       ),
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                     ),
                   ),
                   SizedBox(width: 10),

@@ -8,6 +8,8 @@ import '../model/pedido_model.dart';
 class PedidoService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  FirebaseFirestore getFirestore() => _firestore;
+
   Future<void> crearPedido(OrderModel pedido) async {
     try {
       final pedidoData = pedido.toMap();

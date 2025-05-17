@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/features/mesero/screens/detalles_mesa/dividir_cuenta_screen.dart';
+import 'package:restaurante_app/core/utils/pdf_generator.dart'; // <-- Importa el generador de PDF
 
 class PedidoDetailScreen extends StatefulWidget {
   final OrderModel pedido;
@@ -87,6 +88,10 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
     return total;
   }
 
+  Future<void> _guardarComoPDF() async {
+    await generarPDFPedido(widget.pedido);
+  }
+
   @override
   Widget build(BuildContext context) {
     final divisiones = widget.pedido.divisiones ?? {};
@@ -95,9 +100,9 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
         title: Text('Detalle del Pedido'),
         actions: [
           IconButton(
-            icon: Icon(Icons.save),
-            onPressed: _guardarCambios,
-            tooltip: 'Guardar Cambios',
+            icon: Icon(Icons.picture_as_pdf),
+            onPressed: _guardarComoPDF,
+            tooltip: 'Guardar como PDF',
           ),
         ],
       ),

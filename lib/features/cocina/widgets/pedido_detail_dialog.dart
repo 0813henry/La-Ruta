@@ -77,10 +77,26 @@ class PedidoDetailDialog extends StatelessWidget {
                   (item.precio + adicionalesTotal) * item.cantidad;
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 2.0),
-                child: Row(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(child: Text('${item.nombre} x${item.cantidad}')),
-                    Text('\$${itemTotal.toStringAsFixed(2)}'),
+                    Row(
+                      children: [
+                        Expanded(
+                            child: Text('${item.nombre} x${item.cantidad}')),
+                        Text('\$${itemTotal.toStringAsFixed(2)}'),
+                      ],
+                    ),
+                    if (item.descripcion.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, top: 2.0, bottom: 2.0),
+                        child: Text(
+                          'Comentario: ${item.descripcion}',
+                          style:
+                              TextStyle(color: Colors.grey[700], fontSize: 13),
+                        ),
+                      ),
                   ],
                 ),
               );
@@ -128,12 +144,28 @@ class PedidoDetailDialog extends StatelessWidget {
                             return Padding(
                               padding:
                                   const EdgeInsets.symmetric(vertical: 2.0),
-                              child: Row(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Expanded(
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                          child: Text(
+                                              '${item.nombre} x${item.cantidad}')),
+                                      Text('\$${itemTotal.toStringAsFixed(2)}'),
+                                    ],
+                                  ),
+                                  if (item.descripcion.isNotEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 8.0, top: 2.0, bottom: 2.0),
                                       child: Text(
-                                          '${item.nombre} x${item.cantidad}')),
-                                  Text('\$${itemTotal.toStringAsFixed(2)}'),
+                                        'Comentario: ${item.descripcion}',
+                                        style: TextStyle(
+                                            color: Colors.grey[700],
+                                            fontSize: 13),
+                                      ),
+                                    ),
                                 ],
                               ),
                             );

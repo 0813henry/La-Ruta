@@ -7,6 +7,8 @@ class GastoService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CloudinaryService _cloudinaryService = CloudinaryService();
 
+  FirebaseFirestore getFirestore() => _firestore;
+
   Future<void> agregarGasto(Gasto gasto, File? imagen) async {
     try {
       if (gasto.descripcion.isEmpty || gasto.valor <= 0) {

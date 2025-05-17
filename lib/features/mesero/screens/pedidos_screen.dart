@@ -197,8 +197,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 }
                 final pedidos = snapshot.data ?? [];
+                // Filtrar para que no salgan los pedidos pagados
                 final filteredPedidos = pedidos
                     .where((pedido) =>
+                        pedido.estado.toLowerCase() != 'pagado' &&
                         pedido.cliente.toLowerCase().contains(_searchQuery))
                     .toList();
                 if (filteredPedidos.isEmpty) {
