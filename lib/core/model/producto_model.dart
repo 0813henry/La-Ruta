@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class Product {
   String id;
   String name;
@@ -9,7 +11,7 @@ class Product {
   int preparationTime; // Nuevo campo
 
   Product({
-    required this.id,
+    String? id,
     required this.name,
     required this.descripcion,
     required this.price,
@@ -17,7 +19,7 @@ class Product {
     required this.stock,
     this.imageUrl,
     required this.preparationTime, // Nuevo campo
-  });
+  }) : id = id ?? const Uuid().v4();
 
   factory Product.fromMap(Map<String, dynamic> data, String documentId) {
     return Product(

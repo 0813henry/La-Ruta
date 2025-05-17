@@ -9,7 +9,7 @@ class DashboardScreen2 extends StatelessWidget {
     // final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('RevTrack Mobile')),
+      appBar: AppBar(title: const Text('Panel de Control')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -19,19 +19,19 @@ class DashboardScreen2 extends StatelessWidget {
               spacing: 10,
               runSpacing: 10,
               children: [
-                _buildDropdown('Fiscal Quarter'),
-                _buildDropdown('Region'),
-                _buildDropdown('Booking Manager'),
-                _buildDropdown('Booking Owner'),
+                _buildDropdown('Trimestre Fiscal'),
+                _buildDropdown('Región'),
+                _buildDropdown('Gerente de Reservas'),
+                _buildDropdown('Responsable de Reservas'),
               ],
             ),
             const SizedBox(height: 16),
 
             // Tarjetas de KPIs
-            _buildKPI("Field Bookings", "\$159.4M", 40),
-            _buildKPI("Pipeline Build", "\$114.4M", 40),
-            _buildKPI("Unweighted Open Pipeline", "\$207.4M", 40),
-            _buildKPI("Weighted Open Pipeline", "\$127.4M", 40),
+            _buildKPI("Reservas de Campo", "\$159.4M", 40),
+            _buildKPI("Crecimiento de Pipeline", "\$114.4M", 40),
+            _buildKPI("Pipeline Abierto No Ponderado", "\$207.4M", 40),
+            _buildKPI("Pipeline Abierto Ponderado", "\$127.4M", 40),
 
             const SizedBox(height: 16),
 
@@ -51,9 +51,9 @@ class DashboardScreen2 extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Line Charts
-            _buildLineChart(context, "Bookings Progress"),
+            _buildLineChart(context, "Progreso de Reservas"),
             const SizedBox(height: 16),
-            _buildLineChart(context, "Pipeline Creation"),
+            _buildLineChart(context, "Creación de Pipeline"),
           ],
         ),
       ),
@@ -90,7 +90,12 @@ class DashboardScreen2 extends StatelessWidget {
 
   Widget _buildDonutChartCard() {
     final data = [143.1, 38.2, 129.9, 78.1];
-    final labels = ['Renewal', 'Cross Sell', 'Add-ons', 'Acquisition'];
+    final labels = [
+      'Renovación',
+      'Venta Cruzada',
+      'Adicionales',
+      'Adquisición'
+    ];
 
     return Card(
       child: SizedBox(
@@ -116,16 +121,16 @@ class DashboardScreen2 extends StatelessWidget {
 
   Widget _buildSalesPipelineChart() {
     final labels = [
-      'Pending',
-      'Proposal',
-      'Prospect',
-      'Engaged',
-      'Build',
-      'Recommend',
-      'Closing',
-      'Negotiations',
-      'Closed',
-      'Won'
+      'Pendiente',
+      'Propuesta',
+      'Prospecto',
+      'Comprometido',
+      'Construcción',
+      'Recomendación',
+      'Cierre',
+      'Negociación',
+      'Cerrado',
+      'Ganado'
     ];
     final values = [3, 20, 1289, 12100, 5882, 388, 4563, 281, 5078, 5930];
 
@@ -176,19 +181,19 @@ class DashboardScreen2 extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          const ListTile(title: Text("Product Line Overview")),
+          const ListTile(title: Text("Resumen de Líneas de Producto")),
           DataTable(
             columns: const [
-              DataColumn(label: Text('Name')),
-              DataColumn(label: Text('Acquisition')),
-              DataColumn(label: Text('Add-Ons')),
-              DataColumn(label: Text('Cross Sell')),
-              DataColumn(label: Text('Renewals')),
+              DataColumn(label: Text('Nombre')),
+              DataColumn(label: Text('Adquisición')),
+              DataColumn(label: Text('Adicionales')),
+              DataColumn(label: Text('Venta Cruzada')),
+              DataColumn(label: Text('Renovaciones')),
               DataColumn(label: Text('Total')),
             ],
             rows: const [
               DataRow(cells: [
-                DataCell(Text("Hiring")),
+                DataCell(Text("Contratación")),
                 DataCell(Text("\$2M")),
                 DataCell(Text("\$4M")),
                 DataCell(Text("\$24M")),
@@ -196,7 +201,7 @@ class DashboardScreen2 extends StatelessWidget {
                 DataCell(Text("\$31M")),
               ]),
               DataRow(cells: [
-                DataCell(Text("Learning")),
+                DataCell(Text("Capacitación")),
                 DataCell(Text("\$1M")),
                 DataCell(Text("\$5M")),
                 DataCell(Text("\$32M")),
@@ -204,7 +209,7 @@ class DashboardScreen2 extends StatelessWidget {
                 DataCell(Text("\$40M")),
               ]),
               DataRow(cells: [
-                DataCell(Text("Engagement")),
+                DataCell(Text("Compromiso")),
                 DataCell(Text("\$1M")),
                 DataCell(Text("\$3M")),
                 DataCell(Text("\$20M")),

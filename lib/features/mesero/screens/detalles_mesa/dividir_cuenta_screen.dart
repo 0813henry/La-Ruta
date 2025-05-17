@@ -117,6 +117,7 @@ class _DividirCuentaScreenState extends State<DividirCuentaScreen> {
       } else if (cantidad > 0 && cantidad < producto.cantidad) {
         // Si es menor, dividir el producto
         final productoDividido = OrderItem(
+          idProducto: producto.idProducto,
           nombre: producto.nombre,
           cantidad: cantidad,
           precio: producto.precio,
@@ -187,6 +188,7 @@ class _DividirCuentaScreenState extends State<DividirCuentaScreen> {
                   p.precio == producto.precio &&
                   p.descripcion == producto.descripcion,
               orElse: () => OrderItem(
+                  idProducto: producto.idProducto,
                   nombre: producto.nombre,
                   cantidad: 0,
                   precio: producto.precio,

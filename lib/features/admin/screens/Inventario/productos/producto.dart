@@ -54,7 +54,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
 
     try {
       final product = Product(
-        id: _editingProductId ?? '',
+        id: _editingProductId, // <-- Usa el id si es edición
         name: _nameController.text,
         descripcion: _descriptionController.text,
         price: double.parse(_priceController.text),

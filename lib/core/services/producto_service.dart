@@ -5,12 +5,12 @@ class ProductoService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> crearProducto(Product producto) async {
-    await _firestore.collection('productos').add(producto.toMap());
+    await _firestore.collection('products').add(producto.toMap());
   }
 
   Future<void> actualizarProducto(Product producto) async {
     await _firestore
-        .collection('productos')
+        .collection('products')
         .doc(producto.id)
         .update(producto.toMap());
   }
@@ -18,7 +18,7 @@ class ProductoService {
   Future<void> actualizarProductoStock(String productId, int newStock) async {
     try {
       await _firestore
-          .collection('productos')
+          .collection('products')
           .doc(productId)
           .update({'stock': newStock});
     } catch (e) {
@@ -27,7 +27,7 @@ class ProductoService {
   }
 
   Stream<List<Product>> obtenerProductos() {
-    return _firestore.collection('productos').snapshots().map((snapshot) {
+    return _firestore.collection('products').snapshots().map((snapshot) {
       return snapshot.docs
           .map((doc) => Product.fromMap(doc.data(), doc.id))
           .toList();
@@ -36,7 +36,7 @@ class ProductoService {
 
   Stream<List<Product>> obtenerProductosPorCategoria(String categoria) {
     return _firestore
-        .collection('productos')
+        .collection('products')
         .where('category', isEqualTo: categoria)
         .snapshots()
         .map((snapshot) {
@@ -47,7 +47,7 @@ class ProductoService {
   }
 
   Future<int> obtenerStockProducto(String productId) async {
-    final doc = await _firestore.collection('productos').doc(productId).get();
+    final doc = await _firestore.collection('products').doc(productId).get();
     if (doc.exists) {
       return doc.data()?['stock'] ?? 0;
     }
@@ -57,7 +57,7 @@ class ProductoService {
   Future<Product?> obtenerProductoPorNombre(String nombre) async {
     try {
       final querySnapshot = await _firestore
-          .collection('productos')
+          .collection('products')
           .where('name', isEqualTo: nombre)
           .limit(1)
           .get();
@@ -69,6 +69,18 @@ class ProductoService {
       return null; // Return null if no product is found
     } catch (e) {
       throw Exception('Error al obtener el producto por nombre: $e');
+    }
+  }
+
+  Future<Product?> obtenerProductoPorId(String idProducto) async {
+    try {
+      final doc = await _firestore.collection('products').doc(idProducto).get();
+      if (doc.exists) {
+        return Product.fromMap(doc.data()!, doc.id);
+      }
+      return null;
+    } catch (e) {
+      throw Exception('Error al obtener el producto por ID: $e');
     }
   }
 }

@@ -3,6 +3,7 @@ import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
+import 'package:restaurante_app/core/services/producto_service.dart';
 import '../../widgets/menu_lateral_mesero.dart';
 import '../../widgets/carrito_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -62,6 +63,8 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
         final data = snapshot.data();
         final items = (data?['items'] as List<dynamic>?)
             ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
+            .where(
+                (item) => item.idProducto.isNotEmpty) // Solo productos válidos
             .toList();
 
         if (items != null) {
@@ -99,12 +102,14 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
   void _addToCart(Product product, int quantity, String comment) {
     setState(() {
       final existingItem = _cart.firstWhere(
-        (item) => item.nombre == product.name,
+        (item) => item.idProducto == product.id,
         orElse: () => OrderItem(
+            idProducto: product.id,
             nombre: product.name,
             cantidad: 0,
             precio: product.price,
-            descripcion: ''),
+            descripcion: '',
+            adicionales: const []),
       );
 
       final currentQuantity = existingItem.cantidad;
@@ -125,10 +130,10 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       }
 
       existingItem.cantidad = newQuantity;
-      existingItem.descripcion = comment; // Update comment in cart
+      existingItem.descripcion = comment;
     });
     _guardarCarrito();
-    _updateTotal(); // Update total after adding to cart
+    _updateTotal();
   }
 
   void _removeFromCart(OrderItem item) {
@@ -495,8 +500,87 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       return;
     }
 
-    final total =
-        _cart.fold(0.0, (sum, item) => sum + item.precio * item.cantidad);
+    // --- Validación de stock antes de confirmar/modificar ---
+    final productoService = ProductoService();
+    bool stockOk = true;
+    String? errorMsg;
+
+    // Si es modificación, calcula diferencias de stock
+    Map<String, int> stockCambios =
+        {}; // idProducto -> cantidad a descontar (+) o devolver (-)
+    Map<String, int> stockActual =
+        {}; // idProducto -> stock actual en base de datos
+
+    if (widget.pedido != null) {
+      // Mapear cantidades originales
+      final Map<String, int> original = {};
+      for (final item in widget.pedido!.items) {
+        original[item.idProducto] =
+            (original[item.idProducto] ?? 0) + item.cantidad;
+      }
+      // Mapear cantidades nuevas
+      final Map<String, int> nuevo = {};
+      for (final item in _cart) {
+        nuevo[item.idProducto] = (nuevo[item.idProducto] ?? 0) + item.cantidad;
+      }
+      // Calcular cambios
+      final ids = {...original.keys, ...nuevo.keys};
+      for (final id in ids) {
+        final cantOriginal = original[id] ?? 0;
+        final cantNueva = nuevo[id] ?? 0;
+        stockCambios[id] = cantNueva - cantOriginal;
+      }
+    } else {
+      // Nuevo pedido: solo descontar lo nuevo
+      for (final item in _cart) {
+        stockCambios[item.idProducto] =
+            (stockCambios[item.idProducto] ?? 0) + item.cantidad;
+      }
+    }
+
+    // Validar stock y preparar cambios
+    for (final entry in stockCambios.entries) {
+      final idProducto = entry.key;
+      final cambio = entry.value;
+      final producto = await productoService.obtenerProductoPorId(idProducto);
+      if (producto == null) {
+        stockOk = false;
+        errorMsg =
+            'El producto con ID "$idProducto" no está disponible actualmente.';
+        break;
+      }
+      stockActual[idProducto] = producto.stock;
+      if (cambio > 0 && cambio > producto.stock) {
+        stockOk = false;
+        errorMsg =
+            'No hay suficiente stock para "${producto.name}". Disponible: ${producto.stock}, solicitado extra: $cambio.';
+        break;
+      }
+    }
+
+    if (!stockOk) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMsg ?? 'Stock insuficiente')),
+      );
+      return;
+    }
+
+    // Aplicar cambios de stock
+    for (final entry in stockCambios.entries) {
+      final idProducto = entry.key;
+      final cambio = entry.value;
+      final stock = stockActual[idProducto]!;
+      final nuevoStock = stock - cambio;
+      await productoService.actualizarProductoStock(idProducto, nuevoStock);
+    }
+
+    final total = _cart.fold(0.0, (sum, item) {
+      final adicionalesTotal = item.adicionales.fold(
+        0.0,
+        (sum, adicional) => sum + (adicional['price'] as double),
+      );
+      return sum + (item.precio + adicionalesTotal) * item.cantidad;
+    });
 
     if (widget.pedido != null) {
       // Modificar pedido existente
@@ -530,7 +614,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       // Crear nuevo pedido
       final order = OrderModel(
         cliente: result['cliente']!,
-        items: _cart,
+        items: List<OrderItem>.from(_cart),
         total: total,
         estado: 'Pendiente',
         tipo: result['tipo']!,

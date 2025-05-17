@@ -88,6 +88,7 @@ class OrderModel {
 }
 
 class OrderItem {
+  String idProducto; // <-- nuevo campo
   String nombre;
   int cantidad;
   double precio;
@@ -95,25 +96,28 @@ class OrderItem {
   List<Map<String, dynamic>> adicionales; // List of adicionales
 
   OrderItem({
+    required this.idProducto, // <-- nuevo campo requerido
     required this.nombre,
     required this.cantidad,
     required this.precio,
     required this.descripcion,
-    this.adicionales = const [], // Default to an empty list
+    this.adicionales = const [],
   });
 
   Map<String, dynamic> toMap() {
     return {
+      'idProducto': idProducto, // <-- guardar idProducto
       'nombre': nombre,
       'cantidad': cantidad,
       'precio': precio,
       'descripcion': descripcion,
-      'adicionales': adicionales, // Save adicionales as a list of maps
+      'adicionales': adicionales,
     };
   }
 
   factory OrderItem.fromMap(Map<String, dynamic> map) {
     return OrderItem(
+      idProducto: map['idProducto'] ?? '', // Nunca null
       nombre: map['nombre'],
       cantidad: map['cantidad'],
       precio: (map['precio'] as num).toDouble(),

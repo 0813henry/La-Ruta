@@ -47,13 +47,15 @@ class FirebaseService {
 
   Future<void> addProduct(Product product) async {
     try {
-      await _firestore.collection('products').add({
+      await _firestore.collection('products').doc(product.id).set({
+        'id': product.id, // Guarda el id explícitamente
         'name': product.name,
         'descripcion': product.descripcion,
         'price': product.price,
         'category': product.category,
         'stock': product.stock,
-        'imageUrl': product.imageUrl, // Add imageUrl field
+        'imageUrl': product.imageUrl,
+        'preparationTime': product.preparationTime,
       });
     } catch (e) {
       throw Exception('Error adding product: $e');
