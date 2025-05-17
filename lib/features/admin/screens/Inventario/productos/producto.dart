@@ -4,9 +4,9 @@ import 'package:restaurante_app/core/widgets/categoria_filter_widget.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
-import 'package:restaurante_app/core/widgets/modules/producto_cart.dart';
-import 'package:restaurante_app/features/admin/screens/Inventario/productos/widgets/add_edit_product_button.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/productos/widgets/product_table_header.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_scaffold_layout.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/productos/widgets/add_edit_product_button.dart';
 
 class ProductoScreen extends StatefulWidget {
   const ProductoScreen({super.key});
@@ -22,6 +22,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _preparationTimeController =
       TextEditingController();
+
   dynamic _selectedImage;
   String? _selectedCategory;
   String? _filterCategory;
@@ -42,7 +43,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
     if (_nameController.text.isEmpty ||
         _descriptionController.text.isEmpty ||
         _priceController.text.isEmpty ||
-        _preparationTimeController.text.isEmpty || // Validación del nuevo campo
+        _preparationTimeController.text.isEmpty ||
         (_selectedImage == null && _editingImageUrl == null) ||
         _selectedCategory == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -60,8 +61,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
         category: _selectedCategory!,
         stock: 0,
         imageUrl: _editingImageUrl,
-        preparationTime:
-            int.parse(_preparationTimeController.text), // Nuevo campo
+        preparationTime: int.parse(_preparationTimeController.text),
       );
 
       if (_editingProductId == null) {
@@ -92,7 +92,7 @@ class _ProductoScreenState extends State<ProductoScreen> {
     _nameController.clear();
     _descriptionController.clear();
     _priceController.clear();
-    _preparationTimeController.clear(); // Limpieza del nuevo campo
+    _preparationTimeController.clear();
     setState(() {
       _selectedImage = null;
       _selectedCategory = null;
@@ -101,10 +101,44 @@ class _ProductoScreenState extends State<ProductoScreen> {
     });
   }
 
+  void _onEditProduct(Product product) {
+    setState(() {
+      _nameController.text = product.name;
+      _descriptionController.text = product.descripcion;
+      _priceController.text = product.price.toString();
+      _preparationTimeController.text = product.preparationTime.toString();
+      _selectedCategory = product.category;
+      _editingProductId = product.id;
+      _editingImageUrl = product.imageUrl;
+      _selectedImage = null;
+    });
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => AddEditProductFormSheet(
+        firebaseService: _firebaseService,
+        nameController: _nameController,
+        descriptionController: _descriptionController,
+        priceController: _priceController,
+        preparationTimeController: _preparationTimeController,
+        selectedImage: _selectedImage,
+        selectedCategory: _selectedCategory,
+        editingProductId: _editingProductId,
+        editingImageUrl: _editingImageUrl,
+        onImagePick: _pickImage,
+        onCategoryChanged: (value) {
+          setState(() {
+            _selectedCategory = value;
+          });
+        },
+        onSubmit: _addOrUpdateProduct,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return AdminScaffoldLayout(
       title: Row(
         children: [
@@ -143,13 +177,13 @@ class _ProductoScreenState extends State<ProductoScreen> {
       ),
       body: Column(
         children: [
-          CategoriaFilterWidget(
-            onFilterSelected: (selectedCategory) {
-              setState(() {
-                _filterCategory = selectedCategory;
-              });
-            },
-          ),
+          // CategoriaFilterWidget(
+          //   onFilterSelected: (selectedCategory) {
+          //     setState(() {
+          //       _filterCategory = selectedCategory;
+          //     });
+          //   },
+          // ),
           Expanded(
             child: StreamBuilder<List<Product>>(
               stream:
@@ -165,50 +199,9 @@ class _ProductoScreenState extends State<ProductoScreen> {
                   return Center(child: Text('No hay productos disponibles'));
                 }
                 final products = snapshot.data!;
-                return ListView.builder(
-                  itemCount: products.length,
-                  itemBuilder: (context, index) {
-                    final product = products[products.length - 1 - index];
-                    return ProductoCart(
-                        product: product,
-                        onEdit: () {
-                          setState(() {
-                            _nameController.text = product.name;
-                            _descriptionController.text = product.descripcion;
-                            _priceController.text = product.price.toString();
-                            _preparationTimeController.text =
-                                product.preparationTime.toString();
-                            _selectedCategory = product.category;
-                            _editingProductId = product.id;
-                            _editingImageUrl = product.imageUrl;
-                            _selectedImage = null;
-                          });
-
-                          showModalBottomSheet(
-                            context: context,
-                            isScrollControlled: true,
-                            builder: (context) => AddEditProductFormSheet(
-                              firebaseService: _firebaseService,
-                              nameController: _nameController,
-                              descriptionController: _descriptionController,
-                              priceController: _priceController,
-                              preparationTimeController:
-                                  _preparationTimeController,
-                              selectedImage: _selectedImage,
-                              selectedCategory: _selectedCategory,
-                              editingProductId: _editingProductId,
-                              editingImageUrl: _editingImageUrl,
-                              onImagePick: _pickImage,
-                              onCategoryChanged: (value) {
-                                setState(() {
-                                  _selectedCategory = value;
-                                });
-                              },
-                              onSubmit: _addOrUpdateProduct,
-                            ),
-                          );
-                        });
-                  },
+                return ProductTable(
+                  products: products.reversed.toList(),
+                  onEdit: _onEditProduct,
                 );
               },
             ),
