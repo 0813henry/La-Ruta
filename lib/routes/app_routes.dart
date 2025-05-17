@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/gestion_inventario.dart';
-import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/productos/producto.dart';
 import 'package:restaurante_app/features/admin/screens/dashboard.dart';
 import 'package:restaurante_app/features/auth/screens/login.dart';
 import 'package:restaurante_app/features/auth/screens/registro.dart';

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/widgets/wbutton.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/gestion_inventario.dart';
 import 'package:restaurante_app/features/admin/screens/gastos/historial_gasto.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_expandable_section.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_header.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_menu_item.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria/categoria.dart';
-import 'package:restaurante_app/features/admin/screens/Inventario/producto.dart';
+import 'package:restaurante_app/features/admin/screens/Inventario/productos/producto.dart';
 import 'package:restaurante_app/features/admin/screens/dashboard.dart';
 import 'package:restaurante_app/features/admin/screens/reportes/reportes_ventas.dart';
 import 'package:restaurante_app/features/admin/screens/usuarios/gestion_usuarios.dart';
@@ -111,6 +112,12 @@ class _SidebarMenuState extends State<SidebarMenu>
                     icon: Icons.add_circle,
                     title: 'Adicionales',
                     onTap: () => _navigateTo(context, AdicionalesScreen()),
+                    isSubItem: true,
+                  ),
+                  SidebarMenuItem(
+                    icon: Icons.add_circle,
+                    title: 'Inventario',
+                    onTap: () => _navigateTo(context, InventoryScreen()),
                     isSubItem: true,
                   ),
                 ],

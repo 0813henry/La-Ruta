@@ -1,30 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/constants/app_colors.dart';
 
-class WTextField extends StatelessWidget {
-  final TextEditingController controller;
-  final String label;
-  final IconData? icon;
-  final bool obscureText;
-  final TextInputType keyboardType; // Nuevo parámetro
-
-  const WTextField({
+class WDropButtonFormField extends StatelessWidget {
+  const WDropButtonFormField({
     super.key,
-    required this.controller,
-    required this.label,
-    this.icon,
-    this.obscureText = false,
-    this.keyboardType = TextInputType.text, // Valor por defecto
+    required this.selectedCategory,
+    required this.categories,
+    required this.onCategoryChanged,
   });
+
+  final String? selectedCategory;
+  final List<Map<String, dynamic>> categories;
+  final Function(String? p1) onCategoryChanged;
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType, // Usar el parámetro aquí
+    return DropdownButtonFormField<String>(
+      value: selectedCategory,
       decoration: InputDecoration(
-        labelText: label,
         floatingLabelStyle: const TextStyle(
           fontWeight: FontWeight.bold,
           color: AppColors.primary,
@@ -32,7 +25,6 @@ class WTextField extends StatelessWidget {
         labelStyle: const TextStyle(
           color: AppColors.textSecondary,
         ),
-        prefixIcon: icon != null ? Icon(icon, color: AppColors.primary) : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(color: AppColors.primary),
@@ -41,10 +33,21 @@ class WTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: AppColors.primary, width: 2),
         ),
+        labelText: 'Categoría',
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
+          borderSide: const BorderSide(color: AppColors.primary),
         ),
       ),
+      items: categories.map((category) {
+        final categoryName = category['name'] as String? ?? 'Sin nombre';
+        return DropdownMenuItem(
+          value: categoryName,
+          child: Text(categoryName,
+              style: const TextStyle(color: AppColors.textPrimary)),
+        );
+      }).toList(),
+      onChanged: onCategoryChanged,
     );
   }
 }
