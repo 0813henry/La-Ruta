@@ -32,13 +32,13 @@ class AppColors {
 
   // Colores para Tipos de Pedido
   static const domicilio = Color(0xFF4FC3F7); // Azul cielo
-  static const vip = Color(0xFFFFD700); // Dorado
+  static const vip = Color.fromARGB(255, 255, 217, 0); // Dorado
   static const principal = Color(0xFF81C784); // Verde claro
 
   // Colores para Estados del Pedido
-  static const pendiente = Color(0xFFB0BEC5); // Gris claro
+  static const pendiente = Color.fromARGB(255, 133, 142, 146); // Gris claro
   static const enProceso = Color(0xFFFFA726); // Naranja
-  static const listoParaServir = Color(0xFFAED581); // Verde lima
+  static const listoParaServir = Color.fromARGB(255, 74, 134, 4); // Verde lima
   static const enCamino = Color(0xFF1976D2); // Azul oscuro
   static const entregado = Color(0xFF388E3C); // Verde oscuro
   static const cancelado = Color(0xFFE57373); // Rojo

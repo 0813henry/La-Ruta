@@ -52,33 +52,43 @@ class FiltrosPedidos extends StatelessWidget {
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: DropdownButton<String>(
-        value: label,
-        isExpanded: true,
-        items: items
-            .map((item) => DropdownMenuItem<String>(
-                  value: item['label'],
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 12,
-                        height: 12,
-                        margin: const EdgeInsets.only(right: 8),
-                        decoration: BoxDecoration(
-                          color: item['color'] as Color,
-                          shape: BoxShape.circle,
-                        ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: AppColors.coolGray),
+          color: AppColors.white,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<String>(
+            value: label,
+            isExpanded: true,
+            items: items
+                .map((item) => DropdownMenuItem<String>(
+                      value: item['label'],
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 12,
+                            height: 12,
+                            margin: const EdgeInsets.only(right: 8),
+                            decoration: BoxDecoration(
+                              color: item['color'] as Color,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                          Text(item['label']),
+                        ],
                       ),
-                      Text(item['label']),
-                    ],
-                  ),
-                ))
-            .toList(),
-        onChanged: (value) {
-          if (value != null) {
-            onChanged(value);
-          }
-        },
+                    ))
+                .toList(),
+            onChanged: (value) {
+              if (value != null) {
+                onChanged(value);
+              }
+            },
+          ),
+        ),
       ),
     );
   }

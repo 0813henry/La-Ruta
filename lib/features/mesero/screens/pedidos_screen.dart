@@ -33,65 +33,85 @@ class _OrdersScreenState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final isLargeScreen = size.width > 600;
+
     return MeseroScaffoldLayout(
       title: const Text('Pedidos Activos'),
-      body: Column(
-        children: [
-          SearchBarPedidos(onChanged: (value) {
-            setState(() {
-              _searchQuery = value.toLowerCase();
-            });
-          }),
-          FiltrosPedidos(
-            selectedEstado: _selectedEstado,
-            selectedTipo: _selectedTipo,
-            onEstadoChanged: (estado) {
-              setState(() {
-                _selectedEstado = estado;
-              });
-            },
-            onTipoChanged: (tipo) {
-              setState(() {
-                _selectedTipo = tipo;
-              });
-            },
-          ),
-          Expanded(
-            child: StreamBuilder<List<OrderModel>>(
-              stream: _pedidoService.obtenerPedidosFiltrados(
-                _selectedEstado,
-                _selectedTipo,
-              ),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                }
-
-                final pedidos = snapshot.data ?? [];
-                final filteredPedidos = pedidos
-                    .where((pedido) =>
-                        pedido.estado.toLowerCase() != 'pagado' &&
-                        pedido.cliente.toLowerCase().contains(_searchQuery))
-                    .toList();
-
-                if (filteredPedidos.isEmpty) {
-                  return const Center(child: Text('No hay pedidos activos.'));
-                }
-
-                return ListView.builder(
-                  itemCount: filteredPedidos.length,
-                  itemBuilder: (context, index) {
-                    final pedido = filteredPedidos[index];
-                    return PedidoCard(pedido: pedido);
-                  },
-                );
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isLargeScreen ? 15.0 : 5.0,
+          vertical: 8.0,
+        ),
+        child: Column(
+          children: [
+            SizedBox(height: size.height * 0.01),
+            SearchBarPedidos(
+              onChanged: (value) {
+                setState(() {
+                  _searchQuery = value.toLowerCase();
+                });
               },
             ),
-          ),
-        ],
+            SizedBox(height: size.height * 0.01),
+            FiltrosPedidos(
+              selectedEstado: _selectedEstado,
+              selectedTipo: _selectedTipo,
+              onEstadoChanged: (estado) {
+                setState(() {
+                  _selectedEstado = estado;
+                });
+              },
+              onTipoChanged: (tipo) {
+                setState(() {
+                  _selectedTipo = tipo;
+                });
+              },
+            ),
+            SizedBox(height: size.height * 0.01),
+            Expanded(
+              child: StreamBuilder<List<OrderModel>>(
+                stream: _pedidoService.obtenerPedidosFiltrados(
+                  _selectedEstado,
+                  _selectedTipo,
+                ),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  }
+
+                  final pedidos = snapshot.data ?? [];
+                  final filteredPedidos = pedidos
+                      .where((pedido) =>
+                          pedido.estado.toLowerCase() != 'pagado' &&
+                          pedido.cliente.toLowerCase().contains(_searchQuery))
+                      .toList();
+
+                  if (filteredPedidos.isEmpty) {
+                    return const Center(child: Text('No hay pedidos activos.'));
+                  }
+
+                  return ListView.builder(
+                    padding: EdgeInsets.only(top: size.height * 0.01),
+                    itemCount: filteredPedidos.length,
+                    itemBuilder: (context, index) {
+                      final pedido = filteredPedidos[index];
+                      return Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: size.height * 0.005,
+                        ),
+                        child: PedidoCard(pedido: pedido),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
