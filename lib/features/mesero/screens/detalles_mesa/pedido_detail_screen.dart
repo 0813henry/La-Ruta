@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
+import 'package:restaurante_app/core/widgets/wbutton.dart';
 import 'package:restaurante_app/features/mesero/screens/detalles_mesa/dividir_cuenta_screen.dart';
 import 'package:restaurante_app/core/utils/pdf_generator.dart'; // <-- Importa el generador de PDF
 
@@ -57,8 +59,7 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
       MaterialPageRoute(
         builder: (context) => DividirCuentaScreen(
           pedido: widget.pedido,
-          mesaId:
-              widget.pedido.id ?? '', // Pasa el id de la mesa/pedido si existe
+          mesaId: widget.pedido.id, // Pasa el id de la mesa/pedido si existe
           productos: List<OrderItem>.from(_items),
         ),
       ),
@@ -97,169 +98,243 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
     final divisiones = widget.pedido.divisiones ?? {};
     return Scaffold(
       appBar: AppBar(
-        title: Text('Detalle del Pedido'),
+        iconTheme: IconThemeData(color: AppColors.white),
+        title: Text(
+          'Detalle del Pedido',
+          style: TextStyle(color: AppColors.white),
+        ),
+        backgroundColor: AppColors.primary,
         actions: [
           IconButton(
             icon: Icon(Icons.picture_as_pdf),
             onPressed: _guardarComoPDF,
             tooltip: 'Guardar como PDF',
+            style: IconButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              foregroundColor: AppColors.white,
+            ),
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Card(
-                margin: const EdgeInsets.all(16),
-                elevation: 4,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Factura',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 22)),
-                      SizedBox(height: 8),
-                      Text('Cliente: ${widget.pedido.cliente}',
-                          style: TextStyle(fontSize: 16)),
-                      Text('Estado: ${widget.pedido.estado}',
-                          style: TextStyle(fontSize: 16)),
-                      Text('Tipo: ${widget.pedido.tipo}',
-                          style: TextStyle(fontSize: 16)),
-                      Divider(height: 24),
-                      Text('Productos principales:',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16)),
-                      ..._items.map((item) {
-                        final adicionalesTotal = item.adicionales.fold(
-                          0.0,
-                          (sum, adicional) =>
-                              sum + (adicional['price'] as double),
-                        );
-                        final itemTotal =
-                            (item.precio + adicionalesTotal) * item.cantidad;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 2.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                  child:
-                                      Text('${item.nombre} x${item.cantidad}')),
-                              Text('\$${itemTotal.toStringAsFixed(2)}'),
-                            ],
-                          ),
-                        );
-                      }),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 4.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text(
-                              'Subtotal: \$${_divisionSubtotal(_items).toStringAsFixed(2)}',
-                              style: TextStyle(fontWeight: FontWeight.bold),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(10),
+                  child: Card(
+                    elevation: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Factura',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 28,
+                                  color: AppColors.textPrimary)),
+                          Divider(),
+                          RichText(
+                            text: TextSpan(
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                    text: 'Cliente: ',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: AppColors.textPrimary)),
+                                TextSpan(
+                                    text: widget.pedido.cliente,
+                                    style: TextStyle(
+                                        color: AppColors.textPrimary)),
+                              ],
                             ),
-                          ],
-                        ),
-                      ),
-                      if (divisiones.isNotEmpty) ...[
-                        Divider(height: 24),
-                        Text('Divisiones:',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16)),
-                        ...divisiones.entries.map((entry) {
-                          final division = entry.key;
-                          final productos = entry.value;
-                          final subtotal = _divisionSubtotal(productos);
-                          return Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Card(
-                              color: Colors.grey[100],
-                              elevation: 2,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('División: $division',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
-                                    ...productos.map((item) {
-                                      final adicionalesTotal =
-                                          item.adicionales.fold(
-                                        0.0,
-                                        (sum, adicional) =>
-                                            sum +
-                                            (adicional['price'] as double),
-                                      );
-                                      final itemTotal =
-                                          (item.precio + adicionalesTotal) *
-                                              item.cantidad;
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 2.0),
-                                        child: Row(
-                                          children: [
-                                            Expanded(
-                                                child: Text(
-                                                    '${item.nombre} x${item.cantidad}')),
-                                            Text(
-                                                '\$${itemTotal.toStringAsFixed(2)}'),
-                                          ],
-                                        ),
-                                      );
-                                    }),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                    text: 'Estado: ',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                TextSpan(text: widget.pedido.estado),
+                              ],
+                            ),
+                          ),
+                          RichText(
+                            text: TextSpan(
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.black),
+                              children: [
+                                TextSpan(
+                                    text: 'Tipo: ',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold)),
+                                TextSpan(text: widget.pedido.tipo),
+                              ],
+                            ),
+                          ),
+                          Divider(height: 24),
+                          Text('Orden de la Mesa:',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20)),
+                          ..._items.map((item) {
+                            final adicionalesTotal = item.adicionales.fold(
+                              0.0,
+                              (sum, adicional) =>
+                                  sum + (adicional['price'] as double),
+                            );
+                            final itemTotal = (item.precio + adicionalesTotal) *
+                                item.cantidad;
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 2.0),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      child: Text(
+                                    '  - ${item.nombre} x${item.cantidad}',
+                                    style: TextStyle(fontSize: 15),
+                                  )),
+                                  Text('\$${itemTotal.toStringAsFixed(0)}',
+                                      style: TextStyle(fontSize: 15)),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  'Subtotal: \$${_divisionSubtotal(_items).toStringAsFixed(0)}',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (divisiones.isNotEmpty) ...[
+                            Divider(height: 12),
+                            Text('Divisiones:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16)),
+                            ...divisiones.entries.map((entry) {
+                              final division = entry.key;
+                              final productos = entry.value;
+                              final subtotal = _divisionSubtotal(productos);
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12.0),
+                                child: Card(
+                                  color: Colors.grey[100],
+                                  elevation: 2,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          'Subtotal: \$${subtotal.toStringAsFixed(2)}',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                        Text('División: $division',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold)),
+                                        ...productos.map((item) {
+                                          final adicionalesTotal =
+                                              item.adicionales.fold(
+                                            0.0,
+                                            (sum, adicional) =>
+                                                sum +
+                                                (adicional['price'] as double),
+                                          );
+                                          final itemTotal =
+                                              (item.precio + adicionalesTotal) *
+                                                  item.cantidad;
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 2.0),
+                                            child: Row(
+                                              children: [
+                                                Expanded(
+                                                    child: Text(
+                                                        '${item.nombre} x${item.cantidad}')),
+                                                Text(
+                                                    '\$${itemTotal.toStringAsFixed(0)}'),
+                                              ],
+                                            ),
+                                          );
+                                        }).toList(),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(
+                                              'Subtotal: \$${subtotal.toStringAsFixed(0)}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 20),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ],
+                          Divider(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.black),
+                                  children: [
+                                    TextSpan(
+                                        text: 'TOTAL GENERAL: ',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold)),
+                                    TextSpan(
+                                        text:
+                                            _totalGeneral().toStringAsFixed(0)),
                                   ],
                                 ),
                               ),
-                            ),
-                          );
-                        }),
-                      ],
-                      Divider(height: 32),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(
-                            'TOTAL GENERAL: \$${_totalGeneral().toStringAsFixed(2)}',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                              color: Colors.green[700],
-                            ),
+                              // Text(
+                              //   'TOTAL GENERAL: \$${_totalGeneral().toStringAsFixed(0)}',
+                              //   style: TextStyle(
+                              //     fontWeight: FontWeight.bold,
+                              //     fontSize: 20,
+                              //     color: Colors.green[700],
+                              //   ),
+                              // ),
+                            ],
                           ),
                         ],
                       ),
-                    ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-            child: ElevatedButton.icon(
-              icon: Icon(Icons.call_split),
-              label: Text('Dividir Cuenta'),
-              onPressed: _items.isNotEmpty ? _dividirCuenta : null,
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 48),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: WButton(
+                      label: 'Dividir Cuenta',
+                      icon: Icon(Icons.call_split, color: AppColors.white),
+                      onPressed: _items.isNotEmpty ? _dividirCuenta : null),
+                ),
               ),
-            ),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }

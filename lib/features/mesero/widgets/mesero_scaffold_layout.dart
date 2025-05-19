@@ -19,6 +19,10 @@ class MeseroScaffoldLayout extends StatelessWidget {
       drawer: const SidebarMenuMesero(),
       appBar: AppBar(
         title: title ?? const Text('Panel de Mesero'),
+        backgroundColor: AppColors.primary,
+        iconTheme: const IconThemeData(
+          color: AppColors.white, // Cambia el color de los iconos
+        ),
       ),
       body: body,
       floatingActionButton: FloatingActionButton.extended(

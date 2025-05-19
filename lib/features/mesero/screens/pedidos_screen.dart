@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/services/notification_service.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
@@ -37,7 +38,10 @@ class _OrdersScreenState extends State<OrdersScreen> {
     final isLargeScreen = size.width > 600;
 
     return MeseroScaffoldLayout(
-      title: const Text('Pedidos Activos'),
+      title: const Text(
+        'Pedidos Activos',
+        style: TextStyle(color: AppColors.white, fontWeight: FontWeight.bold),
+      ),
       body: Padding(
         padding: EdgeInsets.symmetric(
           horizontal: isLargeScreen ? 15.0 : 5.0,

@@ -11,6 +11,7 @@ class SearchBarPedidos extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Material(
+        color: AppColors.white,
         elevation: 1,
         borderRadius: BorderRadius.circular(5),
         child: TextField(
