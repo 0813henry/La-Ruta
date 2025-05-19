@@ -61,13 +61,15 @@ class PedidoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: _colorTipoPedido(pedido.tipo),
+          radius: 28,
           child: const Icon(Icons.fastfood, color: Colors.white),
         ),
-        title: Text(pedido.cliente),
+        title: Text(pedido.cliente,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -85,12 +87,18 @@ class PedidoCard extends StatelessWidget {
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
-                      fontSize: 12,
+                      fontSize: 14,
                     ),
                   ),
                 ),
                 const SizedBox(width: 8),
-                Text(pedido.tipo),
+                Text(
+                  pedido.tipo,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 4),
@@ -107,7 +115,7 @@ class PedidoCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.edit, color: Colors.blue),
+              icon: const Icon(Icons.edit, color: AppColors.primary),
               tooltip: 'Editar',
               onPressed: () {
                 Navigator.push(
@@ -123,7 +131,7 @@ class PedidoCard extends StatelessWidget {
               },
             ),
             IconButton(
-              icon: const Icon(Icons.call_split, color: Colors.green),
+              icon: const Icon(Icons.call_split, color: AppColors.secondary),
               tooltip: 'Dividir Cuenta',
               onPressed: () {
                 Navigator.push(
