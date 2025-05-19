@@ -4,7 +4,7 @@ import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/core/services/producto_service.dart';
-import '../../widgets/menu_lateral_mesero.dart';
+import '../../widgets/mesero_dashboard/menu_lateral_mesero.dart';
 import '../../widgets/carrito_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../widgets/categoria_selector.dart'; // Importamos el widget CategoriaSelector

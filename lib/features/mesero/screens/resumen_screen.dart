@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../core/services/pedido_service.dart';
 import '../../../core/widgets/modules/pedido_item.dart';
 import '../../../core/model/pedido_model.dart';
-import '../widgets/menu_lateral_mesero.dart';
+import '../widgets/mesero_dashboard/menu_lateral_mesero.dart';
 import '../../../core/constants/app_colors.dart';
 import 'detalles_mesa/pedido_detail_screen.dart'; // <-- Importa la pantalla de detalle
 

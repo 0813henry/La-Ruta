@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/widgets/wbutton.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/gestion_inventario.dart';
 import 'package:restaurante_app/features/admin/screens/gastos/historial_gasto.dart';
-import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_expandable_section.dart';
-import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_header.dart';
-import 'package:restaurante_app/features/admin/widgets/admin_dashboard/wigets/sidebar_menu_item.dart';
+import 'package:restaurante_app/core/widgets/dashboard/sidebar_expandable_section.dart';
+import 'package:restaurante_app/core/widgets/dashboard/sidebar_header.dart';
+import 'package:restaurante_app/core/widgets/dashboard/sidebar_menu_item.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/adicionales.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/categoria/categoria.dart';
 import 'package:restaurante_app/features/admin/screens/Inventario/productos/producto.dart';
@@ -74,7 +74,11 @@ class _SidebarMenuState extends State<SidebarMenu>
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             children: [
-              const SidebarHeader(),
+              const SidebarHeader(
+                nombre: 'Jose Pertuz',
+                correo: 'jose@gmail.com',
+                rol: 'Administrador',
+              ),
               const SizedBox(height: 24),
               const Divider(),
               SidebarMenuItem(
