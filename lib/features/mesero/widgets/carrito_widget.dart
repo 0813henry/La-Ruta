@@ -58,69 +58,79 @@ class CarritoWidget extends StatelessWidget {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 16),
-          ...cartItems.map((item) {
-            final adicionalesTotal = item.adicionales.fold(
-              0.0,
-              (sum, adicional) => sum + (adicional['price'] as double),
-            );
-            final itemTotal = (item.precio + adicionalesTotal) * item.cantidad;
+          SizedBox(
+            height: 300, // Altura máxima para la lista de productos
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: cartItems.length,
+              itemBuilder: (context, idx) {
+                final item = cartItems[idx];
+                final adicionalesTotal = item.adicionales.fold(
+                  0.0,
+                  (sum, adicional) => sum + (adicional['price'] as double),
+                );
+                final itemTotal =
+                    (item.precio + adicionalesTotal) * item.cantidad;
 
-            return Card(
-              margin: const EdgeInsets.symmetric(vertical: 8.0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.all(12.0),
-                title: Text(
-                  '${item.nombre} x${item.cantidad}',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (item.descripcion.isNotEmpty)
-                      Text(
-                        'Comentario: ${item.descripcion}',
-                        style: TextStyle(color: Colors.grey[700]),
-                      ),
-                    Text(
-                      'Precio base: \$${item.precio.toStringAsFixed(2)}',
-                      style: TextStyle(color: Colors.grey[700]),
+                return Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.all(12.0),
+                    title: Text(
+                      '${item.nombre} x${item.cantidad}',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     ),
-                    if (item.adicionales.isNotEmpty)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (item.descripcion.isNotEmpty)
                           Text(
-                            'Adicionales:',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[800]),
+                            'Comentario: ${item.descripcion}',
+                            style: TextStyle(color: Colors.grey[700]),
                           ),
-                          ...item.adicionales.map((ad) => Text(
-                                '${ad['name']} - \$${(ad['price'] as double).toStringAsFixed(2)}',
-                                style: TextStyle(color: Colors.grey[600]),
-                              )),
-                        ],
-                      ),
-                    SizedBox(height: 4),
-                    Text(
-                      'Subtotal: \$${itemTotal.toStringAsFixed(2)}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
+                        Text(
+                          'Precio base: \$${item.precio.toStringAsFixed(2)}',
+                          style: TextStyle(color: Colors.grey[700]),
+                        ),
+                        if (item.adicionales.isNotEmpty)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Adicionales:',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[800]),
+                              ),
+                              ...item.adicionales.map((ad) => Text(
+                                    '${ad['name']} - \$${(ad['price'] as double).toStringAsFixed(2)}',
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  )),
+                            ],
+                          ),
+                        SizedBox(height: 4),
+                        Text(
+                          'Subtotal: \$${itemTotal.toStringAsFixed(2)}',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.edit, color: Colors.blue),
-                  onPressed: () => onEditItem(item),
-                ),
-              ),
-            );
-          }),
+                    trailing: IconButton(
+                      icon: Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () => onEditItem(item),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),

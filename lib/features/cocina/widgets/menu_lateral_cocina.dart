@@ -37,16 +37,16 @@ class MenuLateralCocina extends StatelessWidget {
                     );
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.timer),
-                  title: Text('Tiempos de Preparación'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => TiemposScreen()),
-                    );
-                  },
-                ),
+                // ListTile(
+                //   leading: Icon(Icons.timer),
+                //   title: Text('Tiempos de Preparación'),
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(builder: (context) => TiemposScreen()),
+                //     );
+                //   },
+                // ),
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.logout),
