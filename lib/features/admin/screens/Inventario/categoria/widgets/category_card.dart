@@ -15,52 +15,59 @@ class CategoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 800;
+    final isSmallScreen = screenWidth < 600;
 
-    final double cardHeight = isSmallScreen ? 170 : 190;
-    final double iconSize = isSmallScreen ? 20 : 50;
-    final double padding = isSmallScreen ? 20 : 20;
-    final double fontSize = isSmallScreen ? 14 : 15;
+    final double iconSize = isSmallScreen ? 40 : 60;
+    final double fontSize = isSmallScreen ? 13 : 15;
+    final double padding = 12;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5),
-              boxShadow: const [
-                BoxShadow(color: Colors.black12, blurRadius: 2)
-              ],
-            ),
-            padding: EdgeInsets.all(padding),
-            height: cardHeight,
-            width: double.infinity,
-            child: imageUrl != null && imageUrl!.isNotEmpty
-                ? Image.network(
-                    imageUrl!,
-                    fit: BoxFit.contain,
-                    errorBuilder: (_, __, ___) =>
-                        Icon(Icons.broken_image, size: iconSize),
-                  )
-                : Icon(Icons.image_not_supported, size: iconSize),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AspectRatio(
+                aspectRatio: 1, // Mantiene cuadrado el contenedor
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: const [
+                      BoxShadow(color: Colors.black12, blurRadius: 2),
+                    ],
+                  ),
+                  padding: EdgeInsets.all(padding),
+                  child: imageUrl != null && imageUrl!.isNotEmpty
+                      ? Image.network(
+                          imageUrl!,
+                          fit: BoxFit.contain,
+                          errorBuilder: (_, __, ___) =>
+                              Icon(Icons.broken_image, size: iconSize),
+                        )
+                      : Icon(Icons.image_not_supported, size: iconSize),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: Text(
+                  name,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: fontSize,
+                  ),
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-          Text(
-            name,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: fontSize,
-            ),
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

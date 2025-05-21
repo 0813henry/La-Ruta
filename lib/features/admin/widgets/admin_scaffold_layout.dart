@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/features/admin/widgets/admin_dashboard/sidebar_menu.dart';
 
 class AdminScaffoldLayout extends StatelessWidget {
@@ -16,7 +17,17 @@ class AdminScaffoldLayout extends StatelessWidget {
     return Scaffold(
       drawer: const SidebarMenu(),
       appBar: AppBar(
-        title: title ?? const Text('Panel de Administración'),
+        title: DefaultTextStyle(
+          style: const TextStyle(
+              color: AppColors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold),
+          child: title ?? const Text('Panel de Administración'),
+        ),
+        backgroundColor: AppColors.primary,
+        iconTheme: const IconThemeData(
+          color: AppColors.white, // Cambia el color de los iconos a blanco
+        ),
       ),
       body: body,
     );

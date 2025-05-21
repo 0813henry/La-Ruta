@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/constants/app_colors.dart';
 
-class WTextField extends StatelessWidget {
+class WTextField extends StatefulWidget {
   final TextEditingController controller;
   final String label;
   final IconData? icon;
   final bool obscureText;
-  final TextInputType keyboardType; // Nuevo parámetro
+  final TextInputType keyboardType;
 
   const WTextField({
     super.key,
@@ -14,17 +14,36 @@ class WTextField extends StatelessWidget {
     required this.label,
     this.icon,
     this.obscureText = false,
-    this.keyboardType = TextInputType.text, // Valor por defecto
+    this.keyboardType = TextInputType.text,
   });
+
+  @override
+  State<WTextField> createState() => _WTextFieldState();
+}
+
+class _WTextFieldState extends State<WTextField> {
+  late bool _obscure;
+
+  @override
+  void initState() {
+    super.initState();
+    _obscure = widget.obscureText;
+  }
+
+  void _toggleVisibility() {
+    setState(() {
+      _obscure = !_obscure;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType, // Usar el parámetro aquí
+      controller: widget.controller,
+      obscureText: _obscure,
+      keyboardType: widget.keyboardType,
       decoration: InputDecoration(
-        labelText: label,
+        labelText: widget.label,
         floatingLabelStyle: const TextStyle(
           fontWeight: FontWeight.bold,
           color: AppColors.primary,
@@ -32,7 +51,18 @@ class WTextField extends StatelessWidget {
         labelStyle: const TextStyle(
           color: AppColors.textSecondary,
         ),
-        prefixIcon: icon != null ? Icon(icon, color: AppColors.primary) : null,
+        prefixIcon: widget.icon != null
+            ? Icon(widget.icon, color: AppColors.primary)
+            : null,
+        suffixIcon: widget.obscureText
+            ? IconButton(
+                icon: Icon(
+                  _obscure ? Icons.visibility_off : Icons.visibility,
+                  color: AppColors.primary,
+                ),
+                onPressed: _toggleVisibility,
+              )
+            : null,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(color: AppColors.primary),

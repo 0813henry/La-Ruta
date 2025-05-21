@@ -80,7 +80,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 30),
                 Image.asset(
                   'assets/images/logo_3.png',
                   width: isMobile
@@ -97,7 +96,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 30),
                 _loading
                     ? CircularProgressIndicator()
                     : const SizedBox.shrink(),

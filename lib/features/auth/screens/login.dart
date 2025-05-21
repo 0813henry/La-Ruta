@@ -19,14 +19,40 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  /// Muestra un diálogo modal con indicador de carga.
+  void _showLoading() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: Material(
+          color: AppColors.background,
+          borderRadius: BorderRadius.all(Radius.circular(12)),
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(
+              color: AppColors.secondary,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _login() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
-    final user = await AuthService().loginWithEmail(email, password);
-    if (user != null) {
-      try {
+
+    _showLoading();
+
+    try {
+      final user = await AuthService().loginWithEmail(email, password);
+      if (user != null) {
         final userDoc =
             await _firestore.collection('users').doc(user.uid).get();
+
+        Navigator.of(context).pop(); // <-- cierro el modal
+
         if (userDoc.exists) {
           UserModel loggedInUser = UserModel.fromMap(userDoc.data()!);
           switch (loggedInUser.role) {
@@ -44,22 +70,24 @@ class _LoginScreenState extends State<LoginScreen> {
               break;
             default:
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Rol de usuario desconocido')),
+                const SnackBar(content: Text('Rol de usuario desconocido')),
               );
           }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Usuario no encontrado')),
+            const SnackBar(content: Text('Usuario no encontrado')),
           );
         }
-      } catch (e) {
+      } else {
+        Navigator.of(context).pop(); // <-- cierra el modal
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error al obtener datos del usuario: $e')),
+          const SnackBar(content: Text('Error en el inicio de sesión')),
         );
       }
-    } else {
+    } catch (e) {
+      Navigator.of(context).pop(); // <-- cierra el modal
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error en el inicio de sesión')),
+        SnackBar(content: Text('Error al obtener datos del usuario: $e')),
       );
     }
   }
@@ -80,7 +108,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           Center(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Card(
                 elevation: 12,
                 shape: RoundedRectangleBorder(
@@ -88,11 +116,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white, // Fondo negro con opacidad
-                    borderRadius:
-                        BorderRadius.circular(10), // Bordes redondeados
+                    color: Colors.white.withOpacity(0.95),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.all(20.0), // Espaciado interno
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -104,27 +131,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         'Bienvenido',
                         style: AppStyles.heading,
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Inicia sesión para continuar',
                         style: AppStyles.body.copyWith(
                           color: AppColors.textSecondary,
                         ),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       LoginForm(
                         emailController: _emailController,
                         passwordController: _passwordController,
                         onLogin: _login,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       WTextButton(
                         label: '¿Olvidaste tu contraseña?',
                         onPressed: () {
                           Navigator.pushNamed(context, '/reset-password');
                         },
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ),
