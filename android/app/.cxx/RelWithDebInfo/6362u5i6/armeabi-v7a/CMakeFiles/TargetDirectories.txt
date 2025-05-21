@@ -1,0 +1,2 @@
+C:/Users/Henry/Documents/Trabajo/restaurante_app/android/app/.cxx/RelWithDebInfo/6362u5i6/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/Henry/Documents/Trabajo/restaurante_app/android/app/.cxx/RelWithDebInfo/6362u5i6/armeabi-v7a/CMakeFiles/rebuild_cache.dir

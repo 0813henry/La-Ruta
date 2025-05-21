@@ -1,5 +1,5 @@
 name: restaurante_app
-description: "A new Flutter project."
+description: "Comida rápida, asados al carbón y micheladas bien frías con estilo ochentero. Sabor callejero, ambiente retro."
 
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
@@ -31,12 +31,18 @@ dependencies:
   path_provider: ^2.0.11
   share_plus: ^11.0.0
   printing: ^5.14.2
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
     
   flutter_lints: ^5.0.0
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/logo_2.png"
 
 flutter:
 

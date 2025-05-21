@@ -112,12 +112,12 @@ class _SidebarMenuState extends State<SidebarMenu>
                     onTap: () => _navigateTo(context, ProductoScreen()),
                     isSubItem: true,
                   ),
-                  SidebarMenuItem(
-                    icon: Icons.add_circle,
-                    title: 'Adicionales',
-                    onTap: () => _navigateTo(context, AdicionalesScreen()),
-                    isSubItem: true,
-                  ),
+                  // SidebarMenuItem(
+                  //   icon: Icons.add_circle,
+                  //   title: 'Adicionales',
+                  //   onTap: () => _navigateTo(context, AdicionalesScreen()),
+                  //   isSubItem: true,
+                  // ),
                   SidebarMenuItem(
                     icon: Icons.add_circle,
                     title: 'Inventario',

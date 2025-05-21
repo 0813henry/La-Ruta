@@ -17,7 +17,7 @@ class CategoryCard extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 800;
 
-    final double cardHeight = isSmallScreen ? 180 : 200;
+    final double cardHeight = isSmallScreen ? 170 : 190;
     final double iconSize = isSmallScreen ? 20 : 50;
     final double padding = isSmallScreen ? 20 : 20;
     final double fontSize = isSmallScreen ? 14 : 15;

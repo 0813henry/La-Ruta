@@ -39,14 +39,14 @@ class MenuLateralCaja extends StatelessWidget {
                         context, AppRoutes.historial);
                   },
                 ),
-                ListTile(
-                  leading: Icon(Icons.receipt),
-                  title: Text('Generar Facturas'),
-                  onTap: () {
-                    Navigator.pushReplacementNamed(
-                        context, AppRoutes.kitchenOrders); // Placeholder route
-                  },
-                ),
+                // ListTile(
+                //   leading: Icon(Icons.receipt),
+                //   title: Text('Generar Facturas'),
+                //   onTap: () {
+                //     Navigator.pushReplacementNamed(
+                //         context, AppRoutes.kitchenOrders); // Placeholder route
+                //   },
+                // ),
                 Divider(),
                 ListTile(
                   leading: Icon(Icons.logout),
