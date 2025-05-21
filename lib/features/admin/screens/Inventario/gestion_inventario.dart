@@ -59,7 +59,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                       final products = snapshot.data!;
                       return ListView.separated(
                         itemCount: products.length,
-                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        separatorBuilder: (_, __) => const SizedBox(height: 0),
                         itemBuilder: (context, index) {
                           final product = products[index];
                           final stockController = TextEditingController(
@@ -67,7 +67,7 @@ class _InventoryScreenState extends State<InventoryScreen> {
                           );
 
                           return Card(
-                            elevation: 4,
+                            elevation: 1,
                             color: AppColors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
