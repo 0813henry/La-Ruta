@@ -3,8 +3,8 @@ flutter_native_splash:
   image: assets/images/logo_3.png
   android: true
   ios: true
-  web: true
-  fullscreen: true
+  web: false
+  branding: assets/images/logo_3.png
 
   android_12:
     image: assets/images/logo_3.png
