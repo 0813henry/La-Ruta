@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/services/notification_service.dart';
+import 'package:restaurante_app/core/services/producto_service.dart';
 import '../model/pedido_model.dart';
 
 // Este archivo contiene el servicio para gestionar los pedidos en la base de datos.
@@ -243,6 +244,128 @@ class PedidoService {
           .update(pedido.toMap());
     } catch (e) {
       throw Exception('Error al actualizar el pedido: $e');
+    }
+  }
+
+  Future<void> confirmarPedido({
+    required BuildContext context,
+    required OrderModel? pedidoExistente,
+    required String mesaId,
+    required List<OrderItem> carrito,
+    required String cliente,
+    required String tipo,
+  }) async {
+    final productoService = ProductoService();
+    bool stockOk = true;
+    String? errorMsg;
+    Map<String, int> stockCambios = {};
+    Map<String, int> stockActual = {};
+
+    if (pedidoExistente != null) {
+      final original = <String, int>{};
+      for (final item in pedidoExistente.items) {
+        original[item.idProducto] =
+            (original[item.idProducto] ?? 0) + item.cantidad;
+      }
+
+      final nuevo = <String, int>{};
+      for (final item in carrito) {
+        nuevo[item.idProducto] = (nuevo[item.idProducto] ?? 0) + item.cantidad;
+      }
+
+      final ids = {...original.keys, ...nuevo.keys};
+      for (final id in ids) {
+        final cantOriginal = original[id] ?? 0;
+        final cantNueva = nuevo[id] ?? 0;
+        stockCambios[id] = cantNueva - cantOriginal;
+      }
+    } else {
+      for (final item in carrito) {
+        stockCambios[item.idProducto] =
+            (stockCambios[item.idProducto] ?? 0) + item.cantidad;
+      }
+    }
+
+    for (final entry in stockCambios.entries) {
+      final idProducto = entry.key;
+      final cambio = entry.value;
+      final producto = await productoService.obtenerProductoPorId(idProducto);
+      if (producto == null) {
+        stockOk = false;
+        errorMsg = 'El producto con ID "$idProducto" no está disponible.';
+        break;
+      }
+      stockActual[idProducto] = producto.stock;
+      if (cambio > 0 && cambio > producto.stock) {
+        stockOk = false;
+        errorMsg =
+            'No hay suficiente stock para "${producto.name}". Disponible: ${producto.stock}, solicitado extra: $cambio.';
+        break;
+      }
+    }
+
+    if (!stockOk) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMsg ?? 'Stock insuficiente')),
+      );
+      return;
+    }
+
+    for (final entry in stockCambios.entries) {
+      final idProducto = entry.key;
+      final cambio = entry.value;
+      final stock = stockActual[idProducto]!;
+      final nuevoStock = stock - cambio;
+      await productoService.actualizarProductoStock(idProducto, nuevoStock);
+    }
+
+    final total = carrito.fold(0.0, (sum, item) {
+      final adicionalesTotal = item.adicionales.fold(
+        0.0,
+        (sum, adicional) => sum + (adicional['price'] as double),
+      );
+      return sum + (item.precio + adicionalesTotal) * item.cantidad;
+    });
+
+    if (pedidoExistente != null) {
+      final pedidoModificado = pedidoExistente.copyWith(
+        cliente: cliente,
+        tipo: tipo,
+        items: List<OrderItem>.from(carrito),
+        total: total,
+      );
+
+      try {
+        await actualizarPedido(pedidoModificado);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Pedido modificado exitosamente')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al modificar el pedido: $e')),
+        );
+      }
+    } else {
+      final nuevoPedido = OrderModel(
+        cliente: cliente,
+        items: List<OrderItem>.from(carrito),
+        total: total,
+        estado: 'Pendiente',
+        tipo: tipo,
+        startTime: DateTime.now(),
+      );
+
+      try {
+        await crearPedido(nuevoPedido);
+        await enviarSMS('Pedido enviado exitosamente.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Pedido enviado exitosamente')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al enviar el pedido: $e')),
+        );
+      }
     }
   }
 }
