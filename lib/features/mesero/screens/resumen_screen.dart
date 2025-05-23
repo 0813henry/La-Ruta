@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/features/mesero/widgets/mesero_scaffold_layout.dart';
 import '../../../core/services/pedido_service.dart';
 import '../../../core/widgets/modules/pedido_item.dart';
 import '../../../core/model/pedido_model.dart';
@@ -36,14 +37,8 @@ class ResumenScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Resumen de Pedidos'),
-        backgroundColor: AppColors.primary,
-        foregroundColor: AppColors.white,
-        elevation: 2,
-      ),
-      drawer: MenuLateralMesero(),
+    return MeseroScaffoldLayout(
+      title: const Text('Resumen de Pedidos'),
       body: Container(
         color: AppColors.background,
         child: StreamBuilder<List<OrderModel>>(
@@ -55,6 +50,7 @@ class ResumenScreen extends StatelessWidget {
             if (snapshot.hasError) {
               return Center(child: Text('Error: ${snapshot.error}'));
             }
+
             final pedidos = snapshot.data ?? [];
             if (pedidos.isEmpty) {
               return Center(
@@ -76,9 +72,11 @@ class ResumenScreen extends StatelessWidget {
                 ),
               );
             }
-            // Sumar el total general de cada pedido (incluyendo divisiones)
+
             final total = pedidos.fold(
-                0.0, (sum, pedido) => sum + _pedidoTotalGeneral(pedido));
+              0.0,
+              (sum, pedido) => sum + _pedidoTotalGeneral(pedido),
+            );
 
             return Column(
               children: [
@@ -103,7 +101,7 @@ class ResumenScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      const Text(
                         'Total Vendido',
                         style: TextStyle(
                           color: AppColors.white,
@@ -132,7 +130,7 @@ class ResumenScreen extends StatelessWidget {
                     separatorBuilder: (_, __) => const SizedBox(height: 10),
                     itemBuilder: (context, index) {
                       final pedido = pedidos[index];
-                      final totalGeneralPedido = _pedidoTotalGeneral(pedido);
+                      final totalPedido = _pedidoTotalGeneral(pedido);
                       return Card(
                         elevation: 3,
                         shape: RoundedRectangleBorder(
@@ -156,7 +154,7 @@ class ResumenScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Total: \$${totalGeneralPedido.toStringAsFixed(2)}',
+                                'Total: \$${totalPedido.toStringAsFixed(2)}',
                                 style: TextStyle(
                                   color: AppColors.success,
                                   fontWeight: FontWeight.w600,
