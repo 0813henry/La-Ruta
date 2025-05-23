@@ -5,12 +5,14 @@ import 'package:restaurante_app/features/mesero/widgets/mesero_dashboard/sidebar
 
 class MeseroScaffoldLayout extends StatelessWidget {
   final Widget body;
-  final Widget? title; // Permite personalizar el título opcionalmente
+  final Widget? title;
+  final Widget? floatingButton;
 
   const MeseroScaffoldLayout({
     super.key,
     required this.body,
     this.title,
+    this.floatingButton,
   });
 
   @override
@@ -18,35 +20,44 @@ class MeseroScaffoldLayout extends StatelessWidget {
     return Scaffold(
       drawer: const SidebarMenuMesero(),
       appBar: AppBar(
-        title: title ?? const Text('Panel de Mesero'),
+        title: title ??
+            const Text(
+              'Panel de Mesero',
+              style: TextStyle(color: AppColors.white),
+            ),
         backgroundColor: AppColors.primary,
-        iconTheme: const IconThemeData(
-          color: AppColors.white, // Cambia el color de los iconos
+        iconTheme: const IconThemeData(color: AppColors.white),
+        titleTextStyle: const TextStyle(
+          color: AppColors.white,
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
         ),
       ),
       body: body,
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.add, color: AppColors.white),
-        label: Text(
-          'Nuevo Pedido',
-          style: TextStyle(
-              color: AppColors.white,
-              fontSize: 14,
-              fontWeight: FontWeight.bold),
-        ),
-        backgroundColor: AppColors.primary,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NuevoPedidoScreen(
-                mesaId: 'mesa_demo', // Reemplaza con el ID real de la mesa
-                nombre: 'Mesa Demo', // Reemplaza con el nombre real de la mesa
+      floatingActionButton: floatingButton ??
+          FloatingActionButton.extended(
+            icon: const Icon(Icons.add, color: AppColors.white),
+            label: const Text(
+              'Nuevo Pedido',
+              style: TextStyle(
+                color: AppColors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
               ),
             ),
-          );
-        },
-      ),
+            backgroundColor: AppColors.primary,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NuevoPedidoScreen(
+                    mesaId: 'mesa_demo',
+                    nombre: 'Mesa Demo',
+                  ),
+                ),
+              );
+            },
+          ),
     );
   }
 }

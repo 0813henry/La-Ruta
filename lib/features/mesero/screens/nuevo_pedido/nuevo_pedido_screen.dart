@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
@@ -8,6 +9,7 @@ import 'package:restaurante_app/core/services/producto_service.dart';
 import 'package:restaurante_app/features/mesero/screens/nuevo_pedido/widgets/modal_detalle_carrito_sheet.dart';
 import 'package:restaurante_app/features/mesero/widgets/categoria_selector.dart';
 import 'package:restaurante_app/features/mesero/widgets/mesero_dashboard/menu_lateral_mesero.dart';
+import 'package:restaurante_app/features/mesero/widgets/mesero_scaffold_layout.dart';
 
 import 'widgets/producto_grid.dart';
 import 'widgets/modal_detalle_producto.dart';
@@ -202,52 +204,13 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return Scaffold(
-        appBar: AppBar(title: Text('Nuevo Pedido - Mesa ${widget.nombre}')),
-        body: const Center(child: CircularProgressIndicator()),
-      );
+      return const Center(child: CircularProgressIndicator());
     }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.pedido != null
-            ? 'Modificar Pedido - Mesa ${widget.nombre}'
-            : 'Nuevo Pedido - Mesa ${widget.nombre}'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.shopping_cart),
-            onPressed: () async {
-              final total = _cart.fold(
-                  0.0, (sum, item) => sum + item.precio * item.cantidad);
-
-              // Obtener productos disponibles para mostrar imágenes
-              final productosStream = ProductoService().obtenerProductos();
-              final productosList = await productosStream.first;
-              final productosMap = {
-                for (var p in productosList) p.id: p,
-              };
-
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (_) => ModalDetalleCarritoSheet(
-                  cart: _cart,
-                  total: total,
-                  onConfirm: _confirmOrder,
-                  onEditItem: _showCartDetails,
-                  onRemoveItem: _removeFromCart,
-                  divisiones: widget.pedido?.divisiones,
-                  confirmButtonText: widget.pedido != null
-                      ? 'Modificar Pedido'
-                      : 'Confirmar Pedido',
-                  productosDisponibles: productosMap,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-      drawer: const MenuLateralMesero(),
+    return MeseroScaffoldLayout(
+      title: Text(widget.pedido != null
+          ? 'Modificar Pedido - ${widget.nombre}'
+          : 'Nuevo Pedido'),
       body: Column(
         children: [
           CategoriaSelector(
@@ -258,10 +221,46 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
             child: ProductoGrid(
               selectedCategory: _selectedCategory,
               onProductTap: _showProductDetails,
-              cartItems: _cart, // ✅ Argumento requerido agregado
+              cartItems: _cart,
             ),
           ),
         ],
+      ),
+      floatingButton: FloatingActionButton.extended(
+        onPressed: () async {
+          final total =
+              _cart.fold(0.0, (sum, item) => sum + item.precio * item.cantidad);
+
+          final productosStream = ProductoService().obtenerProductos();
+          final productosList = await productosStream.first;
+          final productosMap = {for (var p in productosList) p.id: p};
+
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            builder: (_) => ModalDetalleCarritoSheet(
+              cart: _cart,
+              total: total,
+              onConfirm: _confirmOrder,
+              onEditItem: _showCartDetails,
+              onRemoveItem: _removeFromCart,
+              divisiones: widget.pedido?.divisiones,
+              confirmButtonText: widget.pedido != null
+                  ? 'Modificar Pedido'
+                  : 'Confirmar Pedido',
+              productosDisponibles: productosMap,
+            ),
+          );
+        },
+        backgroundColor: AppColors.primary,
+        icon: const Icon(Icons.shopping_cart, color: AppColors.white),
+        label: const Text(
+          'Ver Carrito',
+          style: TextStyle(
+            color: AppColors.white,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }

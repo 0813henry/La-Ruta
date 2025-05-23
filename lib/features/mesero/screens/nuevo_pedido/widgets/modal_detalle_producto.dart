@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
-import 'package:restaurante_app/core/widgets/wtext_field.dart';
 
 class ModalDetalleProducto extends StatefulWidget {
   final Product product;
