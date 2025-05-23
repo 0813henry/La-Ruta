@@ -54,86 +54,49 @@ class _CarritoWidgetState extends State<CarritoWidget> {
         widget.divisiones?.values.expand((e) => e).toList() ?? []);
     final totalGeneral = _calcularTotal(widget.cartItems) + totalDivisiones;
 
-    return Container(
-      padding: const EdgeInsets.all(16)
-          .copyWith(bottom: MediaQuery.of(context).viewInsets.bottom),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Carrito (${widget.cartItems.length} productos)',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Carrito (${widget.cartItems.length} productos)',
+              style: const TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
               ),
-              const SizedBox(height: 5),
-              ...widget.cartItems.map((item) => _buildItemCard(item)),
-              if (widget.divisiones != null &&
-                  widget.divisiones!.isNotEmpty) ...[
-                const Divider(),
-                const Text(
-                  'Divisiones',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                ...widget.divisiones!.entries.map((entry) {
-                  final division = entry.key;
-                  final items = entry.value;
-                  return Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ExpansionTile(
-                      title: Text(
-                        'División: $division',
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      children:
-                          items.map((item) => _buildItemCard(item)).toList(),
-                    ),
-                  );
-                }),
-              ],
-              const Divider(height: 32),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  'Total: \$${totalGeneral.toStringAsFixed(0)}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: WButton(
-                  onPressed: widget.onConfirmOrder,
-                  label: widget.confirmButtonText,
-                  icon: const Icon(Icons.check, color: Colors.white, size: 20),
-                ),
-              ),
-              const SizedBox(height: 10),
-            ],
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+        const SizedBox(height: 5),
+        ...widget.cartItems.map(_buildItemCard),
+        const Divider(height: 32),
+        Align(
+          alignment: Alignment.centerRight,
+          child: Text(
+            'Total: \$${totalGeneral.toStringAsFixed(0)}',
+            style: const TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.black87,
+            ),
           ),
         ),
-      ),
+        const SizedBox(height: 16),
+        SizedBox(
+          width: double.infinity,
+          child: WButton(
+            onPressed: widget.onConfirmOrder,
+            label: widget.confirmButtonText,
+            icon: const Icon(Icons.check, color: Colors.white, size: 20),
+          ),
+        ),
+      ],
     );
   }
 
