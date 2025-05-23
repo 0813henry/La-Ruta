@@ -1,3 +1,4 @@
+// ProductoGrid.dart
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
@@ -16,9 +17,11 @@ class ProductoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     final isPortrait =
         MediaQuery.of(context).orientation == Orientation.portrait;
-    final crossAxisCount = isPortrait ? 2 : 3;
+    final isMobile = size.width < 600;
+    final crossAxisCount = isPortrait ? (isMobile ? 2 : 3) : (isMobile ? 3 : 4);
 
     return StreamBuilder<List<Product>>(
       stream: FirebaseService().getFilteredProductsStream(selectedCategory),
@@ -34,20 +37,24 @@ class ProductoGrid extends StatelessWidget {
         }
 
         final products = snapshot.data!;
-        return GridView.builder(
-          padding: const EdgeInsets.all(8),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 8,
-            mainAxisSpacing: 8,
-            childAspectRatio: isPortrait ? 3 / 4 : 3 / 2,
-          ),
-          itemCount: products.length,
-          itemBuilder: (context, index) {
-            final product = products[index];
-            return ProductoCard(
-              product: product,
-              onTap: () => onProductTap(product),
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return GridView.builder(
+              padding: const EdgeInsets.all(8),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 8,
+                mainAxisSpacing: 8,
+                childAspectRatio: isMobile ? 0.68 : 0.75,
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return ProductoCard(
+                  product: product,
+                  onTap: () => onProductTap(product),
+                );
+              },
             );
           },
         );
