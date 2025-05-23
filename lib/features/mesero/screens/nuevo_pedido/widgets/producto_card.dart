@@ -19,23 +19,23 @@ class ProductoCard extends StatelessWidget {
     final isMobile = size.width < 600;
     final padding = isMobile ? 8.0 : 12.0;
     final imageHeight = isMobile ? 110.0 : 130.0;
-    final fontSize = isMobile ? 14.0 : 16.0;
+    final fontSize = isMobile ? 17.0 : 16.0;
     final buttonPadding = isMobile ? 10.0 : 12.0;
 
     return GestureDetector(
       onTap: onTap,
       child: Card(
-        elevation: 3,
+        elevation: 2,
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(5),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+                  const BorderRadius.vertical(top: Radius.circular(5)),
               child: Image.network(
                 product.imageUrl ?? '',
                 height: imageHeight,
@@ -43,24 +43,27 @@ class ProductoCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => const Icon(
                   Icons.image_not_supported,
-                  size: 90,
-                  color: Colors.grey,
+                  size: 120,
+                  color: AppColors.coolGray,
                 ),
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 10),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(12),
+                  color: AppColors.coolGray,
+                  borderRadius: BorderRadius.circular(4),
                 ),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 child: Text(
                   'Disponible: ${product.stock}',
-                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  style: const TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textSecondary,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -81,11 +84,11 @@ class ProductoCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: Text(
-                '\$${product.price.toStringAsFixed(2)}',
+                '\$${product.price.toStringAsFixed(0)}',
                 style: TextStyle(
                   fontSize: fontSize,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black87,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ),
@@ -99,14 +102,15 @@ class ProductoCard extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     padding: EdgeInsets.symmetric(vertical: buttonPadding),
-                    elevation: 0,
+                    elevation: 1,
                   ),
                   child: const Text(
-                    'Order',
-                    style: TextStyle(color: Colors.white),
+                    'Llevar al Carrito',
+                    style: TextStyle(
+                        color: AppColors.white, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
