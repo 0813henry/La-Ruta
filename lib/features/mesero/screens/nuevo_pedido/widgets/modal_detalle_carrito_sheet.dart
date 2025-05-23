@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
+import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/features/mesero/widgets/carrito_widget.dart';
 
-class ModalDetalleCarritoSheet extends StatelessWidget {
+class ModalDetalleCarritoSheet extends StatefulWidget {
   final List<OrderItem> cart;
   final double total;
   final VoidCallback onConfirm;
-  final void Function(OrderItem) onEditItem;
+  final Future<void> Function(OrderItem) onEditItem;
   final void Function(OrderItem) onRemoveItem;
   final Map<String, List<OrderItem>>? divisiones;
   final String confirmButtonText;
+
+  /// ✅ Nuevo: Mapa de productos para mostrar las imágenes
+  final Map<String, Product> productosDisponibles;
 
   const ModalDetalleCarritoSheet({
     super.key,
@@ -18,10 +22,17 @@ class ModalDetalleCarritoSheet extends StatelessWidget {
     required this.onConfirm,
     required this.onEditItem,
     required this.onRemoveItem,
+    required this.productosDisponibles, // ← nuevo parámetro
     this.divisiones,
     required this.confirmButtonText,
   });
 
+  @override
+  State<ModalDetalleCarritoSheet> createState() =>
+      _ModalDetalleCarritoSheetState();
+}
+
+class _ModalDetalleCarritoSheetState extends State<ModalDetalleCarritoSheet> {
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
@@ -29,20 +40,24 @@ class ModalDetalleCarritoSheet extends StatelessWidget {
       child: Column(
         children: [
           CarritoWidget(
-            cartItems: cart,
-            onEditItem: onEditItem,
-            onRemoveItem: onRemoveItem,
-            total: total,
-            onConfirmOrder: onConfirm,
-            confirmButtonText: confirmButtonText,
-            divisiones: divisiones,
+            cartItems: widget.cart,
+            onEditItem: (item) async {
+              await widget.onEditItem(item);
+              setState(() {});
+            },
+            onRemoveItem: widget.onRemoveItem,
+            total: widget.total,
+            onConfirmOrder: widget.onConfirm,
+            confirmButtonText: widget.confirmButtonText,
+            divisiones: widget.divisiones,
+            productosDisponibles: widget.productosDisponibles, // ← importante
           ),
-          if (divisiones != null && divisiones!.isNotEmpty)
+          if (widget.divisiones != null && widget.divisiones!.isNotEmpty)
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: ListView(
-                  children: divisiones!.entries.map((entry) {
+                  children: widget.divisiones!.entries.map((entry) {
                     final division = entry.key;
                     final productos = entry.value;
                     return Card(
@@ -64,6 +79,7 @@ class ModalDetalleCarritoSheet extends StatelessWidget {
                           final itemTotal =
                               (producto.precio + adicionalesTotal) *
                                   producto.cantidad;
+
                           return ListTile(
                             title: Text(
                                 '${producto.nombre} x${producto.cantidad}'),

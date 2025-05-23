@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
-import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'package:restaurante_app/core/services/pedido_service.dart';
 import 'package:restaurante_app/core/services/producto_service.dart';
 import 'package:restaurante_app/features/mesero/screens/nuevo_pedido/widgets/modal_detalle_carrito_sheet.dart';
@@ -155,8 +154,8 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
     );
   }
 
-  void _showCartDetails(OrderItem item) {
-    showModalBottomSheet(
+  Future<void> _showCartDetails(OrderItem item) async {
+    final result = await showModalBottomSheet<bool>(
       context: context,
       isScrollControlled: true,
       builder: (_) => ModalDetalleCarrito(
@@ -165,6 +164,10 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
         onDelete: _removeFromCart,
       ),
     );
+
+    if (result == true) {
+      setState(() {});
+    }
   }
 
   Future<void> _confirmOrder() async {
@@ -195,12 +198,39 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
     }
   }
 
+  Future<void> _abrirCarritoConProductos() async {
+    final productosStream = ProductoService().obtenerProductos();
+    final productos = await productosStream.first;
+    final Map<String, Product> productosMap = {
+      for (var p in productos) p.id: p,
+    };
+
+    final total =
+        _cart.fold(0.0, (sum, item) => sum + item.precio * item.cantidad);
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => ModalDetalleCarritoSheet(
+        cart: _cart,
+        total: total,
+        onConfirm: _confirmOrder,
+        onEditItem: _showCartDetails,
+        onRemoveItem: _removeFromCart,
+        divisiones: widget.pedido?.divisiones,
+        confirmButtonText:
+            widget.pedido != null ? 'Modificar Pedido' : 'Confirmar Pedido',
+        productosDisponibles: productosMap, // ← nuevo parámetro agregado
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
         appBar: AppBar(title: Text('Nuevo Pedido - Mesa ${widget.nombre}')),
-        body: Center(child: CircularProgressIndicator()),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -211,26 +241,8 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
             : 'Nuevo Pedido - Mesa ${widget.nombre}'),
         actions: [
           IconButton(
-            icon: Icon(Icons.shopping_cart),
-            onPressed: () {
-              final total = _cart.fold(
-                  0.0, (sum, item) => sum + item.precio * item.cantidad);
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (_) => ModalDetalleCarritoSheet(
-                  cart: _cart,
-                  total: total,
-                  onConfirm: _confirmOrder,
-                  onEditItem: _showCartDetails,
-                  onRemoveItem: _removeFromCart,
-                  divisiones: widget.pedido?.divisiones,
-                  confirmButtonText: widget.pedido != null
-                      ? 'Modificar Pedido'
-                      : 'Confirmar Pedido',
-                ),
-              );
-            },
+            icon: const Icon(Icons.shopping_cart),
+            onPressed: _abrirCarritoConProductos,
           ),
         ],
       ),
