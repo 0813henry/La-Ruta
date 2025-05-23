@@ -1,4 +1,3 @@
-// ✅ producto_card.dart actualizado y responsive sin overflow y reflejando stock en tiempo real
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
@@ -15,12 +14,45 @@ class ProductoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final isMobile = size.width < 600;
-    final padding = isMobile ? 8.0 : 12.0;
-    final imageHeight = isMobile ? 110.0 : 130.0;
-    final fontSize = isMobile ? 17.0 : 16.0;
-    final buttonPadding = isMobile ? 10.0 : 12.0;
+    final width = MediaQuery.of(context).size.width;
+
+    double imageHeight;
+    double fontSize;
+    double padding;
+    double buttonPadding;
+
+    if (width < 370) {
+      imageHeight = 100;
+      fontSize = 13;
+      padding = 6;
+      buttonPadding = 8;
+    } else if (width < 600) {
+      imageHeight = 120;
+      fontSize = 14;
+      padding = 8;
+      buttonPadding = 10;
+    } else if (width < 850) {
+      imageHeight = 140;
+      fontSize = 15;
+      padding = 10;
+      buttonPadding = 12;
+    } else if (width < 1000) {
+      imageHeight = 160;
+      fontSize = 16;
+      padding = 12;
+      buttonPadding = 14;
+    } else if (width < 1100) {
+      // ✅ NUEVO bloque para pantallas ~1024px
+      imageHeight = 190;
+      fontSize = 24;
+      padding = 16;
+      buttonPadding = 16;
+    } else {
+      imageHeight = 200;
+      fontSize = 18;
+      padding = 16;
+      buttonPadding = 16;
+    }
 
     return GestureDetector(
       onTap: onTap,
@@ -28,14 +60,14 @@ class ProductoCard extends StatelessWidget {
         elevation: 2,
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(6),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(5)),
+                  const BorderRadius.vertical(top: Radius.circular(6)),
               child: Image.network(
                 product.imageUrl ?? '',
                 height: imageHeight,
@@ -43,27 +75,28 @@ class ProductoCard extends StatelessWidget {
                 fit: BoxFit.cover,
                 errorBuilder: (_, __, ___) => const Icon(
                   Icons.image_not_supported,
-                  size: 120,
+                  size: 100,
                   color: AppColors.coolGray,
                 ),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: padding),
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.coolGray,
+                  color: AppColors.coolGray.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 child: Text(
                   'Disponible: ${product.stock}',
-                  style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.textSecondary,
-                      fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: fontSize - 2,
+                    color: AppColors.textSecondary,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -110,7 +143,9 @@ class ProductoCard extends StatelessWidget {
                   child: const Text(
                     'Llevar al Carrito',
                     style: TextStyle(
-                        color: AppColors.white, fontWeight: FontWeight.bold),
+                      color: AppColors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),

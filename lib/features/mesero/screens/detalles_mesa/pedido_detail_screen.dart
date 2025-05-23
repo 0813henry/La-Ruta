@@ -307,14 +307,6 @@ class _PedidoDetailScreenState extends State<PedidoDetailScreen> {
                                   ],
                                 ),
                               ),
-                              // Text(
-                              //   'TOTAL GENERAL: \$${_totalGeneral().toStringAsFixed(0)}',
-                              //   style: TextStyle(
-                              //     fontWeight: FontWeight.bold,
-                              //     fontSize: 20,
-                              //     color: Colors.green[700],
-                              //   ),
-                              // ),
                             ],
                           ),
                         ],

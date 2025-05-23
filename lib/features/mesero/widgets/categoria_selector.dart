@@ -11,69 +11,86 @@ class CategoriaSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isWide = MediaQuery.of(context).size.width > 800;
+
     return StreamBuilder<List<Map<String, dynamic>>>(
       stream: FirebaseService().getCategoriesWithDetailsStream(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError || !snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No hay categorías disponibles.'));
+          return const Center(child: Text('No hay categorías disponibles.'));
         }
+
         final categories = snapshot.data!;
+        final allCategories = [
+          {
+            'name': 'Todos',
+            'imageUrl':
+                'https://cdn-icons-png.flaticon.com/512/126/126515.png', // ícono genérico
+            'count': categories.fold<int>(
+              0,
+              (sum, cat) => sum + (cat['count'] as int? ?? 0),
+            ),
+          },
+          ...categories,
+        ];
 
         return SizedBox(
-          height: 120, // Altura del carrusel
-          child: ListView.builder(
+          height: isWide ? 120 : 120,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
             scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
+            itemCount: allCategories.length,
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
             itemBuilder: (context, index) {
-              final category = categories[index];
-              final categoryName = category['name'] as String? ?? 'Sin nombre';
-              final categoryImage = category['imageUrl'] as String? ?? '';
+              final category = allCategories[index];
+              final name = category['name'] ?? 'Sin nombre';
+              final imageUrl = category['imageUrl'] ?? '';
+              final count = category['count'] ?? 0;
 
               return GestureDetector(
-                onTap: () => onCategorySelected(categoryName),
-                child: Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  elevation: 4,
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(10),
-                        ),
-                        child: Image.network(
-                          categoryImage,
-                          height: 80,
-                          width: 100,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) =>
-                              Container(
-                            height: 80,
-                            width: 100,
-                            color: Colors.grey[300],
-                            child: Icon(Icons.image_not_supported),
-                          ),
-                        ),
+                onTap: () => onCategorySelected(
+                  name == 'Todos' ? null : name,
+                ),
+                child: Container(
+                  width: isWide ? 120 : 120,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    image: DecorationImage(
+                      image: NetworkImage(imageUrl),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.4),
+                        BlendMode.darken,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          categoryName,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          name,
                           style: TextStyle(
-                            fontSize: 12,
+                            color: Colors.white,
+                            fontSize: isWide ? 18 : 14,
                             fontWeight: FontWeight.bold,
                           ),
-                          textAlign: TextAlign.center,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          '$count producto${count == 1 ? '' : 's'}',
+                          style: TextStyle(
+                            color: Colors.white70,
+                            fontSize: isWide ? 14 : 12,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
