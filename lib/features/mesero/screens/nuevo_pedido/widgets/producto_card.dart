@@ -1,4 +1,4 @@
-// ✅ producto_card.dart actualizado y responsive sin overflow
+// ✅ producto_card.dart actualizado y responsive sin overflow y reflejando stock en tiempo real
 import 'package:flutter/material.dart';
 import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';

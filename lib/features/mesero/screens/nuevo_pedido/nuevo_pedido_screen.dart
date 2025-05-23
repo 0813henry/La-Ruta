@@ -258,6 +258,7 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
             child: ProductoGrid(
               selectedCategory: _selectedCategory,
               onProductTap: _showProductDetails,
+              cartItems: _cart, // ✅ Argumento requerido agregado
             ),
           ),
         ],

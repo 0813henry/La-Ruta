@@ -1,18 +1,20 @@
-// ProductoGrid.dart
+// ✅ producto_grid.dart con stock actualizado dinámicamente
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/model/pedido_model.dart';
 import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
-
 import 'producto_card.dart';
 
 class ProductoGrid extends StatelessWidget {
   final String? selectedCategory;
   final void Function(Product product) onProductTap;
+  final List<OrderItem> cartItems;
 
   const ProductoGrid({
     super.key,
     required this.selectedCategory,
     required this.onProductTap,
+    required this.cartItems,
   });
 
   @override
@@ -37,24 +39,28 @@ class ProductoGrid extends StatelessWidget {
         }
 
         final products = snapshot.data!;
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            return GridView.builder(
-              padding: const EdgeInsets.all(8),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: isMobile ? 0.68 : 0.75,
-              ),
-              itemCount: products.length,
-              itemBuilder: (context, index) {
-                final product = products[index];
-                return ProductoCard(
-                  product: product,
-                  onTap: () => onProductTap(product),
-                );
-              },
+
+        final updatedProducts = products.map((product) {
+          final cartQuantity = cartItems
+              .where((item) => item.idProducto == product.id)
+              .fold<int>(0, (sum, item) => sum + (item.cantidad));
+          return product.copyWith(stock: product.stock - cartQuantity);
+        }).toList();
+
+        return GridView.builder(
+          padding: const EdgeInsets.all(8),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
+            childAspectRatio: isMobile ? 0.68 : 0.75,
+          ),
+          itemCount: updatedProducts.length,
+          itemBuilder: (context, index) {
+            final product = updatedProducts[index];
+            return ProductoCard(
+              product: product,
+              onTap: () => onProductTap(product),
             );
           },
         );
