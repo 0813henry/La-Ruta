@@ -27,8 +27,7 @@ class CategoriaSelector extends StatelessWidget {
         final allCategories = [
           {
             'name': 'Todos',
-            'imageUrl':
-                'https://cdn-icons-png.flaticon.com/512/126/126515.png', // ícono genérico
+            'imageUrl': 'https://cdn-icons-png.flaticon.com/512/126/126515.png',
             'count': categories.fold<int>(
               0,
               (sum, cat) => sum + (cat['count'] as int? ?? 0),
@@ -38,7 +37,7 @@ class CategoriaSelector extends StatelessWidget {
         ];
 
         return SizedBox(
-          height: isWide ? 120 : 120,
+          height: 120,
           child: ListView.separated(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             scrollDirection: Axis.horizontal,
@@ -51,45 +50,47 @@ class CategoriaSelector extends StatelessWidget {
               final count = category['count'] ?? 0;
 
               return GestureDetector(
-                onTap: () => onCategorySelected(
-                  name == 'Todos' ? null : name,
-                ),
-                child: Container(
-                  width: isWide ? 120 : 120,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    image: DecorationImage(
-                      image: NetworkImage(imageUrl),
-                      fit: BoxFit.cover,
-                      colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.4),
-                        BlendMode.darken,
+                onTap: () => onCategorySelected(name == 'Todos' ? null : name),
+                child: Material(
+                  elevation: 4, // ✅ Elevación agregada aquí
+                  borderRadius: BorderRadius.circular(6),
+                  clipBehavior: Clip.antiAlias,
+                  child: Container(
+                    width: 120,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(imageUrl),
+                        fit: BoxFit.cover,
+                        colorFilter: ColorFilter.mode(
+                          Colors.black.withOpacity(0.4),
+                          BlendMode.darken,
+                        ),
                       ),
                     ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: isWide ? 18 : 14,
-                            fontWeight: FontWeight.bold,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isWide ? 18 : 14,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '$count producto${count == 1 ? '' : 's'}',
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: isWide ? 14 : 12,
+                          const SizedBox(height: 4),
+                          Text(
+                            '$count producto${count == 1 ? '' : 's'}',
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: isWide ? 14 : 12,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
