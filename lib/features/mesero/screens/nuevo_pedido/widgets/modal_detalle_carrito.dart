@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:restaurante_app/core/constants/app_colors.dart';
 import 'package:restaurante_app/core/model/pedido_model.dart';
+import 'package:restaurante_app/core/widgets/wbutton.dart';
+import 'package:restaurante_app/core/widgets/wtext_field.dart';
 
 class ModalDetalleCarrito extends StatefulWidget {
   final OrderItem item;
@@ -55,76 +58,113 @@ class _ModalDetalleCarritoState extends State<ModalDetalleCarrito> {
             Text(item.nombre,
                 style:
                     const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
+            const SizedBox(height: 16),
+
+            // Contador con diseño visual moderno
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.remove),
-                  onPressed: () {
-                    final current =
-                        int.tryParse(_cantidadController.text) ?? item.cantidad;
-                    if (current > 1) {
-                      setState(() {
-                        _cantidadController.text = '${current - 1}';
-                      });
-                    }
-                  },
-                ),
-                SizedBox(
-                  width: 50,
-                  child: TextField(
-                    controller: _cantidadController,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    decoration:
-                        const InputDecoration(border: OutlineInputBorder()),
+                _buildCircleButton(Icons.remove, () {
+                  final current =
+                      int.tryParse(_cantidadController.text) ?? item.cantidad;
+                  if (current > 1) {
+                    setState(() {
+                      _cantidadController.text = '${current - 1}';
+                    });
+                  }
+                }),
+                const SizedBox(width: 10),
+                Container(
+                  width: 40,
+                  alignment: Alignment.center,
+                  child: Text(
+                    _cantidadController.text,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
-                IconButton(
-                  icon: const Icon(Icons.add),
-                  onPressed: () {
-                    setState(() {
-                      final current = int.tryParse(_cantidadController.text) ??
+                const SizedBox(width: 10),
+                _buildCircleButton(Icons.add, () {
+                  final current =
+                      int.tryParse(_cantidadController.text) ?? item.cantidad;
+                  setState(() {
+                    _cantidadController.text = '${current + 1}';
+                  });
+                }),
+              ],
+            ),
+
+            const SizedBox(height: 20),
+
+            // // Comentario
+            // TextField(
+            //   controller: _comentarioController,
+            //   decoration: const InputDecoration(
+            //     labelText: 'Comentario (opcional)',
+            //     border: OutlineInputBorder(),
+            //   ),
+            // ),
+            WTextField(
+              controller: _comentarioController,
+              label: 'Comentario (opcional)',
+            ),
+
+            const SizedBox(height: 20),
+
+            // Botón actualizar + eliminar alineado correctamente
+            Row(
+              children: [
+                Expanded(
+                  child: WButton(
+                    onPressed: () {
+                      final cantidad = int.tryParse(_cantidadController.text) ??
                           item.cantidad;
-                      _cantidadController.text = '${current + 1}';
-                    });
+                      final comentario = _comentarioController.text;
+                      widget.onUpdate(item, cantidad, comentario);
+                      Navigator.pop(context);
+                    },
+                    label: 'Actualizar',
+                    icon:
+                        const Icon(Icons.check, size: 18, color: Colors.white),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                IconButton(
+                  icon: const Icon(Icons.delete,
+                      color: AppColors.secondary, size: 35),
+                  onPressed: () {
+                    widget.onDelete(item);
+                    Navigator.pop(context);
                   },
+                  tooltip: "Eliminar",
                 ),
               ],
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: _comentarioController,
-              decoration: const InputDecoration(
-                labelText: 'Comentario (opcional)',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: () {
-                final cantidad =
-                    int.tryParse(_cantidadController.text) ?? item.cantidad;
-                final comentario = _comentarioController.text;
-                widget.onUpdate(item, cantidad, comentario);
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.update),
-              label: const Text('Actualizar'),
-            ),
-            const SizedBox(height: 8),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              onPressed: () {
-                widget.onDelete(item);
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.delete),
-              label: const Text('Eliminar'),
-            ),
+            const SizedBox(height: 10),
           ],
         ),
+      ),
+    );
+  }
+
+  // Botón circular reutilizable
+  Widget _buildCircleButton(IconData icon, VoidCallback onPressed) {
+    return Container(
+      decoration: const BoxDecoration(
+        color: AppColors.primary,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: AppColors.white),
+        onPressed: onPressed,
+        splashRadius: 24,
       ),
     );
   }
