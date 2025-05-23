@@ -211,14 +211,20 @@ class _NuevoPedidoScreenState extends State<NuevoPedidoScreen> {
       title: Text(widget.pedido != null
           ? 'Modificar Pedido - ${widget.nombre}'
           : 'Nuevo Pedido'),
-      body: Column(
-        children: [
-          CategoriaSelector(
-            onCategorySelected: (category) =>
-                setState(() => _selectedCategory = category),
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: CategoriaSelector(
+                onCategorySelected: (category) =>
+                    setState(() => _selectedCategory = category),
+              ),
+            ),
           ),
-          Expanded(
-            child: ProductoGrid(
+          SliverPadding(
+            padding: const EdgeInsets.only(bottom: 100, left: 8, right: 8),
+            sliver: ProductoGridSliver(
               selectedCategory: _selectedCategory,
               onProductTap: _showProductDetails,
               cartItems: _cart,

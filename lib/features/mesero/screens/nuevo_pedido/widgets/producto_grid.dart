@@ -4,12 +4,12 @@ import 'package:restaurante_app/core/model/producto_model.dart';
 import 'package:restaurante_app/core/services/servicio_firebase.dart';
 import 'producto_card.dart';
 
-class ProductoGrid extends StatelessWidget {
+class ProductoGridSliver extends StatelessWidget {
   final String? selectedCategory;
   final void Function(Product product) onProductTap;
   final List<OrderItem> cartItems;
 
-  const ProductoGrid({
+  const ProductoGridSliver({
     super.key,
     required this.selectedCategory,
     required this.onProductTap,
@@ -18,8 +18,7 @@ class ProductoGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final width = size.width;
+    final width = MediaQuery.of(context).size.width;
     int crossAxisCount = 2;
 
     if (width <= 370) {
@@ -56,17 +55,19 @@ class ProductoGrid extends StatelessWidget {
       stream: FirebaseService().getFilteredProductsStream(selectedCategory),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const SliverToBoxAdapter(
+              child: Center(child: CircularProgressIndicator()));
         }
         if (snapshot.hasError) {
-          return Center(child: Text('Error: \${snapshot.error}'));
+          return SliverToBoxAdapter(
+              child: Center(child: Text('Error: ${snapshot.error}')));
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text('No hay productos disponibles.'));
+          return const SliverToBoxAdapter(
+              child: Center(child: Text('No hay productos disponibles.')));
         }
 
         final products = snapshot.data!;
-
         final updatedProducts = products.map((product) {
           final cartQuantity = cartItems
               .where((item) => item.idProducto == product.id)
@@ -74,24 +75,22 @@ class ProductoGrid extends StatelessWidget {
           return product.copyWith(stock: product.stock - cartQuantity);
         }).toList();
 
-        return Padding(
-          padding: const EdgeInsets.only(bottom: 100),
-          child: GridView.builder(
-            padding: const EdgeInsets.all(8),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: crossAxisCount,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 12,
-              childAspectRatio: aspectRatio,
-            ),
-            itemCount: updatedProducts.length,
-            itemBuilder: (context, index) {
+        return SliverGrid(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
               final product = updatedProducts[index];
               return ProductoCard(
                 product: product,
                 onTap: () => onProductTap(product),
               );
             },
+            childCount: updatedProducts.length,
+          ),
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: crossAxisCount,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 12,
+            childAspectRatio: aspectRatio,
           ),
         );
       },
